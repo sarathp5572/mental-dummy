@@ -15,6 +15,7 @@ import 'package:mentalhelth/widgets/widget/video_compessor.dart';
 import 'package:video_compress/video_compress.dart';
 
 import '../../mental_strength_add_edit_screen/model/all_model.dart';
+import '../../token_expiry/token_expiry.dart';
 import '../model/id_model.dart';
 
 class AdDreamsGoalsProvider extends ChangeNotifier {
@@ -426,6 +427,14 @@ class AdDreamsGoalsProvider extends ChangeNotifier {
           message: json.decode(response.body)["text"],
         );
       }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       saveAddActionsLoading = false;
       notifyListeners();
     } catch (error) {
@@ -494,6 +503,14 @@ class AdDreamsGoalsProvider extends ChangeNotifier {
           context: context,
           message: json.decode(response.body)["text"],
         );
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
       updateGoalLoading = false;
       notifyListeners();
@@ -567,6 +584,14 @@ class AdDreamsGoalsProvider extends ChangeNotifier {
       } else {
         showCustomSnackBar(
             context: context, message: response.reasonPhrase.toString());
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
       saveMediaUploadLoading = false;
       notifyListeners();

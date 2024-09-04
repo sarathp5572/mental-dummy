@@ -13,6 +13,7 @@ import 'package:mentalhelth/utils/core/url_constant.dart';
 import 'package:mentalhelth/utils/logic/shared_prefrence.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 
+import '../../../token_expiry/token_expiry.dart';
 import '../../subscribe_plan_page/subscribe_plan_page.dart';
 
 class SignInProvider extends ChangeNotifier {
@@ -93,6 +94,14 @@ class SignInProvider extends ChangeNotifier {
           message: 'Login failed.',
         );
       }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       loginLoading = false;
       notifyListeners();
       emailFieldController.clear();
@@ -138,6 +147,14 @@ class SignInProvider extends ChangeNotifier {
           context: context,
           message: jsonResponse['text'] ?? 'Forget password failed',
         );
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
       forgetLoading = false;
       notifyListeners();
@@ -262,6 +279,14 @@ class SignInProvider extends ChangeNotifier {
       } else {
         showCustomSnackBar(context: context, message: 'Login failed.');
       }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       socialMediaModelLoading = false;
       notifyListeners();
     } catch (error) {
@@ -299,6 +324,14 @@ class SignInProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
       } else {}
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       saveFirebaseLoading = false;
       notifyListeners();
     } catch (error) {

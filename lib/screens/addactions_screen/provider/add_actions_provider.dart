@@ -26,6 +26,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:video_compress/video_compress.dart';
 
 import '../../../utils/core/date_time_utils.dart';
+import '../../token_expiry/token_expiry.dart';
 
 class AddActionsProvider extends ChangeNotifier {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -964,6 +965,14 @@ class AddActionsProvider extends ChangeNotifier {
           message: json.decode(response.body)["text"],
         );
       }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       updateSaveActionLoadingFunction(false);
       return false;
     } catch (error) {
@@ -1031,6 +1040,14 @@ class AddActionsProvider extends ChangeNotifier {
           context: context,
           message: json.decode(response.body)["text"],
         );
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
       updateSaveActionLoadingFunction(false);
       notifyListeners();
@@ -1106,6 +1123,14 @@ class AddActionsProvider extends ChangeNotifier {
         );
         notifyListeners();
       } else {}
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       saveMediaUploadLoading = false;
       notifyListeners();
     } catch (error) {
@@ -1157,7 +1182,15 @@ class AddActionsProvider extends ChangeNotifier {
         headers: headers,
       );
       print(response.body.toString());
-      notifyListeners();
+      notifyListeners();      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+
       if (response.statusCode == 200) {
         deleteActionLoading = false;
 
@@ -1206,6 +1239,14 @@ class AddActionsProvider extends ChangeNotifier {
         showCustomSnackBar(context: context, message: 'action update success.');
       } else {
         showCustomSnackBar(context: context, message: 'action update failed.');
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
       updateActionStatus = false;
       notifyListeners();

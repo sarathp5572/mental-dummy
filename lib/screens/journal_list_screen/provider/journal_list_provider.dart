@@ -5,6 +5,8 @@ import 'package:mentalhelth/screens/journal_list_screen/model/journal_chart_view
 import 'package:mentalhelth/utils/core/url_constant.dart';
 import 'package:mentalhelth/utils/logic/shared_prefrence.dart';
 
+import '../../token_expiry/token_expiry.dart';
+
 class JournalListProvider extends ChangeNotifier {
   bool listViewBool = true;
   var logger = Logger();
@@ -37,6 +39,15 @@ class JournalListProvider extends ChangeNotifier {
       );
       print(response.body.toString());
       notifyListeners();
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+
       if (response.statusCode == 200) {
         // notifyListeners();
         deleteJournals = false;

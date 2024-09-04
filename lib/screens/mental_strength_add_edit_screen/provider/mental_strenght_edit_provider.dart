@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import 'package:video_compress/video_compress.dart';
 
 import '../../goals_dreams_page/model/actions_details_model.dart';
+import '../../token_expiry/token_expiry.dart';
 
 class MentalStrengthEditProvider extends ChangeNotifier {
   void editJournalAddValues({
@@ -542,6 +543,14 @@ class MentalStrengthEditProvider extends ChangeNotifier {
         }
         notifyListeners();
       } else {}
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       getEmotionsModelLoading = false;
       notifyListeners();
     } catch (e) {
@@ -605,6 +614,14 @@ class MentalStrengthEditProvider extends ChangeNotifier {
         );
         notifyListeners();
       } else {}
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       getGoalsModelLoading = false;
       notifyListeners();
     } catch (e) {
@@ -703,6 +720,14 @@ class MentalStrengthEditProvider extends ChangeNotifier {
 
         notifyListeners();
       } else {}
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       getListGoalActionsModelLoading = false;
       notifyListeners();
     } catch (e) {
@@ -734,6 +759,14 @@ class MentalStrengthEditProvider extends ChangeNotifier {
         goalDetailModel = goalDetailModelFromJson(response.body);
         notifyListeners();
       } else {}
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       goalDetailModelLoading = false;
       notifyListeners();
     } catch (e) {
@@ -764,6 +797,14 @@ class MentalStrengthEditProvider extends ChangeNotifier {
         actionsDetailsModel = actionsDetailsModelFromJson(response.body);
         notifyListeners();
       } else {}
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       actionsDetailsModelLoading = false;
       notifyListeners();
     } catch (e) {
@@ -824,6 +865,14 @@ class MentalStrengthEditProvider extends ChangeNotifier {
         },
         body: body,
       );
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       if (response.statusCode == 200 || response.statusCode == 201) {
         clearAllValuesInSaveTime();
 
@@ -903,6 +952,14 @@ class MentalStrengthEditProvider extends ChangeNotifier {
         },
         body: body,
       );
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       if (response.statusCode == 200 || response.statusCode == 201) {
         clearAllValuesInSaveTime();
         showCustomSnackBar(
@@ -996,6 +1053,14 @@ class MentalStrengthEditProvider extends ChangeNotifier {
         // } else {
         // }
       } else {}
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       saveMediaUploadLoading = false;
       notifyListeners();
     } catch (error) {
@@ -1073,6 +1138,14 @@ class MentalStrengthEditProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
       } else {
         showCustomSnackBar(context: context, message: 'media failed.');
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
       removeMediaLoading = false;
       notifyListeners();

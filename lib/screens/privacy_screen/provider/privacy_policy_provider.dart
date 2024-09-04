@@ -4,6 +4,8 @@ import 'package:mentalhelth/screens/privacy_screen/model/content_model.dart';
 import 'package:mentalhelth/utils/core/url_constant.dart';
 import 'package:mentalhelth/utils/logic/shared_prefrence.dart';
 
+import '../../token_expiry/token_expiry.dart';
+
 class PrivacyPolicyProvider extends ChangeNotifier {
   PolicyModel? policyModel;
   bool policyModelLoading = false;
@@ -30,6 +32,14 @@ class PrivacyPolicyProvider extends ChangeNotifier {
       } else {
         policyModelLoading = false;
         notifyListeners();
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
       policyModelLoading = false;
       notifyListeners();

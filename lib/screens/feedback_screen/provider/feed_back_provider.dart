@@ -6,6 +6,8 @@ import 'package:mentalhelth/utils/core/url_constant.dart';
 import 'package:mentalhelth/utils/logic/shared_prefrence.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 
+import '../../token_expiry/token_expiry.dart';
+
 class FeedBackProvider extends ChangeNotifier {
   TextEditingController nameEditTextController = TextEditingController();
 
@@ -45,6 +47,14 @@ class FeedBackProvider extends ChangeNotifier {
       } else {
         showCustomSnackBar(
             context: context, message: json.decode(response.body)["text"]);
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
       saveFeedBackLoading = false;
       notifyListeners();

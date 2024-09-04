@@ -6,6 +6,7 @@ import 'package:mentalhelth/utils/core/url_constant.dart';
 import 'package:mentalhelth/utils/logic/shared_prefrence.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 
+import '../../../token_expiry/token_expiry.dart';
 import '../../subscribe_plan_page/subscribe_plan_page.dart';
 
 class SignUpProvider extends ChangeNotifier {
@@ -80,6 +81,15 @@ class SignUpProvider extends ChangeNotifier {
       } else {
         // ignore: use_build_context_synchronously
         showToast(context: context, message: 'Register failed.');
+      }
+
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
       signUpLoading = false;
       notifyListeners();

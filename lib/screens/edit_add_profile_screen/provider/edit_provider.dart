@@ -12,6 +12,8 @@ import 'package:mentalhelth/utils/logic/date_format.dart';
 import 'package:mentalhelth/utils/logic/shared_prefrence.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 
+import '../../token_expiry/token_expiry.dart';
+
 class EditProfileProvider extends ChangeNotifier {
   TextEditingController myProfileController = TextEditingController();
 
@@ -57,6 +59,14 @@ class EditProfileProvider extends ChangeNotifier {
       } else {
         getProfileLoading = false;
         notifyListeners();
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
       getProfileLoading = false;
       notifyListeners();
@@ -154,6 +164,14 @@ class EditProfileProvider extends ChangeNotifier {
         String? mediaName = jsonResponse['media_name'];
         profileUrl = mediaName.toString();
       } else {}
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       saveMediaUploadLoading = false;
       notifyListeners();
     } catch (error) {
@@ -234,6 +252,14 @@ class EditProfileProvider extends ChangeNotifier {
           message: 'Edit request failed.',
         );
       }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       editLoading = false;
       notifyListeners();
     } catch (error) {
@@ -265,6 +291,14 @@ class EditProfileProvider extends ChangeNotifier {
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
       } else {}
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       saveIntrestsLoading = false;
       notifyListeners();
     } catch (error) {
@@ -294,6 +328,14 @@ class EditProfileProvider extends ChangeNotifier {
         getCategoryModel = getCategoryFromJson(response.body);
         notifyListeners();
       } else {}
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       getCategoryLoading = false;
       notifyListeners();
     } catch (e) {

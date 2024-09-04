@@ -5,6 +5,7 @@ import 'package:mentalhelth/utils/logic/shared_prefrence.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 
 import '../../auth/sign_in/screen_sign_in.dart';
+import '../../token_expiry/token_expiry.dart';
 
 class DeleteProvider extends ChangeNotifier {
   // SignUpModel? signUpModel;
@@ -41,6 +42,14 @@ class DeleteProvider extends ChangeNotifier {
         showCustomSnackBar(context: context, message: 'Account Deleted');
       } else {
         showCustomSnackBar(context: context, message: 'failed.');
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
       deleteAccountLoading = false;
       notifyListeners();

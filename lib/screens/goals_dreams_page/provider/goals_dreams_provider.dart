@@ -6,6 +6,7 @@ import 'package:mentalhelth/utils/core/url_constant.dart';
 
 import '../../../utils/logic/shared_prefrence.dart';
 import '../../../widgets/functions/snack_bar.dart';
+import '../../token_expiry/token_expiry.dart';
 import '../model/goals_and_dreams_model.dart';
 
 class GoalsDreamsProvider extends ChangeNotifier {
@@ -90,6 +91,14 @@ class GoalsDreamsProvider extends ChangeNotifier {
       goalsAndDreamsModelLoading = false;
       notifyListeners();
     }
+    if(response.statusCode == 401){
+      TokenManager.setTokenStatus(true);
+      //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+    }
+    if(response.statusCode == 403){
+      TokenManager.setTokenStatus(true);
+      //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+    }
     goalsAndDreamsModelLoading = false;
     notifyListeners();
     // } catch (e) {
@@ -130,6 +139,14 @@ class GoalsDreamsProvider extends ChangeNotifier {
       } else {
         showCustomSnackBar(context: context, message: 'goal update failed.');
       }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       updateGoalStatusLoading = false;
       notifyListeners();
     } catch (error) {
@@ -162,6 +179,14 @@ class GoalsDreamsProvider extends ChangeNotifier {
       );
 
       notifyListeners();
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       if (response.statusCode == 200) {
         // notifyListeners();
         fetchGoalsAndDreams(
@@ -176,6 +201,8 @@ class GoalsDreamsProvider extends ChangeNotifier {
         notifyListeners();
         return false;
       }
+
+
     } catch (e) {
       deleteGoalsLoading = false;
       notifyListeners();

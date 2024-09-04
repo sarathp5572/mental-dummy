@@ -75,104 +75,107 @@ class _TokenExpireScreenState extends State<TokenExpireScreen> {
                             ),
                           ),
                           const Gap(30),
-                          SizedBox(
-                            width: width * 0.80,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    TokenManager.setTokenStatus(false);
-                                    addUserEmailSharePref(
-                                      email: "",
-                                    );
-                                    addUserPasswordSharePref(
-                                      password: "",
-                                    );
-                                    SystemNavigator.pop();
-                                  },
-                                  child: Container(
-                                    width: width * 0.35,
-                                    height: 40,
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: ShapeDecoration(
-                                      gradient: const LinearGradient(
-                                        begin: Alignment(105.598, -73.2617),
-                                        end: Alignment(-130.141, 80.5293),
-                                        colors: [
-                                          Colors.blue,
-                                          Colors.blueAccent,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: SizedBox(
+                              width: width * 0.80,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      TokenManager.setTokenStatus(false);
+                                      addUserEmailSharePref(
+                                        email: "",
+                                      );
+                                      addUserPasswordSharePref(
+                                        password: "",
+                                      );
+                                      SystemNavigator.pop();
+                                    },
+                                    child: Container(
+                                      width: width * 0.35,
+                                      height: 40,
+                                      clipBehavior: Clip.antiAlias,
+                                      decoration: ShapeDecoration(
+                                        gradient: const LinearGradient(
+                                          begin: Alignment(105.598, -73.2617),
+                                          end: Alignment(-130.141, 80.5293),
+                                          colors: [
+                                            Colors.blue,
+                                            Colors.blueAccent,
+                                          ],
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(14),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Cancel',
+                                            style:
+                                            CustomTextStyles.bodyMediumWhite,
+                                          ),
                                         ],
                                       ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(14),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'Cancel',
-                                          style:
-                                          CustomTextStyles.bodySmallGray500,
-                                        ),
-                                      ],
                                     ),
                                   ),
-                                ),
-                                GestureDetector(
-                                  onTap: () async {
-                                    TokenManager.setTokenStatus(false);
-                                    addUserEmailSharePref(
-                                      email: "",
-                                    );
-                                    addUserPasswordSharePref(
-                                      password: "",
-                                    );
-                                    Navigator.push(
-                                      context,
-                                      PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) =>
-                                         ScreenSignIn(),
-                                        transitionDuration:
-                                        const Duration(seconds: 0),
+                                  GestureDetector(
+                                    onTap: () async {
+                                      TokenManager.setTokenStatus(false);
+                                      addUserEmailSharePref(
+                                        email: "",
+                                      );
+                                      addUserPasswordSharePref(
+                                        password: "",
+                                      );
+                                      Navigator.push(
+                                        context,
+                                        PageRouteBuilder(
+                                          pageBuilder: (_, __, ___) =>
+                                           ScreenSignIn(),
+                                          transitionDuration:
+                                          const Duration(seconds: 0),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      width: width * 0.35,
+                                      height: 40,
+                                      clipBehavior: Clip.antiAlias,
+                                      decoration: ShapeDecoration(
+                                        gradient: const LinearGradient(
+                                          begin: Alignment(105.598, -73.2617),
+                                          end: Alignment(-130.141, 80.5293),
+                                          colors: [
+                                           Colors.blue,
+                                            Colors.blueAccent,
+                                          ],
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(14),
+                                        ),
                                       ),
-                                    );
-                                  },
-                                  child: Container(
-                                    width: width * 0.35,
-                                    height: 40,
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: ShapeDecoration(
-                                      gradient: const LinearGradient(
-                                        begin: Alignment(105.598, -73.2617),
-                                        end: Alignment(-130.141, 80.5293),
-                                        colors: [
-                                         Colors.blue,
-                                          Colors.blueAccent,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Login',
+                                            style:
+                                            CustomTextStyles.bodySmallGray500
+                                          ),
                                         ],
                                       ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(14),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'Login',
-                                          style:
-                                          CustomTextStyles.bodySmallGray500
-                                        ),
-                                      ],
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                           const Gap(15),

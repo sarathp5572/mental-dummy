@@ -7,6 +7,7 @@ import 'package:mentalhelth/utils/core/url_constant.dart';
 import 'package:mentalhelth/utils/logic/shared_prefrence.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 
+import '../../token_expiry/token_expiry.dart';
 import '../model/chart_view_model.dart';
 import '../model/journal_details.dart';
 
@@ -49,14 +50,25 @@ class HomeProvider extends ChangeNotifier {
         }
         chartViewLoading = false;
         notifyListeners();
-      } else if (response.statusCode == 403) {
-        await removeUserDetailsSharePref(context: context);
-        showCustomSnackBar(context: context, message: "Token Expired");
+      }
+///commented on 04-09-2024 sarath p
+      // else if (response.statusCode == 403) {
+      //   await removeUserDetailsSharePref(context: context);
+      //   showCustomSnackBar(context: context, message: "Token Expired");
+      //   chartViewLoading = false;
+      //   notifyListeners();
+      // }
+      else {
         chartViewLoading = false;
         notifyListeners();
-      } else {
-        chartViewLoading = false;
-        notifyListeners();
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
       chartViewLoading = false;
       notifyListeners();
@@ -109,6 +121,14 @@ class HomeProvider extends ChangeNotifier {
         journalsModelLoading = false;
         notifyListeners();
       }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
       journalsModelLoading = false;
       notifyListeners();
     } catch (e) {
@@ -144,6 +164,14 @@ class HomeProvider extends ChangeNotifier {
       } else {
         journalDetailsLoading = false;
         notifyListeners();
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
       journalDetailsLoading = false;
       notifyListeners();
