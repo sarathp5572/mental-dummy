@@ -118,6 +118,7 @@ class HomeProvider extends ChangeNotifier {
         journalsModelLoading = false;
         notifyListeners();
       } else {
+        logger.w("journalsModelelse ${journalsModelFromJson(response.body)}");
         journalsModelLoading = false;
         notifyListeners();
       }
@@ -132,6 +133,7 @@ class HomeProvider extends ChangeNotifier {
       journalsModelLoading = false;
       notifyListeners();
     } catch (e) {
+      logger.w("catch ${e}");
       journalsModelLoading = false;
       notifyListeners();
     }
@@ -154,15 +156,18 @@ class HomeProvider extends ChangeNotifier {
       Uri url = Uri.parse(
         UrlConstant.fetchJournalDetails(journalId: journalId),
       );
+      logger.w("fetchJournalDetailsUri${url}");
       final response = await http.get(
         url,
         headers: headers,
       );
       if (response.statusCode == 200) {
         journalDetails = journalDetailsFromJson(response.body);
+        logger.w("journalDetails ${journalDetails}");
         notifyListeners();
       } else {
         journalDetailsLoading = false;
+        logger.w("journalDetailsElse ${journalDetails}");
         notifyListeners();
       }
       if(response.statusCode == 401){
@@ -176,6 +181,7 @@ class HomeProvider extends ChangeNotifier {
       journalDetailsLoading = false;
       notifyListeners();
     } catch (e) {
+      logger.w("errorCatch ${e}");
       journalDetailsLoading = false;
       notifyListeners();
     }

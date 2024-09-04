@@ -16,6 +16,7 @@ import 'package:mentalhelth/widgets/indicatores_widgets.dart';
 import 'package:mentalhelth/widgets/widget/shimmer.dart';
 import 'package:provider/provider.dart';
 
+import '../../utils/logic/shared_prefrence.dart';
 import '../../utils/theme/custom_button_style.dart';
 import '../../utils/theme/custom_text_style.dart';
 import '../../utils/theme/theme_helper.dart';
@@ -43,9 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
   var logger = Logger();
 
   Future<void> _isTokenExpired() async {
-    await homeProvider.fetchChartView(context);
-    await homeProvider.fetchJournals(initial: true);
-    await editProfileProvider.fetchUserProfile();
+      await homeProvider.fetchChartView(context);
+      await homeProvider.fetchJournals(initial: true);
+      await editProfileProvider.fetchUserProfile();
       tokenStatus = TokenManager.checkTokenExpiry();
       if (tokenStatus) {
         setState(() {
@@ -55,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }else{
         logger.e("Token status changedElse: $tokenStatus");
       }
+
   }
 
   @override

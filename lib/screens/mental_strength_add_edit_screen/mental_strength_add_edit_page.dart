@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
@@ -28,23 +30,65 @@ import '../../utils/theme/theme_helper.dart';
 import '../../widgets/app_bar/appbar_leading_image.dart';
 import '../../widgets/custom_image_view.dart';
 import '../../widgets/custom_rating_bar.dart';
+import '../auth/sign_in/provider/sign_in_provider.dart';
+import '../home_screen/provider/home_provider.dart';
+import '../token_expiry/tocken_expiry_warning_screen.dart';
+import '../token_expiry/token_expiry.dart';
 import 'model/emotions_model.dart';
 import 'provider/mental_strenght_edit_provider.dart';
 import 'screens/action_full_view_mental_helth/action_full_view_journal.dart';
 import 'screens/add_goals_and_dreams_widget/add_goals_and_dreams_mental_strength.dart';
 import 'screens/goals_and_dreams_full_view/goals_and_dreams_full_view_screen.dart';
 
-class MentalStrengthAddEditFullViewScreen extends StatelessWidget {
-  const MentalStrengthAddEditFullViewScreen({Key? key})
-      : super(
-          key: key,
-        );
+class MentalStrengthAddEditFullViewScreen extends StatefulWidget {
+  const MentalStrengthAddEditFullViewScreen({Key? key}) : super(key: key,);
+
+  @override
+  _MentalStrengthAddEditFullViewScreenState createState() =>
+      _MentalStrengthAddEditFullViewScreenState();
+}
+class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddEditFullViewScreen> {
+  late HomeProvider homeProvider;
+  late MentalStrengthEditProvider mentalStrengthEditProvider;
+  late EditProfileProvider editProfileProvider;
+  late DashBoardProvider dashBoardProvider;
+  bool tokenStatus = false;
+  var logger = Logger();
+
+  Future<void> _isTokenExpired() async {
+    await homeProvider.fetchJournals(initial: true);
+    await editProfileProvider.fetchUserProfile();
+    tokenStatus = TokenManager.checkTokenExpiry();
+    if (tokenStatus) {
+      setState(() {
+        logger.e("Token status changed: $tokenStatus");
+      });
+      logger.e("Token status changed: $tokenStatus");
+    }else{
+      logger.e("Token status changedElse: $tokenStatus");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
+    editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
+    dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    scheduleMicrotask(() {
+      _isTokenExpired();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     var logger = Logger();
     Size size = MediaQuery.of(context).size;
-    return SafeArea(
+    return
+      tokenStatus == false ?
+      SafeArea(
       child: backGroundImager(
         size: size,
         padding: EdgeInsets.zero,
@@ -64,6 +108,7 @@ class MentalStrengthAddEditFullViewScreen extends StatelessWidget {
                   size,
                   heading: "Build your mental strength",
                   onTap: () {
+                    homeProvider.fetchJournals(initial: true);
                     dashBoardProvider.changePage(index: 0);
                   },
                 ),
@@ -186,6 +231,7 @@ class MentalStrengthAddEditFullViewScreen extends StatelessWidget {
                                   logger.w("mentalStrengthEditProvider.emotionalValueStar");
                                   mentalStrengthEditProvider
                                       .changeEmotionalValueStar(value);
+                                  _isTokenExpired();
                                 },
                               ),
                               SizedBox(height: size.height * 0.01),
@@ -224,6 +270,8 @@ class MentalStrengthAddEditFullViewScreen extends StatelessWidget {
                                         mentalStrengthEditProvider
                                             .addEmotionValue(
                                                 newValue ?? Emotion());
+
+                                        _isTokenExpired();
                                         // setState(() {
                                         //   mentalStrengthEditProvider
                                         //       .emotionValue = newValue!;
@@ -250,6 +298,8 @@ class MentalStrengthAddEditFullViewScreen extends StatelessWidget {
                                 onRatingUpdate: (value) {
                                   mentalStrengthEditProvider
                                       .changeDriveValueStar(value);
+
+                                  _isTokenExpired();
                                 },
                               ),
                               SizedBox(height: size.height * 0.03),
@@ -268,6 +318,7 @@ class MentalStrengthAddEditFullViewScreen extends StatelessWidget {
                               ),
                               ElevatedButton(
                                 onPressed: () {
+                                  _isTokenExpired();
                                   mentalStrengthEditProvider
                                       .openChooseGoalFunction();
                                 },
@@ -390,6 +441,7 @@ class MentalStrengthAddEditFullViewScreen extends StatelessWidget {
                                       message: "Please choose your goal",
                                     );
                                   } else {
+                                    _isTokenExpired();
                                     mentalStrengthEditProvider
                                         .openChooseActionFunction();
                                   }
@@ -512,6 +564,7 @@ class MentalStrengthAddEditFullViewScreen extends StatelessWidget {
                                 onPressed: () async {
                                   await mentalStrengthEditProvider
                                       .saveButtonFunction(context);
+                                  _isTokenExpired();
                                 },
                                 height: 65,
                                 text: "SAVE",
@@ -581,7 +634,8 @@ class MentalStrengthAddEditFullViewScreen extends StatelessWidget {
           );
         }),
       ),
-    );
+    ):
+      const TokenExpireScreen();
   }
 
   /// Section Widget
@@ -626,6 +680,7 @@ class MentalStrengthAddEditFullViewScreen extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () async {
+                          _isTokenExpired();
                           mentalStrengthEditProvider.selectedMedia(0);
                           await audioBottomSheet(
                             context: context,
@@ -715,6 +770,7 @@ class MentalStrengthAddEditFullViewScreen extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () async {
+                          _isTokenExpired();
                           mentalStrengthEditProvider.selectedMedia(1);
                           await galleryBottomSheet(
                             context: context,
@@ -787,6 +843,7 @@ class MentalStrengthAddEditFullViewScreen extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          _isTokenExpired();
                           mentalStrengthEditProvider.selectedMedia(2);
                           cameraBottomSheet(
                             context: context,
@@ -859,6 +916,7 @@ class MentalStrengthAddEditFullViewScreen extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          _isTokenExpired();
                           mentalStrengthEditProvider.selectedMedia(
                             3,
                           );

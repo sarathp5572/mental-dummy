@@ -358,11 +358,9 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                     ? const SizedBox()
                                     : CustomRatingBar(
                                         color: Colors.blue,
-                                        initialRating: double.parse(homeProvider
-                                                .journalDetails!
-                                                .journals!
-                                                .emotionValue ??
-                                            "0"),
+                                  initialRating: double.parse(
+                                    homeProvider.journalDetails!.journals!.emotionValue?.toString() ?? '0',
+                                  ),
                                         itemSize: 30,
                                       ),
                                 const SizedBox(height: 22),
@@ -404,9 +402,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                     : CustomRatingBar(
                                         color: Colors.blue,
                                         initialRating: double.parse(
-                                          homeProvider.journalDetails!.journals!
-                                                  .driveValue ??
-                                              "0",
+                                          (homeProvider.journalDetails!.journals!.emotionValue ?? 0).toString(),
                                         ),
                                         itemSize: 30,
                                       ),

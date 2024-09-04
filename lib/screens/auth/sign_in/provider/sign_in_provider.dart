@@ -51,6 +51,7 @@ class SignInProvider extends ChangeNotifier {
         body: body,
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
+        TokenManager.setTokenStatus(false);
         loginModel = loginModelFromJson(
           response.body,
         );

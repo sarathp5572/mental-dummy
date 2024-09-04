@@ -45,8 +45,8 @@ class Journals {
   String? journalDesc;
   String? emotionId;
   String? emotionTitle;
-  String? emotionValue;
-  String? driveValue;
+  int? emotionValue;
+  int? driveValue;
   String? journalDatetime;
   String? displayImage;
   String? displayType;
