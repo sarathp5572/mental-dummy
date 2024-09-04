@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "38607290109",
+    "project_id": "mental-strength",
+    "storage_bucket": "mental-strength.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:38607290109:android:3ef8d141fc16804717c894",
+        "android_client_info": {
+          "package_name": "com.mentalhelth.mentalhelth"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6_D5666hHBnQqoBm6vjF6XVZhcDyfyY4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

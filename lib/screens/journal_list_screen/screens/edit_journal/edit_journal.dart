@@ -1,0 +1,1161 @@
+import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
+import 'package:mentalhelth/screens/addgoals_dreams_screen/provider/ad_goals_dreams_provider.dart';
+import 'package:mentalhelth/screens/dash_borad_screen/provider/dash_board_provider.dart';
+import 'package:mentalhelth/screens/edit_add_profile_screen/provider/edit_provider.dart';
+import 'package:mentalhelth/screens/home_screen/provider/home_provider.dart';
+import 'package:mentalhelth/screens/mental_strength_add_edit_screen/model/emotions_model.dart';
+import 'package:mentalhelth/screens/mental_strength_add_edit_screen/screens/action_full_view_mental_helth/action_full_view_journal.dart';
+import 'package:mentalhelth/screens/mental_strength_add_edit_screen/screens/add_action/add_action_mental_strength.dart';
+import 'package:mentalhelth/screens/mental_strength_add_edit_screen/screens/add_goals_and_dreams_widget/add_goals_and_dreams_mental_strength.dart';
+import 'package:mentalhelth/screens/mental_strength_add_edit_screen/screens/choose_action/choose_action.dart';
+import 'package:mentalhelth/screens/mental_strength_add_edit_screen/screens/choose_goal/choose_goal.dart';
+import 'package:mentalhelth/screens/mental_strength_add_edit_screen/screens/goals_and_dreams_full_view/goals_and_dreams_full_view_screen.dart';
+import 'package:mentalhelth/screens/mental_strength_add_edit_screen/widgets/googlemap_widget/google_map_widget.dart';
+import 'package:mentalhelth/screens/mental_strength_add_edit_screen/widgets/popup/audio_popup.dart';
+import 'package:mentalhelth/screens/mental_strength_add_edit_screen/widgets/popup/camera_popup.dart';
+import 'package:mentalhelth/screens/mental_strength_add_edit_screen/widgets/popup/gallary_popup.dart';
+import 'package:mentalhelth/utils/core/image_constant.dart';
+import 'package:mentalhelth/utils/logic/date_format.dart';
+import 'package:mentalhelth/utils/theme/custom_button_style.dart';
+import 'package:mentalhelth/widgets/custom_elevated_button.dart';
+import 'package:mentalhelth/widgets/custom_icon_button.dart';
+import 'package:mentalhelth/widgets/custom_text_form_field.dart';
+import 'package:mentalhelth/widgets/functions/snack_bar.dart';
+import 'package:mentalhelth/widgets/widget/shimmer.dart';
+import 'package:provider/provider.dart';
+import 'package:html_unescape/html_unescape.dart';
+import '../../../../utils/theme/custom_text_style.dart';
+import '../../../../utils/theme/theme_helper.dart';
+import '../../../../widgets/app_bar/appbar_leading_image.dart';
+import '../../../../widgets/custom_image_view.dart';
+import '../../../../widgets/custom_rating_bar.dart';
+import '../../../mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
+
+class EditJournalMentalStrength extends StatefulWidget {
+  const EditJournalMentalStrength({Key? key, this.valueBool = false})
+      : super(
+          key: key,
+        );
+  final bool valueBool;
+
+  @override
+  State<EditJournalMentalStrength> createState() =>
+      _EditJournalMentalStrengthState();
+}
+
+class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  // @override
+  // void dispose() {
+  //   MentalStrengthEditProvider mentalStrengthEditProvider =
+  //       Provider.of<MentalStrengthEditProvider>(context, listen: false);
+  //   mentalStrengthEditProvider.clearAllValuesInSaveTime();
+  //   super.dispose();
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return PopScope(
+      onPopInvoked: (value) async {
+        MentalStrengthEditProvider mentalStrengthEditProvider =
+            Provider.of<MentalStrengthEditProvider>(context, listen: false);
+        AdDreamsGoalsProvider adDreamsGoalsProvider =
+            Provider.of<AdDreamsGoalsProvider>(context, listen: false);
+        mentalStrengthEditProvider.clearAllValuesInSaveTime();
+        adDreamsGoalsProvider.clearAction();
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  ImageConstant.imgGroup22,
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Consumer4<EditProfileProvider, MentalStrengthEditProvider,
+                    DashBoardProvider, HomeProvider>(
+                builder: (context,
+                    editProfileProvider,
+                    mentalStrengthEditProvider,
+                    dashBoardProvider,
+                    homeProvider,
+                    _) {
+              return GestureDetector(
+                onTap: () {
+                  mentalStrengthEditProvider.openAllCloser();
+                },
+                child: Column(
+                  children: [
+                    buildAppBar(
+                      context,
+                      size,
+                      heading: "Edit your mental strength",
+                      onTap: () {
+                        MentalStrengthEditProvider mentalStrengthEditProvider =
+                            Provider.of<MentalStrengthEditProvider>(context,
+                                listen: false);
+                        AdDreamsGoalsProvider adDreamsGoalsProvider =
+                            Provider.of<AdDreamsGoalsProvider>(context,
+                                listen: false);
+                        mentalStrengthEditProvider.clearAllValuesInSaveTime();
+                        adDreamsGoalsProvider.clearAction();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(
+                              left: size.width * 0.05,
+                              right: size.width * 0.05,
+                            ),
+                            color: mentalStrengthEditProvider.openChooseGoal
+                                ? Colors.blue[50]
+                                : null,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    // width: size.width * 0.1,
+                                    // height: size.height * 0.1,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        // editProfileProvider.getImageFromGallery(
+                                        //   context: context,
+                                        // );
+                                      },
+                                      child: editProfileProvider.images != null
+                                          ? ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(60),
+                                              child: Image.file(
+                                                editProfileProvider.images!,
+                                                height: size.height * 0.1,
+                                                width: size.height * 0.1,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            )
+                                          : CustomImageView(
+                                              imagePath: editProfileProvider
+                                                  .profileUrl
+                                                  .toString(),
+                                              height: size.height * 0.1,
+                                              width: size.height * 0.1,
+                                              radius: BorderRadius.circular(54),
+                                              alignment: Alignment.center,
+                                              fit: BoxFit.cover,
+                                            ),
+                                    ),
+                                  ),
+                                  editProfileProvider.getProfileModel == null
+                                      ? const SizedBox()
+                                      : Text(
+                                          editProfileProvider
+                                              .getProfileModel!.firstname
+                                              .toString(),
+                                          style: CustomTextStyles.bodyLarge18,
+                                        ),
+                                  editProfileProvider.getProfileModel == null
+                                      ? const SizedBox()
+                                      : Text(
+                                          editProfileProvider.getProfileModel!
+                                                          .dob ==
+                                                      null ||
+                                                  editProfileProvider
+                                                          .getProfileModel!
+                                                          .dob ==
+                                                      null
+                                              ? ""
+                                              : dateTimeFormatterMain(
+                                                  date: editProfileProvider
+                                                      .getProfileModel!.dob
+                                                      .toString()),
+                                          style: CustomTextStyles
+                                              .bodyMediumGray700,
+                                        ),
+                                  SizedBox(
+                                    height: size.height * 0.02,
+                                  ),
+                                  Text(
+                                    "Whats on your mind?",
+                                    style: theme.textTheme.bodyLarge,
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.03,
+                                  ),
+                                  _buildDescriptionEditText(context),
+                                  // const Slider1ItemWidget(),
+                                  SizedBox(height: size.height * 0.03),
+                                  CustomImageView(
+                                    imagePath: ImageConstant.imgGroup27,
+                                    height: 33,
+                                    width: 5,
+                                  ),
+                                  _buildAddMediaColumn(
+                                    context,
+                                    size,
+                                  ),
+                                  SizedBox(height: size.height * 0.03),
+
+                                  // mentalStrengthEditProvider.mediaSelected == 3
+                                  //     ? const MentalGoogleMap()
+                                  //     : const SizedBox(),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  CustomIconButton(
+                                    height: size.height * 0.08,
+                                    width: size.height * 0.08,
+                                    padding: const EdgeInsets.all(
+                                      11,
+                                    ),
+                                    decoration: IconButtonStyleHelper.fillBlue,
+                                    child: CustomImageView(
+                                      imagePath: ImageConstant.imgLightBulb,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.03,
+                                  ),
+                                  CustomImageView(
+                                    imagePath: ImageConstant.imgGroup28,
+                                    height: 19,
+                                    width: 5,
+                                  ),
+                                  SizedBox(height: size.height * 0.03),
+                                  Text(
+                                    "Rate how you are feeling now?",
+                                    style: theme.textTheme.bodyLarge,
+                                  ),
+                                  SizedBox(height: size.height * 0.01),
+                                  CustomRatingBar(
+                                    initialRating: mentalStrengthEditProvider
+                                        .emotionalValueStar,
+                                    itemSize: 34,
+                                    color: Colors.blue,
+                                    onRatingUpdate: (value) {
+                                      mentalStrengthEditProvider
+                                          .changeEmotionalValueStar(value);
+                                    },
+                                  ),
+                                  SizedBox(height: size.height * 0.01),
+                                  CustomImageView(
+                                    imagePath: ImageConstant.imgGroup29,
+                                    height: 33,
+                                    width: 5,
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.03,
+                                  ),
+                                  Text(
+                                    "What is your emotional state?",
+                                    style: theme.textTheme.bodyLarge,
+                                  ),
+                                  SizedBox(height: size.height * 0.01),
+                                  mentalStrengthEditProvider.getEmotionsModel ==
+                                          null
+                                      ? const SizedBox()
+                                      : DropdownButton(
+                                          underline: const SizedBox(),
+                                          elevation: 0,
+                                          value: mentalStrengthEditProvider
+                                              .emotionValue,
+                                          icon: const Icon(
+                                              Icons.keyboard_arrow_down),
+                                          items: mentalStrengthEditProvider
+                                              .getEmotionsModel!.emotions!
+                                              .map((Emotion items) {
+                                            return DropdownMenuItem(
+                                              value: items,
+                                              child:
+                                                  Text(items.title.toString()),
+                                            );
+                                          }).toList(),
+                                          onChanged: (Emotion? newValue) {
+                                            setState(() {
+                                              mentalStrengthEditProvider
+                                                  .emotionValue = newValue!;
+                                            });
+                                          },
+                                        ),
+                                  SizedBox(height: size.height * 0.03),
+                                  CustomImageView(
+                                    imagePath: ImageConstant.imgGroup29,
+                                    height: 33,
+                                    width: 5,
+                                  ),
+                                  SizedBox(height: size.height * 0.03),
+                                  Text(
+                                    "Do you like your reaction to the situation?",
+                                    style: theme.textTheme.bodyLarge,
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.01,
+                                  ),
+                                  CustomRatingBar(
+                                    initialRating: mentalStrengthEditProvider
+                                        .driveValueStar,
+                                    itemSize: 34,
+                                    color: Colors.blue,
+                                    onRatingUpdate: (value) {
+                                      mentalStrengthEditProvider
+                                          .changeDriveValueStar(value);
+                                    },
+                                  ),
+                                  SizedBox(height: size.height * 0.03),
+                                  CustomImageView(
+                                    imagePath: ImageConstant.imgGroup29,
+                                    height: 33,
+                                    width: 5,
+                                  ),
+                                  SizedBox(height: size.height * 0.03),
+                                  Text(
+                                    "Which goal is affected by your reaction?",
+                                    style: theme.textTheme.bodyLarge,
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.02,
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      mentalStrengthEditProvider
+                                          .openChooseGoalFunction();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      "Choose Goal",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.01,
+                                  ),
+                                  mentalStrengthEditProvider.goalsValue.id ==
+                                          null
+                                      ? const SizedBox()
+                                      : mentalStrengthEditProvider
+                                                  .goalsValue.id ==
+                                              ""
+                                          ? const SizedBox()
+                                          : mentalStrengthEditProvider
+                                                  .goalsValue.id!.isEmpty
+                                              ? const SizedBox()
+                                              : Container(
+                                                  height: size.height * 0.04,
+                                                  width: size.width * 0.7,
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                    bottom: 5,
+                                                    top: 5,
+                                                    left: 5,
+                                                    right: 5,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            100), // Makes it circular
+                                                    border: Border.all(
+                                                      color: Colors.grey,
+                                                      width: 1,
+                                                    ),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          mentalStrengthEditProvider
+                                                              .cleaGoalValue();
+                                                        },
+                                                        child: CircleAvatar(
+                                                          radius:
+                                                              size.width * 0.04,
+                                                          backgroundColor:
+                                                              Colors.blue,
+                                                          child: Icon(
+                                                            Icons.close,
+                                                            color: Colors.white,
+                                                            size: size.width *
+                                                                0.03,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        mentalStrengthEditProvider
+                                                            .goalsValue.title
+                                                            .toString(),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: const TextStyle(
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          mentalStrengthEditProvider
+                                                              .openGoalViewSheetFunction();
+                                                          mentalStrengthEditProvider
+                                                              .fetchGoalDetails(
+                                                            goalId:
+                                                                mentalStrengthEditProvider
+                                                                    .goalsValue
+                                                                    .id
+                                                                    .toString(),
+                                                          );
+                                                        },
+                                                        child: CircleAvatar(
+                                                          radius:
+                                                              size.width * 0.04,
+                                                          backgroundColor:
+                                                              Colors.blue,
+                                                          child: Icon(
+                                                            Icons
+                                                                .arrow_forward_ios_outlined,
+                                                            color: Colors.white,
+                                                            size: size.width *
+                                                                0.03,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                  SizedBox(
+                                    height: size.height * 0.03,
+                                  ),
+                                  CustomImageView(
+                                    imagePath: ImageConstant.imgGroup29,
+                                    height: 33,
+                                    width: 5,
+                                  ),
+                                  SizedBox(height: size.height * 0.03),
+                                  Text(
+                                    "Select an action?",
+                                    style: theme.textTheme.bodyLarge,
+                                  ),
+                                  SizedBox(height: size.height * 0.03),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      mentalStrengthEditProvider
+                                          .openChooseActionFunction();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      "Choose Action",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.01,
+                                  ),
+                                  SizedBox(
+                                    height: mentalStrengthEditProvider
+                                            .actionList.length *
+                                        size.height *
+                                        0.045,
+                                    width: size.width * 0.7,
+                                    child: ListView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: mentalStrengthEditProvider
+                                          .actionList.length,
+                                      itemBuilder: (context, index) {
+                                        return Container(
+                                          height: size.height * 0.04,
+                                          width: size.width * 0.7,
+                                          padding: const EdgeInsets.only(
+                                            bottom: 5,
+                                            top: 5,
+                                            left: 5,
+                                            right: 5,
+                                          ),
+                                          margin: const EdgeInsets.only(
+                                            bottom: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                                100), // Makes it circular
+                                            border: Border.all(
+                                              color: Colors.grey,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  mentalStrengthEditProvider
+                                                      .clearActionListSelected(
+                                                    index: index,
+                                                  );
+                                                },
+                                                child: CircleAvatar(
+                                                  radius: size.width * 0.04,
+                                                  backgroundColor: Colors.blue,
+                                                  child: Icon(
+                                                    Icons.close,
+                                                    color: Colors.white,
+                                                    size: size.width * 0.03,
+                                                  ),
+                                                ),
+                                              ),
+                                              Text(
+                                                mentalStrengthEditProvider
+                                                    .actionList[index].title
+                                                    .toString(),
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  mentalStrengthEditProvider
+                                                      .openActionFullViewFunction();
+                                                  await mentalStrengthEditProvider
+                                                      .fetchActionDetails(
+                                                    actionId:
+                                                        mentalStrengthEditProvider
+                                                            .actionList[index]
+                                                            .id
+                                                            .toString(),
+                                                  );
+                                                },
+                                                child: CircleAvatar(
+                                                  radius: size.width * 0.04,
+                                                  backgroundColor: Colors.blue,
+                                                  child: Icon(
+                                                    Icons
+                                                        .arrow_forward_ios_outlined,
+                                                    color: Colors.white,
+                                                    size: size.width * 0.03,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+
+                                  SizedBox(
+                                    height: size.height * 0.03,
+                                  ),
+                                  CustomElevatedButton(
+                                    loading: mentalStrengthEditProvider
+                                        .saveJournalLoading,
+                                    onPressed: () async {
+                                      if (!mentalStrengthEditProvider
+                                          .isVideoUploading) {
+                                        if (mentalStrengthEditProvider
+                                            .descriptionEditTextController
+                                            .text
+                                            .isNotEmpty) {
+                                          bool isSuccess =
+                                              await mentalStrengthEditProvider
+                                                  .updateJournalLoading(
+                                            journalId: homeProvider
+                                                .journalDetails!
+                                                .journals!
+                                                .journalId
+                                                .toString(),
+                                            context,
+                                            journalTitle: mentalStrengthEditProvider
+                                                        .descriptionEditTextController
+                                                        .text
+                                                        .length <=
+                                                    6
+                                                ? mentalStrengthEditProvider
+                                                    .descriptionEditTextController
+                                                    .text
+                                                : mentalStrengthEditProvider
+                                                    .descriptionEditTextController
+                                                    .text
+                                                    .substring(0, 6),
+                                            journalDesc:
+                                                mentalStrengthEditProvider
+                                                    .descriptionEditTextController
+                                                    .text,
+                                            emotionId:
+                                                mentalStrengthEditProvider
+                                                    .emotionValue.id
+                                                    .toString(),
+                                            emotionValue:
+                                                mentalStrengthEditProvider
+                                                    .emotionalValueStar
+                                                    .toString(),
+                                            driveValue:
+                                                mentalStrengthEditProvider
+                                                    .driveValueStar
+                                                    .toString(),
+                                            goalId: mentalStrengthEditProvider
+                                                .goalsValue.id
+                                                .toString(),
+                                            locationName:
+                                                mentalStrengthEditProvider
+                                                    .selectedLocationName,
+                                            locationLatitude:
+                                                mentalStrengthEditProvider
+                                                    .selectedLatitude,
+                                            locationLongitude:
+                                                mentalStrengthEditProvider
+                                                    .locationLongitude,
+                                            mediaName:
+                                                mentalStrengthEditProvider
+                                                    .addMediaUploadResponseList,
+                                            locationAddress:
+                                                mentalStrengthEditProvider
+                                                    .selectedLocationAddress,
+                                            actionIdList:
+                                                mentalStrengthEditProvider
+                                                    .actionList
+                                                    .map((e) => e.id ?? "")
+                                                    .toList(),
+                                          );
+                                          if (isSuccess) {
+                                            DashBoardProvider
+                                                dashBoardProvider =
+                                                Provider.of<DashBoardProvider>(
+                                                    context,
+                                                    listen: false);
+                                            dashBoardProvider.changePage(
+                                                index: 0);
+                                          }
+                                        } else {
+                                          showCustomSnackBar(
+                                            context: context,
+                                            message: "Enter Fields",
+                                          );
+                                        }
+                                      } else {
+                                        showCustomSnackBar(
+                                          context: context,
+                                          message: "Please wait video upload",
+                                        );
+                                      }
+                                      Navigator.of(context).pop();
+                                      if (widget.valueBool) {
+                                        Navigator.of(context).pop();
+                                      }
+
+                                      dashBoardProvider.changePage(
+                                        index: 0,
+                                      );
+                                    },
+                                    height: 65,
+                                    text: "Update",
+                                    buttonStyle:
+                                        CustomButtonStyles.fillBlueTL13,
+                                    buttonTextStyle:
+                                        CustomTextStyles.titleLargeGray50,
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.03,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          mentalStrengthEditProvider.openChooseGoal
+                              ? const ScreenChooseGoalMentalStrength()
+                              : const SizedBox(),
+                          mentalStrengthEditProvider.openAddGoal
+                              ? const AddGoalsDreamsBottomSheet()
+                              : const SizedBox(),
+                          mentalStrengthEditProvider.openGoalViewSheet
+                              ? mentalStrengthEditProvider.goalDetailModel ==
+                                      null
+                                  ? Container(
+                                      decoration: BoxDecoration(
+                                        color: appTheme.gray50,
+                                        borderRadius: const BorderRadius.only(
+                                          topRight: Radius.circular(
+                                            25,
+                                          ),
+                                          topLeft: Radius.circular(
+                                            25,
+                                          ),
+                                        ),
+                                      ),
+                                      margin: EdgeInsets.only(
+                                        top: size.height * 0.15,
+                                      ),
+                                      child: shimmerList(
+                                        height: size.height * 0.8,
+                                        list: 10,
+                                      ),
+                                    )
+                                  : GoalAndDreamFullViewBottomSheet(
+                                      goalDetailModel:
+                                          mentalStrengthEditProvider
+                                              .goalDetailModel!,
+                                    )
+                              : const SizedBox(),
+                          mentalStrengthEditProvider.openChooseAction
+                              ? ChooseActionMentalHelth(
+                                  goal: mentalStrengthEditProvider.goalsValue,
+                                )
+                              : const SizedBox(),
+                          mentalStrengthEditProvider.openAddAction
+                              ? AddActionMentalStrengthBottomSheet(
+                                  goalId: mentalStrengthEditProvider
+                                      .goalsValue.id
+                                      .toString(),
+                                )
+                              : const SizedBox(),
+                          mentalStrengthEditProvider.openActionFullView
+                              ? const ActionFullViewJournalCreateBottomSheet()
+                              : const SizedBox()
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildDescriptionEditText(BuildContext context) {
+    return Consumer<MentalStrengthEditProvider>(
+        builder: (context, mentalStrengthEditProvider, _) {
+          // Decode the text before setting it to the controller
+          String decodedText = HtmlUnescape().convert(mentalStrengthEditProvider.descriptionEditTextController.text);
+          mentalStrengthEditProvider.descriptionEditTextController.text = decodedText;
+
+          return CustomTextFormField(
+            controller: mentalStrengthEditProvider.descriptionEditTextController,
+            hintText: "Description",
+            hintStyle: CustomTextStyles.bodySmallGray700,
+            textInputAction: TextInputAction.done,
+            maxLines: 4,
+          );
+        });
+  }
+
+  Widget _buildAddMediaColumn(BuildContext context, Size size) {
+
+    return Consumer<MentalStrengthEditProvider>(
+        builder: (context, mentalStrengthEditProvider, _) {
+          var logger = Logger();
+          logger.w("pickedImages${mentalStrengthEditProvider.pickedImages.length + mentalStrengthEditProvider.alreadyPickedImages.length}");
+      return Align(
+        alignment: Alignment.topCenter,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Add Media",
+              style: theme.textTheme.titleSmall,
+            ),
+            const SizedBox(
+              height: 11,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  height: size.height * 0.09,
+                  child: Stack(
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          mentalStrengthEditProvider.selectedMedia(0);
+                          // if (mentalStrengthEditProvider.mediaSelected == 1) {
+                          await audioBottomSheet(
+                            context: context,
+                            title: 'Record Audio',
+                          );
+                          // }
+                        },
+                        child: Container(
+                          height: size.height * 0.08,
+                          width: size.height * 0.08,
+                          decoration: BoxDecoration(
+                            color: mentalStrengthEditProvider.mediaSelected == 0
+                                ? Colors.blue
+                                : Colors.transparent,
+                            image: DecorationImage(
+                              image: AssetImage(ImageConstant.imgMenu),
+                              fit: BoxFit.cover,
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(
+                                50.0,
+                              ),
+                            ),
+                            border: Border.all(
+                              color: appTheme.blue300,
+                              width: 1.0,
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.mic,
+                            size: 30,
+                            color: mentalStrengthEditProvider.mediaSelected == 0
+                                ? Colors.white
+                                : Colors.blue,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 10,
+                        right: 10,
+                        child: Consumer<MentalStrengthEditProvider>(
+                            builder: (context, mentalStrengthEditProvider, _) {
+                          if (mentalStrengthEditProvider
+                                  .alreadyRecordedFilePath.isEmpty &&
+                              mentalStrengthEditProvider
+                                  .recordedFilePath.isEmpty) {
+                            return const SizedBox();
+                          } else {
+                            return Container(
+                              width: size.height * 0.04,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                image: DecorationImage(
+                                  image: AssetImage(ImageConstant.imgMenu),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(
+                                    50.0,
+                                  ),
+                                ),
+                                border: Border.all(
+                                  color: appTheme.blue300,
+                                  width: 2.0,
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "${mentalStrengthEditProvider.recordedFilePath.length + mentalStrengthEditProvider.alreadyRecordedFilePath.length}",
+                                  style: const TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        }),
+                      )
+                    ],
+                  ),
+                ),
+                // const AudioRecorderMentalStrengthBuild(),
+                SizedBox(
+                  height: size.height * 0.09,
+                  child: Stack(
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          mentalStrengthEditProvider.selectedMedia(1);
+                          await galleryBottomSheet(
+                            context: context,
+                            title: 'Gallery',
+                          );
+                        },
+                        child: buildAvatarImage(
+                          widget: Icon(
+                            Icons.image,
+                            size: 30,
+                            color: mentalStrengthEditProvider.mediaSelected == 1
+                                ? Colors.white
+                                : Colors.blue,
+                          ),
+                          imagePath: ImageConstant.imgThumbsUp,
+                          size: size,
+                          isSelected:
+                              mentalStrengthEditProvider.mediaSelected == 1
+                                  ? true
+                                  : false,
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 10,
+                        right: 10,
+                        child: Consumer<MentalStrengthEditProvider>(
+                            builder: (context, mentalStrengthEditProvider, _) {
+                          if (mentalStrengthEditProvider
+                              .alreadyPickedImages.isEmpty && mentalStrengthEditProvider
+                              .pickedImages.isEmpty) {
+                            return const SizedBox();
+                          }
+                          else {
+
+                            return Container(
+                              width: size.height * 0.04,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                image: DecorationImage(
+                                  image: AssetImage(ImageConstant.imgMenu),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(
+                                    50.0,
+                                  ),
+                                ),
+                                border: Border.all(
+                                  color: appTheme.blue300,
+                                  width: 2.0,
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "${mentalStrengthEditProvider.pickedImages.length + mentalStrengthEditProvider.alreadyPickedImages.length}",
+                                  style: const TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        }),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: size.height * 0.09,
+                  child: Stack(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          mentalStrengthEditProvider.selectedMedia(2);
+                          cameraBottomSheet(
+                            context: context,
+                            title: "Camera",
+                          );
+                        },
+                        child: buildAvatarImage(
+                          widget: Icon(
+                            Icons.camera_alt_outlined,
+                            size: 30,
+                            color: mentalStrengthEditProvider.mediaSelected == 2
+                                ? Colors.white
+                                : Colors.blue,
+                          ),
+                          imagePath: ImageConstant.imgCamera,
+                          size: size,
+                          isSelected:
+                              mentalStrengthEditProvider.mediaSelected == 2
+                                  ? true
+                                  : false,
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 10,
+                        right: 10,
+                        child: Consumer<MentalStrengthEditProvider>(
+                            builder: (context, mentalStrengthEditProvider, _) {
+                          if (mentalStrengthEditProvider.takedImages.isEmpty) {
+                            return const SizedBox();
+                          } else {
+                            return Container(
+                              width: size.height * 0.04,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                image: DecorationImage(
+                                  image: AssetImage(ImageConstant.imgMenu),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(
+                                    50.0,
+                                  ),
+                                ),
+                                border: Border.all(
+                                  color: appTheme.blue300,
+                                  width: 2.0,
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "${mentalStrengthEditProvider.takedImages.length}",
+                                  style: const TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        }),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: size.height * 0.09,
+                  child: Stack(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          mentalStrengthEditProvider.selectedMedia(
+                            3,
+                          );
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.all(20),
+                                  child: const MentalGoogleMap());
+                            },
+                          );
+                          // mentalStrengthEditProvider.mediaSelected == 3
+                          //     ? const MentalGoogleMap()
+                          //     : const SizedBox(),
+                        },
+                        child: buildAvatarImage(
+                          widget: Icon(
+                            Icons.location_on,
+                            size: 30,
+                            color: mentalStrengthEditProvider.mediaSelected == 3
+                                ? Colors.white
+                                : Colors.blue,
+                          ),
+                          imagePath: ImageConstant.imgLinkedin,
+                          size: size,
+                          // wi
+                          isSelected:
+                              mentalStrengthEditProvider.mediaSelected == 3
+                                  ? true
+                                  : false,
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 10,
+                        right: 10,
+                        child: Consumer<MentalStrengthEditProvider>(
+                            builder: (context, mentalStrengthEditProvider, _) {
+                          if (mentalStrengthEditProvider
+                              .selectedLocationName.isEmpty) {
+                            return const SizedBox();
+                          } else {
+                            return Container(
+                              width: size.height * 0.04,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                image: DecorationImage(
+                                  image: AssetImage(ImageConstant.imgMenu),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(
+                                    50.0,
+                                  ),
+                                ),
+                                border: Border.all(
+                                  color: appTheme.blue300,
+                                  width: 2.0,
+                                ),
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  "1",
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        }),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    });
+  }
+}
+
+Widget buildAvatarImage(
+    {required String imagePath,
+    required Size size,
+    Widget? widget,
+    bool isSelected = false}) {
+  return Container(
+    height: size.height * 0.08,
+    width: size.height * 0.08,
+    decoration: BoxDecoration(
+      color: isSelected ? Colors.blue : Colors.transparent,
+      image: DecorationImage(
+        image: AssetImage(
+          imagePath,
+        ),
+        fit: BoxFit.cover,
+      ),
+      borderRadius: const BorderRadius.all(
+        Radius.circular(
+          50.0,
+        ),
+      ),
+      border: Border.all(
+        color: appTheme.blue300,
+        width: 1.0,
+      ),
+    ),
+    child: widget ??
+        CustomIconButton(
+          height: size.height * 0.08,
+          width: size.height * 0.08,
+          padding: const EdgeInsets.all(18),
+          child: CustomImageView(
+            imagePath: imagePath,
+            color: isSelected ? Colors.white : Colors.blue,
+          ),
+        ),
+  );
+}
