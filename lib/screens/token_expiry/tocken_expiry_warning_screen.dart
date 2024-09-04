@@ -168,7 +168,7 @@ class _TokenExpireScreenState extends State<TokenExpireScreen> {
                                           Text(
                                             'Login',
                                             style:
-                                            CustomTextStyles.bodySmallGray500
+                                            CustomTextStyles.bodyMediumWhite
                                           ),
                                         ],
                                       ),
