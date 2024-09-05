@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/addgoals_dreams_screen/addgoals_dreams_screen.dart';
 import 'package:mentalhelth/screens/dash_borad_screen/provider/dash_board_provider.dart';
+import 'package:mentalhelth/screens/goals_dreams_page/provider/goals_dreams_provider.dart';
 import 'package:mentalhelth/screens/goals_dreams_page/provider/goals_dreams_provider.dart';
 import 'package:mentalhelth/screens/goals_dreams_page/screens/goals_and_dreams_full_view/goals_and_dreams_full_view_screen.dart';
 import 'package:mentalhelth/utils/core/image_constant.dart';
@@ -10,7 +12,12 @@ import 'package:mentalhelth/widgets/background_image/background_imager.dart';
 import 'package:mentalhelth/widgets/widget/shimmer.dart';
 import 'package:provider/provider.dart';
 
+import '../edit_add_profile_screen/provider/edit_provider.dart';
 import '../goals_dreams_page/widgets/weightlosscomponentlist_item_widget.dart';
+import '../home_screen/provider/home_provider.dart';
+import '../mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
+import '../token_expiry/tocken_expiry_warning_screen.dart';
+import '../token_expiry/token_expiry.dart';
 
 class GoalsDreamsPage extends StatefulWidget {
   const GoalsDreamsPage({Key? key})
@@ -23,8 +30,31 @@ class GoalsDreamsPage extends StatefulWidget {
 }
 
 class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
+  late HomeProvider homeProvider;
+  late MentalStrengthEditProvider mentalStrengthEditProvider;
+  late EditProfileProvider editProfileProvider;
+  late DashBoardProvider dashBoardProvider;
+  late GoalsDreamsProvider goalsDreamsProvider;
+  bool tokenStatus = false;
+  var logger = Logger();
   bool completed = false;
   final ScrollController _scrollController = ScrollController();
+
+  Future<void> _isTokenExpired() async {
+    await homeProvider.fetchChartView(context);
+    await homeProvider.fetchJournals(initial: true);
+    //await editProfileProvider.fetchUserProfile();
+    tokenStatus = TokenManager.checkTokenExpiry();
+    if (tokenStatus) {
+      setState(() {
+        logger.e("Token status changed: $tokenStatus");
+      });
+      logger.e("Token status changed: $tokenStatus");
+    }else{
+      logger.e("Token status changedElse: $tokenStatus");
+    }
+
+  }
 
   @override
   void dispose() {
@@ -37,11 +67,16 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
 
   @override
   void initState() {
-    GoalsDreamsProvider goalsDreamsProvider = Provider.of<GoalsDreamsProvider>(
-      context,
-      listen: false,
-    );
-    goalsDreamsProvider.fetchGoalsAndDreams(initial: true);
+     goalsDreamsProvider = Provider.of<GoalsDreamsProvider>(context, listen: false,);
+     homeProvider = Provider.of<HomeProvider>(context, listen: false);
+     mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
+     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+     editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
+     WidgetsBinding.instance.addPostFrameCallback((_) {
+       goalsDreamsProvider.fetchGoalsAndDreams(initial: true);
+       _isTokenExpired();
+     });
+
     _scrollController.addListener(_loadMoreData);
     super.initState();
   }
@@ -70,7 +105,8 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return SafeArea(
+    return tokenStatus == false ?
+      SafeArea(
       child: backGroundImager(
         size: size,
         padding: EdgeInsets.zero,
@@ -233,7 +269,8 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
           ],
         ),
       ),
-    );
+    ):
+    const TokenExpireScreen();
   }
 
 // /// Section Widget

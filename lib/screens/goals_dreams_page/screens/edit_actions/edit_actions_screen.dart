@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/addactions_screen/provider/add_actions_provider.dart';
 import 'package:mentalhelth/screens/addactions_screen/widget/googlemap_widget/google_map_widget.dart';
 import 'package:mentalhelth/screens/addactions_screen/widget/popup/audio_popup.dart';
@@ -24,6 +25,13 @@ import 'package:mentalhelth/widgets/custom_text_form_field.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 import 'package:provider/provider.dart';
 
+import '../../../dash_borad_screen/provider/dash_board_provider.dart';
+import '../../../edit_add_profile_screen/provider/edit_provider.dart';
+import '../../../home_screen/provider/home_provider.dart';
+import '../../../mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
+import '../../../token_expiry/tocken_expiry_warning_screen.dart';
+import '../../../token_expiry/token_expiry.dart';
+
 class EditActionScreen extends StatefulWidget {
   const EditActionScreen({Key? key, required this.actionsDetailsModel})
       : super(
@@ -36,10 +44,36 @@ class EditActionScreen extends StatefulWidget {
 }
 
 class _EditActionScreenState extends State<EditActionScreen> {
+  late HomeProvider homeProvider;
+  late MentalStrengthEditProvider mentalStrengthEditProvider;
+  late EditProfileProvider editProfileProvider;
+  late DashBoardProvider dashBoardProvider;
+  bool tokenStatus = false;
+  var logger = Logger();
   @override
   void initState() {
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
+    dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
+    _isTokenExpired();
     init();
     super.initState();
+  }
+  Future<void> _isTokenExpired() async {
+    await homeProvider.fetchChartView(context);
+    await homeProvider.fetchJournals(initial: true);
+ //   await editProfileProvider.fetchUserProfile();
+    tokenStatus = TokenManager.checkTokenExpiry();
+    if (tokenStatus) {
+      setState(() {
+        logger.e("Token status changed: $tokenStatus");
+      });
+      logger.e("Token status changed: $tokenStatus");
+    }else{
+      logger.e("Token status changedElse: $tokenStatus");
+    }
+
   }
 
   // await addActionsProvider.editActionFunction(
@@ -56,6 +90,10 @@ class _EditActionScreenState extends State<EditActionScreen> {
   // );
   void init() {
     AddActionsProvider addActionsProvider = Provider.of(context, listen: false);
+    // Clear lists to avoid duplicates
+    addActionsProvider.alreadyRecordedFilePath.clear();
+    addActionsProvider.alreadyPickedImages.clear();
+
     addActionsProvider.titleEditTextController.text =
         widget.actionsDetailsModel!.actions!.actionTitle.toString();
     addActionsProvider.descriptionEditTextController.text =
@@ -141,7 +179,8 @@ class _EditActionScreenState extends State<EditActionScreen> {
         addActionsProvider.clearFunction();
         return true; // return true to allow back navigation, false to prevent it
       },
-      child: SafeArea(
+      child:tokenStatus == false ?
+      SafeArea(
         child: Scaffold(
           appBar: buildAppBarActions(
             context,
@@ -1437,7 +1476,8 @@ class _EditActionScreenState extends State<EditActionScreen> {
             ),
           ),
         ),
-      ),
+      ):
+      const TokenExpireScreen()
     );
   }
 

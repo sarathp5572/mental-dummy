@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/mental_strength_add_edit_screen/model/get_goals_model.dart';
 import 'package:mentalhelth/screens/mental_strength_add_edit_screen/model/list_goal_actions.dart'
     as action;
@@ -7,6 +8,11 @@ import 'package:provider/provider.dart';
 
 import '../../../../utils/core/date_time_utils.dart';
 import '../../../../utils/theme/theme_helper.dart';
+import '../../../dash_borad_screen/provider/dash_board_provider.dart';
+import '../../../edit_add_profile_screen/provider/edit_provider.dart';
+import '../../../home_screen/provider/home_provider.dart';
+import '../../../token_expiry/tocken_expiry_warning_screen.dart';
+import '../../../token_expiry/token_expiry.dart';
 
 class ChooseActionMentalHelth extends StatefulWidget {
   const ChooseActionMentalHelth({super.key, required this.goal});
@@ -19,21 +25,51 @@ class ChooseActionMentalHelth extends StatefulWidget {
 }
 
 class _ChooseActionMentalHelthState extends State<ChooseActionMentalHelth> {
+  late HomeProvider homeProvider;
+  late MentalStrengthEditProvider mentalStrengthEditProvider;
+  late EditProfileProvider editProfileProvider;
+  late DashBoardProvider dashBoardProvider;
+  bool tokenStatus = false;
+  var logger = Logger();
+
+  Future<void> _isTokenExpired() async {
+    await homeProvider.fetchChartView(context);
+    await homeProvider.fetchJournals(initial: true);
+   // await editProfileProvider.fetchUserProfile();
+    tokenStatus = TokenManager.checkTokenExpiry();
+    if (tokenStatus) {
+      setState(() {
+        logger.e("Token status changed: $tokenStatus");
+      });
+      logger.e("Token status changed: $tokenStatus");
+    }else{
+      logger.e("Token status changedElse: $tokenStatus");
+    }
+
+  }
   @override
   void initState() {
-    MentalStrengthEditProvider mentalStrengthEditProvider =
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
+    dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
+     mentalStrengthEditProvider =
         Provider.of<MentalStrengthEditProvider>(context, listen: false);
 
-    mentalStrengthEditProvider.fetchGoalActions(
-      goalId: widget.goal.id.toString(),
-    );
+     WidgetsBinding.instance.addPostFrameCallback((_) {
+       mentalStrengthEditProvider.fetchGoalActions(
+         goalId: widget.goal.id.toString(),
+       );
+       _isTokenExpired();
+     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
+    return tokenStatus == false ?
+      Container(
       margin: EdgeInsets.only(
         top: size.height * 0.15,
       ),
@@ -265,7 +301,8 @@ class _ChooseActionMentalHelthState extends State<ChooseActionMentalHelth> {
           ),
         ],
       ),
-    );
+    ):
+    const TokenExpireScreen();
   }
 
   Widget listActionList(

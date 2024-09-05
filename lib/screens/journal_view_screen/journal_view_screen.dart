@@ -320,17 +320,10 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                         height: size.height * 0.35,
                                         child: Center(
                                           child: JournalGoogleMapWidgets(
-                                            latitude: homeProvider
-                                                        .journalDetails!
-                                                        .journals!
-                                                        .location ==
+                                            latitude: homeProvider.journalDetails!.journals!.location ==
                                                     null
                                                 ? 0
-                                                : double.parse(homeProvider
-                                                    .journalDetails!
-                                                    .journals!
-                                                    .location!
-                                                    .locationLatitude!),
+                                                : double.parse(homeProvider.journalDetails!.journals!.location!.locationLatitude!),
                                             longitude: homeProvider
                                                         .journalDetails!
                                                         .journals!

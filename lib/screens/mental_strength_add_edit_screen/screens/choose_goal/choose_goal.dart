@@ -20,6 +20,7 @@ class _ScreenChooseGoalMentalStrengthState
     extends State<ScreenChooseGoalMentalStrength> {
   final ScrollController _scrollController = ScrollController();
 
+
   @override
   void dispose() {
     _scrollController.dispose();

@@ -50,7 +50,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                   radius: size.width * 0.075,
                   child: CustomImageView(
                     imagePath:
-                        editProvider.getProfileModel!.profileurl.toString(),
+                        editProvider.getProfileModel?.profileurl.toString(),
                     height: 58,
                     width: 58,
                     radius: BorderRadius.circular(
@@ -64,7 +64,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                 ),
                 Text(
                   capitalText(
-                    editProvider.getProfileModel!.firstname.toString(),
+                    editProvider.getProfileModel?.firstname.toString() ?? "",
                   ),
                   style: CustomTextStyles.blackText24000000W500(),
                 ),
@@ -82,7 +82,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                 ),
                 Expanded(
                   child: Text(
-                    "( ${editProvider.getProfileModel!.subscription!.planValidity!.toString()} Days remaining ) ",
+                    "( ${editProvider.getProfileModel?.subscription!.planValidity!.toString()} Days remaining ) ",
                     style: CustomTextStyles.titleMediumffffffff13,
                     overflow: TextOverflow.ellipsis,
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/addactions_screen/addactions_screen.dart';
 import 'package:mentalhelth/screens/addgoals_dreams_screen/provider/ad_goals_dreams_provider.dart';
 import 'package:mentalhelth/screens/addgoals_dreams_screen/widget/googlemap_widget/google_map_widget.dart';
@@ -20,6 +21,12 @@ import 'package:mentalhelth/widgets/custom_text_form_field.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 import 'package:provider/provider.dart';
 
+import '../../../auth/sign_in/provider/sign_in_provider.dart';
+import '../../../dash_borad_screen/provider/dash_board_provider.dart';
+import '../../../home_screen/provider/home_provider.dart';
+import '../../../token_expiry/tocken_expiry_warning_screen.dart';
+import '../../../token_expiry/token_expiry.dart';
+
 class AddGoalsDreamsBottomSheet extends StatefulWidget {
   const AddGoalsDreamsBottomSheet({Key? key})
       : super(
@@ -33,13 +40,39 @@ class AddGoalsDreamsBottomSheet extends StatefulWidget {
 
 class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late HomeProvider homeProvider;
+  late MentalStrengthEditProvider mentalStrengthEditProvider;
+  late EditProfileProvider editProfileProvider;
+  late DashBoardProvider dashBoardProvider;
+  bool tokenStatus = false;
+  var logger = Logger();
+
+
+  Future<void> _isTokenExpired() async {
+    await homeProvider.fetchChartView(context);
+    await homeProvider.fetchJournals(initial: true);
+   // await editProfileProvider.fetchUserProfile();
+    tokenStatus = TokenManager.checkTokenExpiry();
+    if (tokenStatus) {
+      setState(() {
+        logger.e("Token status changed: $tokenStatus");
+      });
+      logger.e("Token status changed: $tokenStatus");
+    }else{
+      logger.e("Token status changedElse: $tokenStatus");
+    }
+
+  }
 
   @override
   void initState() {
-    EditProfileProvider editProfileProvider =
-        Provider.of(context, listen: false);
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
+    dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       editProfileProvider.fetchCategory();
+      _isTokenExpired();
     });
     super.initState();
   }
@@ -47,7 +80,8 @@ class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
+    return  tokenStatus == false ?
+      Container(
       margin: EdgeInsets.only(
         top: size.height * 0.15,
       ),
@@ -181,6 +215,7 @@ class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
                                     mainCategory: value,
                                   );
                                 }
+                                _isTokenExpired();
                               },
                             ),
                     );
@@ -357,7 +392,8 @@ class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
           }),
         ),
       ),
-    );
+    ):
+    const TokenExpireScreen();
   }
 
   /// Section Widget
@@ -544,6 +580,7 @@ class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
                     children: [
                       GestureDetector(
                         onTap: () async {
+                          _isTokenExpired();
                           mentalStrengthEditProvider.selectedMedia(0);
                           await audioBottomSheetAddGoals(
                             context: context,
@@ -633,6 +670,7 @@ class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
                     children: [
                       GestureDetector(
                         onTap: () async {
+                          _isTokenExpired();
                           mentalStrengthEditProvider.selectedMedia(1);
                           await galleryBottomSheetAddGoals(
                             context: context,
@@ -705,6 +743,7 @@ class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          _isTokenExpired();
                           mentalStrengthEditProvider.selectedMedia(2);
                           cameraBottomSheetAdGoals(
                             context: context,

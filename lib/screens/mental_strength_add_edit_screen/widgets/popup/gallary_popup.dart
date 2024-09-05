@@ -139,6 +139,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/mental_strength_add_edit_screen/mental_strength_add_edit_page.dart';
 import 'package:mentalhelth/screens/mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
 import 'package:mentalhelth/utils/core/image_constant.dart';
@@ -156,6 +157,7 @@ Future galleryBottomSheet({
   return showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {
+      var logger = Logger();
       Size size = MediaQuery.of(context).size;
       return Scaffold(
         backgroundColor: Colors.transparent,
@@ -330,6 +332,9 @@ Future galleryBottomSheet({
                                                           index);
 
                                                   Navigator.of(context).pop();
+
+                                                  // Close the bottom sheet after deleting
+                                                  Navigator.of(context).pop();  // This will close the galleryBottomSheet as well
                                                 },
                                                 yes: "Yes",
                                                 title: 'Do you Need Delete',
@@ -426,7 +431,7 @@ Future galleryBottomSheet({
                                             onTap: () {
                                               customPopup(
                                                 context: context,
-                                                onPressedDelete: () async {
+                                                onPressedDelete: ()  {
                                                   mentalStrengthEditProvider
                                                       .removeMediaFunction(
                                                     context: context,
@@ -439,6 +444,9 @@ Future galleryBottomSheet({
 
                                                   // Close the popup automatically after the action is confirmed
                                                   Navigator.of(context).pop();
+
+                                                  // Close the bottom sheet after deleting
+                                                  Navigator.of(context).pop();  // This will close the galleryBottomSheet as well
 
                                                 },
                                                 yes: "Yes",

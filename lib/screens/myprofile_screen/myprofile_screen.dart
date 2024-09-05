@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/dash_borad_screen/provider/dash_board_provider.dart';
 import 'package:mentalhelth/screens/edit_add_profile_screen/provider/edit_provider.dart';
 import 'package:mentalhelth/screens/phone_singin_screen/phone_sign_in_screen.dart';
@@ -12,17 +13,64 @@ import 'package:mentalhelth/widgets/background_image/background_imager.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/theme/custom_text_style.dart';
+import '../home_screen/provider/home_provider.dart';
+import '../mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
+import '../token_expiry/tocken_expiry_warning_screen.dart';
+import '../token_expiry/token_expiry.dart';
 
-class MyProfileScreen extends StatelessWidget {
+class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({Key? key})
       : super(
-          key: key,
-        );
+    key: key,
+  );
+
+  @override
+  State<MyProfileScreen> createState() =>
+      _MyProfileScreenState();
+}
+
+class _MyProfileScreenState extends State<MyProfileScreen> {
+  late HomeProvider homeProvider;
+  late MentalStrengthEditProvider mentalStrengthEditProvider;
+  late EditProfileProvider editProfileProvider;
+  late DashBoardProvider dashBoardProvider;
+  bool tokenStatus = false;
+  var logger = Logger();
+
+
+  Future<void> _isTokenExpired() async {
+    await homeProvider.fetchChartView(context);
+    await homeProvider.fetchJournals(initial: true);
+    //await editProfileProvider.fetchUserProfile();
+    tokenStatus = TokenManager.checkTokenExpiry();
+    if (tokenStatus) {
+      setState(() {
+        logger.e("Token status changed: $tokenStatus");
+      });
+      logger.e("Token status changed: $tokenStatus");
+    }else{
+      logger.e("Token status changedElse: $tokenStatus");
+    }
+
+  }
+
+  @override
+  void initState() {
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
+    dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isTokenExpired();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return SafeArea(
+    return  tokenStatus == false ?
+      SafeArea(
       child: backGroundImager(
         size: size,
         padding: EdgeInsets.zero,
@@ -317,7 +365,8 @@ class MyProfileScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ):
+    const TokenExpireScreen();
   }
 
   /// Section Widget

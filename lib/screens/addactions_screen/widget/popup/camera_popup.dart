@@ -147,6 +147,9 @@ Future cameraBottomSheetAction({
                                                 );
                                                 addActionsProvider.takedImagesRemove(index);
                                                 Navigator.of(context).pop();
+
+                                                // Close the bottom sheet after deleting
+                                                Navigator.of(context).pop();  // This will close the galleryBottomSheet as well
                                               },
                                               yes: "Yes",
                                               title: 'Do you Need Delete',

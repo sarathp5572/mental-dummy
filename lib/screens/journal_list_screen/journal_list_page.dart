@@ -226,7 +226,10 @@
 //     );
 //   }
 // }
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/dash_borad_screen/provider/dash_board_provider.dart';
 import 'package:mentalhelth/screens/home_screen/provider/home_provider.dart';
 import 'package:mentalhelth/screens/journal_list_screen/widgets/chart_view_list.dart';
@@ -235,15 +238,54 @@ import 'package:mentalhelth/widgets/app_bar/appbar_leading_image.dart';
 import 'package:mentalhelth/widgets/background_image/background_imager.dart';
 import 'package:provider/provider.dart';
 
+import '../token_expiry/tocken_expiry_warning_screen.dart';
+import '../token_expiry/token_expiry.dart';
 import 'provider/journal_list_provider.dart';
 
-class JournalListPage extends StatelessWidget {
-  const JournalListPage({super.key});
+class JournalListPage extends StatefulWidget {
+  const JournalListPage({Key? key}) : super(key: key);
+
+  @override
+  _JournalListPageState createState() => _JournalListPageState();
+}
+
+class _JournalListPageState extends State<JournalListPage> {
+  late HomeProvider homeProvider;
+  late DashBoardProvider dashBoardProvider;
+  bool tokenStatus = false;
+  var logger = Logger();
+
+  Future<void> _isTokenExpired() async {
+    await homeProvider.fetchChartView(context);
+    await homeProvider.fetchJournals(initial: true);
+    tokenStatus = TokenManager.checkTokenExpiry();
+    if (tokenStatus) {
+      setState(() {
+        logger.e("Token status changed: $tokenStatus");
+      });
+      logger.e("Token status changed: $tokenStatus");
+    }else{
+      logger.e("Token status changedElse: $tokenStatus");
+    }
+
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    scheduleMicrotask(() {
+      _isTokenExpired();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return SafeArea(
+    return tokenStatus == false ?
+      SafeArea(
       child: backGroundImager(
         size: size,
         padding: EdgeInsets.zero,
@@ -346,6 +388,7 @@ class JournalListPage extends StatelessWidget {
           );
         }),
       ),
-    );
+    ):
+    const TokenExpireScreen();
   }
 }

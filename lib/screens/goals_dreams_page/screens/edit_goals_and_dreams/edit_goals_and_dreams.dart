@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/addactions_screen/provider/add_actions_provider.dart';
 import 'package:mentalhelth/screens/addgoals_dreams_screen/model/id_model.dart';
 import 'package:mentalhelth/screens/addgoals_dreams_screen/widget/googlemap_widget/google_map_widget.dart';
@@ -31,6 +32,11 @@ import '../../../../utils/core/date_time_utils.dart';
 import '../../../../widgets/app_bar/custom_app_bar.dart';
 import '../../../addactions_screen/addactions_screen.dart';
 import '../../../addgoals_dreams_screen/provider/ad_goals_dreams_provider.dart';
+import '../../../dash_borad_screen/provider/dash_board_provider.dart';
+import '../../../home_screen/provider/home_provider.dart';
+import '../../../mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
+import '../../../token_expiry/tocken_expiry_warning_screen.dart';
+import '../../../token_expiry/token_expiry.dart';
 
 class EditGoalsScreen extends StatefulWidget {
   const EditGoalsScreen({Key? key, required this.goalsanddream})
@@ -45,15 +51,47 @@ class EditGoalsScreen extends StatefulWidget {
 
 class _EditGoalsScreenState extends State<EditGoalsScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late HomeProvider homeProvider;
+  late MentalStrengthEditProvider mentalStrengthEditProvider;
+  late EditProfileProvider editProfileProvider;
+  late DashBoardProvider dashBoardProvider;
+  late AdDreamsGoalsProvider adDreamsGoalsProvider;
+  bool tokenStatus = false;
+  var logger = Logger();
 
   @override
   void initState() {
-    EditProfileProvider editProfileProvider =
-        Provider.of(context, listen: false);
-    editProfileProvider.fetchCategory();
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
+    dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
+    adDreamsGoalsProvider = Provider.of<AdDreamsGoalsProvider>(context, listen: false);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      editProfileProvider.fetchCategory();
+      _isTokenExpired();
+    });
+    adDreamsGoalsProvider
+        .goalModelIdName.clear();
 
     init();
     super.initState();
+  }
+
+  Future<void> _isTokenExpired() async {
+    await homeProvider.fetchChartView(context);
+    await homeProvider.fetchJournals(initial: true);
+   // await editProfileProvider.fetchUserProfile();
+    tokenStatus = TokenManager.checkTokenExpiry();
+    if (tokenStatus) {
+      setState(() {
+        logger.e("Token status changed: $tokenStatus");
+      });
+      logger.e("Token status changed: $tokenStatus");
+    }else{
+      logger.e("Token status changedElse: $tokenStatus");
+    }
+
   }
 
   void init() {
@@ -61,6 +99,10 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
         Provider.of(context, listen: false);
     AdDreamsGoalsProvider adDreamsGoalsProvider =
         Provider.of(context, listen: false);
+    // Clear the lists to avoid duplicates
+    adDreamsGoalsProvider.alreadyRecordedFilePath.clear();
+    adDreamsGoalsProvider.alreadyPickedImages.clear();
+
     adDreamsGoalsProvider.nameEditTextController.text =
         widget.goalsanddream.goalTitle.toString();
     adDreamsGoalsProvider.commentEditTextController.text =
@@ -144,7 +186,8 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
             Provider.of(context, listen: false);
         adDreamsGoalsProvider.clearAction();
       },
-      child: SafeArea(
+      child: tokenStatus == false ?
+      SafeArea(
         child: Scaffold(
           appBar: buildAppBar(
             context,
@@ -246,6 +289,7 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
                                               mainCategory: value,
                                             );
                                           }
+                                          _isTokenExpired();
                                         },
                                       ),
                               );
@@ -500,7 +544,8 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
             ],
           ),
         ),
-      ),
+      ):
+      const TokenExpireScreen()
     );
   }
 
@@ -639,6 +684,7 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
       return CustomElevatedButton(
         loading: adDreamsGoalsProvider.saveAddActionsLoading,
         onPressed: () async {
+          _isTokenExpired();
           if (!adDreamsGoalsProvider.isVideoUploading) {
             if (adDreamsGoalsProvider.nameEditTextController.text.isNotEmpty &&
                 adDreamsGoalsProvider
@@ -713,6 +759,7 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
                     children: [
                       GestureDetector(
                         onTap: () async {
+                          _isTokenExpired();
                           adDreamsGoalsProvider.selectedMedia(0);
                           await audioBottomSheetAddGoals(
                             context: context,
@@ -801,6 +848,7 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
                     children: [
                       GestureDetector(
                         onTap: () async {
+                          _isTokenExpired();
                           adDreamsGoalsProvider.selectedMedia(1);
                           await galleryBottomSheetAddGoals(
                             context: context,
@@ -873,6 +921,7 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          _isTokenExpired();
                           adDreamsGoalsProvider.selectedMedia(2);
                           cameraBottomSheetAdGoals(
                             context: context,

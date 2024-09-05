@@ -70,8 +70,8 @@ class _TokenExpireScreenState extends State<TokenExpireScreen> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20.0),
                             child: Text(
-                              'Login timed out ,Please login again !!.',
-                              style: CustomTextStyles.bodySmallGray500,
+                              'Login timed out,please login to continue!',
+                              style: CustomTextStyles.bodySmallGray700,
                             ),
                           ),
                           const Gap(30),

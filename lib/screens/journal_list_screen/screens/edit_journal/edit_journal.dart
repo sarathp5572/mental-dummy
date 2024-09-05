@@ -31,6 +31,8 @@ import '../../../../widgets/app_bar/appbar_leading_image.dart';
 import '../../../../widgets/custom_image_view.dart';
 import '../../../../widgets/custom_rating_bar.dart';
 import '../../../mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
+import '../../../token_expiry/tocken_expiry_warning_screen.dart';
+import '../../../token_expiry/token_expiry.dart';
 
 class EditJournalMentalStrength extends StatefulWidget {
   const EditJournalMentalStrength({Key? key, this.valueBool = false})
@@ -45,11 +47,41 @@ class EditJournalMentalStrength extends StatefulWidget {
 }
 
 class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
+
+  late HomeProvider homeProvider;
+  late MentalStrengthEditProvider mentalStrengthEditProvider;
+  late EditProfileProvider editProfileProvider;
+  late DashBoardProvider dashBoardProvider;
+  late AdDreamsGoalsProvider adDreamsGoalsProvider;
+  bool tokenStatus = false;
+  var logger = Logger();
   @override
   void initState() {
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
+    dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
+    adDreamsGoalsProvider = Provider.of<AdDreamsGoalsProvider>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isTokenExpired();
+    });
     super.initState();
   }
+  Future<void> _isTokenExpired() async {
+    await homeProvider.fetchChartView(context);
+    await homeProvider.fetchJournals(initial: true);
+    //await editProfileProvider.fetchUserProfile();
+    tokenStatus = TokenManager.checkTokenExpiry();
+    if (tokenStatus) {
+      setState(() {
+        logger.e("Token status changed: $tokenStatus");
+      });
+      logger.e("Token status changed: $tokenStatus");
+    }else{
+      logger.e("Token status changedElse: $tokenStatus");
+    }
 
+  }
   // @override
   // void dispose() {
   //   MentalStrengthEditProvider mentalStrengthEditProvider =
@@ -70,7 +102,8 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
         mentalStrengthEditProvider.clearAllValuesInSaveTime();
         adDreamsGoalsProvider.clearAction();
       },
-      child: Scaffold(
+      child: tokenStatus == false ?
+      Scaffold(
         body: SafeArea(
           child: Container(
             width: double.infinity,
@@ -267,29 +300,44 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                   mentalStrengthEditProvider.getEmotionsModel ==
                                           null
                                       ? const SizedBox()
-                                      : DropdownButton(
-                                          underline: const SizedBox(),
-                                          elevation: 0,
-                                          value: mentalStrengthEditProvider
-                                              .emotionValue,
-                                          icon: const Icon(
-                                              Icons.keyboard_arrow_down),
-                                          items: mentalStrengthEditProvider
-                                              .getEmotionsModel!.emotions!
-                                              .map((Emotion items) {
-                                            return DropdownMenuItem(
-                                              value: items,
-                                              child:
-                                                  Text(items.title.toString()),
-                                            );
-                                          }).toList(),
-                                          onChanged: (Emotion? newValue) {
-                                            setState(() {
-                                              mentalStrengthEditProvider
-                                                  .emotionValue = newValue!;
-                                            });
-                                          },
-                                        ),
+                                      : Container(
+                                    width: size.width * 0.60, // This controls the button width
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.grey, // Border color
+                                        width: 1.0,         // Border width
+                                      ),
+                                      borderRadius: BorderRadius.circular(15.0), // Border radius for rounded corners
+                                      color: Colors.white, // Background color (optional)
+                                    ),
+                                        child: DropdownButton(
+                                            underline: const SizedBox(),
+                                            elevation: 0,
+                                            value: mentalStrengthEditProvider
+                                                .emotionValue,
+                                            icon: const Icon(
+                                                Icons.keyboard_arrow_down),
+                                            items: mentalStrengthEditProvider
+                                                .getEmotionsModel!.emotions!
+                                                .map((Emotion items) {
+                                              return DropdownMenuItem(
+                                                value: items,
+                                                child:
+                                                    SizedBox(
+                                                        width: 190, // Set the desired width for the dropdown list items here
+                                                        child:
+                                                    Text(items.title.toString())),
+                                              );
+                                            }).toList(),
+                                            onChanged: (Emotion? newValue) {
+                                              setState(() {
+                                                mentalStrengthEditProvider
+                                                    .emotionValue = newValue!;
+                                              });
+                                              _isTokenExpired();
+                                            },
+                                          ),
+                                      ),
                                   SizedBox(height: size.height * 0.03),
                                   CustomImageView(
                                     imagePath: ImageConstant.imgGroup29,
@@ -578,6 +626,7 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                     loading: mentalStrengthEditProvider
                                         .saveJournalLoading,
                                     onPressed: () async {
+                                      _isTokenExpired();
                                       if (!mentalStrengthEditProvider
                                           .isVideoUploading) {
                                         if (mentalStrengthEditProvider
@@ -748,7 +797,8 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
             }),
           ),
         ),
-      ),
+      ):
+      const TokenExpireScreen()
     );
   }
 
@@ -798,6 +848,7 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                     children: [
                       GestureDetector(
                         onTap: () async {
+                          _isTokenExpired();
                           mentalStrengthEditProvider.selectedMedia(0);
                           // if (mentalStrengthEditProvider.mediaSelected == 1) {
                           await audioBottomSheet(
@@ -889,6 +940,7 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                     children: [
                       GestureDetector(
                         onTap: () async {
+                          _isTokenExpired();
                           mentalStrengthEditProvider.selectedMedia(1);
                           await galleryBottomSheet(
                             context: context,
@@ -964,6 +1016,7 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          _isTokenExpired();
                           mentalStrengthEditProvider.selectedMedia(2);
                           cameraBottomSheet(
                             context: context,

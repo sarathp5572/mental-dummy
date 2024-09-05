@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/addactions_screen/widget/popup/audio_popup.dart';
 import 'package:mentalhelth/screens/addactions_screen/widget/popup/camera_popup.dart';
 import 'package:mentalhelth/screens/addactions_screen/widget/popup/gallary_popup.dart';
@@ -18,21 +19,69 @@ import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 import 'package:provider/provider.dart';
 
 import '../addgoals_dreams_screen/provider/ad_goals_dreams_provider.dart';
+import '../dash_borad_screen/provider/dash_board_provider.dart';
+import '../edit_add_profile_screen/provider/edit_provider.dart';
+import '../home_screen/provider/home_provider.dart';
 import '../home_screen/widgets/home_menu/home_menu.dart';
 import '../mental_strength_add_edit_screen/mental_strength_add_edit_page.dart';
+import '../mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
+import '../token_expiry/tocken_expiry_warning_screen.dart';
+import '../token_expiry/token_expiry.dart';
 import 'provider/add_actions_provider.dart';
 import 'widget/googlemap_widget/google_map_widget.dart';
 
-class AddactionsScreen extends StatelessWidget {
+class AddactionsScreen extends StatefulWidget {
   const AddactionsScreen({Key? key})
       : super(
-          key: key,
-        );
+    key: key,
+  );
+
+  @override
+  State<AddactionsScreen> createState() =>
+      _AddactionsScreenState();
+}
+class _AddactionsScreenState extends State<AddactionsScreen> {
+  late HomeProvider homeProvider;
+  late MentalStrengthEditProvider mentalStrengthEditProvider;
+  late EditProfileProvider editProfileProvider;
+  late DashBoardProvider dashBoardProvider;
+  bool tokenStatus = false;
+  var logger = Logger();
+
+  Future<void> _isTokenExpired() async {
+    await homeProvider.fetchChartView(context);
+    await homeProvider.fetchJournals(initial: true);
+   // await editProfileProvider.fetchUserProfile();
+    tokenStatus = TokenManager.checkTokenExpiry();
+    if (tokenStatus) {
+      setState(() {
+        logger.e("Token status changed: $tokenStatus");
+      });
+      logger.e("Token status changed: $tokenStatus");
+    }else{
+      logger.e("Token status changedElse: $tokenStatus");
+    }
+
+  }
+
+  @override
+  void initState() {
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
+    dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      editProfileProvider.fetchCategory();
+      _isTokenExpired();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return SafeArea(
+    return tokenStatus == false ?
+      SafeArea(
       child: Scaffold(
         appBar: buildAppBarAction(
           context,
@@ -80,6 +129,7 @@ class AddactionsScreen extends StatelessWidget {
                             Checkbox(
                               value: addActionsProvider.setRemainder,
                               onChanged: (value) async {
+                                _isTokenExpired();
                                 addActionsProvider.changeSetRemainder(value!);
                                 addActionsProvider
                                     .requestExactAlarmPermission();
@@ -692,7 +742,8 @@ class AddactionsScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ):
+    const TokenExpireScreen();
   }
 
   // Widget _addAudioStack(
@@ -1023,6 +1074,7 @@ class AddactionsScreen extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () async {
+                          _isTokenExpired();
                           addActionsProvider.selectedMedia(0);
                           await audioBottomSheetAction(
                             context: context,
@@ -1111,6 +1163,7 @@ class AddactionsScreen extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () async {
+                          _isTokenExpired();
                           addActionsProvider.selectedMedia(1);
                           await galleryBottomSheetAction(
                             context: context,
@@ -1182,6 +1235,7 @@ class AddactionsScreen extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          _isTokenExpired();
                           addActionsProvider.selectedMedia(2);
                           cameraBottomSheetAction(
                             context: context,

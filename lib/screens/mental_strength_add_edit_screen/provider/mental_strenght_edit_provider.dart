@@ -7,6 +7,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/dash_borad_screen/provider/dash_board_provider.dart';
 import 'package:mentalhelth/screens/home_screen/provider/home_provider.dart';
 import 'package:mentalhelth/screens/mental_strength_add_edit_screen/model/all_model.dart';
@@ -27,6 +28,8 @@ import '../../goals_dreams_page/model/actions_details_model.dart';
 import '../../token_expiry/token_expiry.dart';
 
 class MentalStrengthEditProvider extends ChangeNotifier {
+  var logger = Logger();
+
   void editJournalAddValues({
     required String descriptionText,
     required List<String> recordedFile,
@@ -795,8 +798,12 @@ class MentalStrengthEditProvider extends ChangeNotifier {
       log(token.toString() + "  $actionId", name: " tokentoken");
       if (response.statusCode == 200) {
         actionsDetailsModel = actionsDetailsModelFromJson(response.body);
+        logger.w("locationLatitude${actionsDetailsModel?.actions?.location?.locationLatitude}");
+        logger.w("locationLongitude${actionsDetailsModel?.actions?.location?.locationLongitude}");
         notifyListeners();
-      } else {}
+      } else {
+        logger.w("actionsDetailsModelelse${actionsDetailsModel}");
+      }
       if(response.statusCode == 401){
         TokenManager.setTokenStatus(true);
         //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
@@ -808,6 +815,7 @@ class MentalStrengthEditProvider extends ChangeNotifier {
       actionsDetailsModelLoading = false;
       notifyListeners();
     } catch (e) {
+      logger.w("errorCatch${e}");
       actionsDetailsModelLoading = false;
       notifyListeners();
     }

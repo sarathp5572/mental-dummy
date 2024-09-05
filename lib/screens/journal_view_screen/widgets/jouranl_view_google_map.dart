@@ -6,6 +6,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+
+import '../../home_screen/provider/home_provider.dart';
 
 class JournalGoogleMapWidgets extends StatefulWidget {
   const JournalGoogleMapWidgets(
@@ -15,18 +18,21 @@ class JournalGoogleMapWidgets extends StatefulWidget {
   final double longitude;
 
   @override
-  // ignore: library_private_types_in_public_api
-  _JournalGoogleMapWidgetsState createState() =>
-      _JournalGoogleMapWidgetsState();
+  _JournalGoogleMapWidgetsState createState() => _JournalGoogleMapWidgetsState();
 }
 
 class _JournalGoogleMapWidgetsState extends State<JournalGoogleMapWidgets> {
+  late HomeProvider homeProvider;
   PermissionStatus permissionStatus = PermissionStatus.denied;
-  String currentTime = '';
   Position? _currentLocation;
+  LatLng _selectedLocation = const LatLng(0, 0);
+  String selectedAddress = '';
+  final Set<Marker> _markers = {};
+  late GoogleMapController mapController;
 
   @override
   void initState() {
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
     super.initState();
     _checkPermissionStatus();
     _requestPermission();
@@ -38,9 +44,6 @@ class _JournalGoogleMapWidgetsState extends State<JournalGoogleMapWidgets> {
     setState(() {
       permissionStatus = status;
     });
-    // if (permissionStatus.is) {
-
-    // }
   }
 
   Future<void> _requestPermission() async {
@@ -50,41 +53,36 @@ class _JournalGoogleMapWidgetsState extends State<JournalGoogleMapWidgets> {
     });
   }
 
-  void _getCurrentLocation() async {
+  Future<void> _getCurrentLocation() async {
     try {
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
-
       if (mounted) {
         setState(() {
           _currentLocation = position;
-          _selectedLocation = LatLng(widget.latitude, widget.longitude);
-        });
-        _updateMarkerPosition();
-        _onMapTapped(
-          LatLng(
-            _currentLocation!.latitude,
-            _currentLocation!.longitude,
-          ),
-        );
-      }
-      // ignore: empty_catches
-    } catch (e) {}
-  }
 
-  late GoogleMapController mapController;
-  LatLng _selectedLocation = const LatLng(0, 0);
-  String selectedAddress = '';
+          // Set initial location to the journal location if available, else current location
+          _selectedLocation = widget.latitude != 0 && widget.longitude != 0
+              ? LatLng(widget.latitude, widget.longitude)
+              : LatLng(_currentLocation!.latitude, _currentLocation!.longitude);
+        });
+
+        // Update marker and move camera to the selected location
+        _updateMarkerPosition();
+        mapController.animateCamera(CameraUpdate.newLatLngZoom(_selectedLocation, 15.0));
+      }
+    } catch (e) {
+      // Handle location errors
+    }
+  }
 
   void _updateMarkerPosition() {
     setState(() {
       _markers.clear();
       _markers.add(
         Marker(
-          markerId: const MarkerId(
-            'selected-location',
-          ),
+          markerId: const MarkerId('selected-location'),
           position: _selectedLocation,
           draggable: true,
           onDragEnd: _onMarkerDragEnd,
@@ -93,42 +91,32 @@ class _JournalGoogleMapWidgetsState extends State<JournalGoogleMapWidgets> {
     });
   }
 
-  final Set<Marker> _markers = {};
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return SizedBox(
       height: size.height * 0.3,
-      child: Column(
-        children: [
-          _currentLocation == null
-              ? const CircularProgressIndicator()
-              : Expanded(
-                  child: GoogleMap(
-                    onMapCreated: (GoogleMapController controller) {
-                      mapController = controller;
-                    },
-                    onTap: _onMapTapped,
-                    initialCameraPosition: CameraPosition(
-                      target: _currentLocation == null
-                          ? const LatLng(10.1632, 76.6413)
-                          : LatLng(
-                              _currentLocation!.latitude,
-                              _currentLocation!.longitude,
-                            ), // San Francisco, CA
-                      zoom: 12.0,
-                    ),
-                    markers: _markers,
-                  ),
-                ),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: Text(
-          //     'Selected Address: $selectedAddress',
-          //   ),
-          // ),
-        ],
+      child: _currentLocation == null && widget.latitude == 0
+          ? const CircularProgressIndicator()
+          : GoogleMap(
+        onMapCreated: (GoogleMapController controller) {
+          mapController = controller;
+          mapController.animateCamera(
+            CameraUpdate.newLatLngZoom(_selectedLocation, 15.0), // Zoom to initial location
+          );
+        },
+        onTap: _onMapTapped,
+        initialCameraPosition: CameraPosition(
+          target: _selectedLocation, // Focus on the selected location
+          zoom: 15.0, // Set initial zoom level
+        ),
+        markers: _markers,
+        myLocationEnabled: true,
+        myLocationButtonEnabled: true,
+        zoomControlsEnabled: true,
+        scrollGesturesEnabled: true,
+        zoomGesturesEnabled: true,
       ),
     );
   }
@@ -138,18 +126,35 @@ class _JournalGoogleMapWidgetsState extends State<JournalGoogleMapWidgets> {
       _selectedLocation = location;
     });
 
-    // Retrieve the address using geocoding
+    // Update homeProvider journal details with the new location
+    homeProvider.journalDetails!.journals!.location!.locationLatitude =
+        _selectedLocation.latitude.toString();
+    homeProvider.journalDetails!.journals!.location!.locationLongitude =
+        _selectedLocation.longitude.toString();
+
+    // Animate the camera to the new location
+    mapController.animateCamera(
+      CameraUpdate.newLatLngZoom(_selectedLocation, 15.0), // Move to the new location with zoom
+    );
+
+    // Update the marker and the selected address
+    _updateMarkerPosition();
+    _getAddressFromLatLng(_selectedLocation);
+  }
+
+  void _getAddressFromLatLng(LatLng location) async {
     try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(location.latitude, location.longitude);
-      if (placemarks != null && placemarks.isNotEmpty) {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        location.latitude,
+        location.longitude,
+      );
+      if (placemarks.isNotEmpty) {
         Placemark placemark = placemarks[0];
         setState(() {
           selectedAddress =
-              '${placemark.name}, ${placemark.locality}, ${placemark.administrativeArea}, ${placemark.country}';
+          '${placemark.name}, ${placemark.locality}, ${placemark.administrativeArea}, ${placemark.country}';
         });
       }
-      _updateMarkerPosition();
     } catch (e) {
       showCustomSnackBar(context: context, message: e.toString());
     }
@@ -159,3 +164,4 @@ class _JournalGoogleMapWidgetsState extends State<JournalGoogleMapWidgets> {
     _onMapTapped(location);
   }
 }
+

@@ -76,7 +76,7 @@ class DashBoardProvider extends ChangeNotifier {
         case 8:
           return const MyProfileScreen();
         case 9:
-          return EditAddProfileScreen();
+          return const EditAddProfileScreen();
         default:
           return const HomeScreen();
       }
