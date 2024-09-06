@@ -44,6 +44,7 @@ class _AddGoalsDreamsScreenState extends State<AddGoalsDreamsScreen> {
   late MentalStrengthEditProvider mentalStrengthEditProvider;
   late EditProfileProvider editProfileProvider;
   late DashBoardProvider dashBoardProvider;
+  late AdDreamsGoalsProvider adDreamsGoalsProvider;
   bool tokenStatus = false;
   var logger = Logger();
 
@@ -53,6 +54,11 @@ class _AddGoalsDreamsScreenState extends State<AddGoalsDreamsScreen> {
     mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
+    adDreamsGoalsProvider = Provider.of<AdDreamsGoalsProvider>(context, listen: false);
+    adDreamsGoalsProvider.nameEditTextController.text = "";
+    editProfileProvider.interestsValueController.text = "";
+    adDreamsGoalsProvider.selectedDate = "";
+    adDreamsGoalsProvider.commentEditTextController.text = "";
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isTokenExpired();
       editProfileProvider.fetchCategory();
@@ -461,7 +467,7 @@ class _AddGoalsDreamsScreenState extends State<AddGoalsDreamsScreen> {
       onPressed: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => const AddactionsScreen(),
+            builder: (context) => const AddactionsScreen(goalId: '',),
           ),
         );
       },

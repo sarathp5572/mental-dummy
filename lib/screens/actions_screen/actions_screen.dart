@@ -59,7 +59,7 @@ class ActionsScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const AddactionsScreen(),
+                          builder: (context) => const AddactionsScreen(goalId: '',),
                         ),
                       );
                     },

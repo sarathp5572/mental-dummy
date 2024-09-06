@@ -481,7 +481,7 @@ class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
       onPressed: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => const AddactionsScreen(),
+            builder: (context) => const AddactionsScreen(goalId: '',),
           ),
         );
       },
@@ -847,6 +847,47 @@ class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
                                   : false,
                         ),
                       ),
+                      Positioned(
+                        bottom: 0,
+                        left: 10,
+                        right: 10,
+                        child: Consumer<AdDreamsGoalsProvider>(
+                            builder: (context, adDreamsGoalsProvider, _) {
+                              if (adDreamsGoalsProvider
+                                  .selectedLocationName.isEmpty) {
+                                return const SizedBox();
+                              } else {
+                                return Container(
+                                  width: size.height * 0.04,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    image: DecorationImage(
+                                      image: AssetImage(ImageConstant.imgMenu),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                    border: Border.all(
+                                      color: appTheme.blue300,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  child: const Center(
+                                    child: Text(
+                                      "1",
+                                      style: TextStyle(
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            }),
+                      )
                     ],
                   ),
                 ),

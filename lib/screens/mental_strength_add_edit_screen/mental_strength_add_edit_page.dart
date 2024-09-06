@@ -671,6 +671,8 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
   }
 
 
+
+
   Widget _buildAddMediaColumn(BuildContext context, Size size) {
     return Consumer<MentalStrengthEditProvider>(
         builder: (context, mentalStrengthEditProvider, _) {

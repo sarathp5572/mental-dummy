@@ -17,6 +17,7 @@ class JournalListViewWidget extends StatefulWidget {
 
 class _JournalListViewWidgetState extends State<JournalListViewWidget> {
   final ScrollController _scrollController = ScrollController();
+  late HomeProvider homeProvider;
 
   @override
   void dispose() {
@@ -26,12 +27,13 @@ class _JournalListViewWidgetState extends State<JournalListViewWidget> {
 
   @override
   void initState() {
-    // HomeProvider homeProvider = Provider.of<HomeProvider>(
-    //   context,
-    //   listen: false,
-    // );
+    homeProvider = Provider.of<HomeProvider>(
+      context,
+      listen: false,
+    );
     // homeProvider.fetchJournals(initial: true);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+//      homeProvider.journalsModelList.clear();
       _scrollController.addListener(_loadMoreData);
     });
     super.initState();

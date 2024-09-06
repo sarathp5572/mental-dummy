@@ -95,11 +95,17 @@ class _JournalGoogleMapWidgetsState extends State<JournalGoogleMapWidgets> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return SizedBox(
+    return _currentLocation == null && widget.latitude == 0
+        ? const SizedBox(
+        height: 40,
+        width: 40,
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.blue), // Set the desired color here
+        ))
+        :
+      SizedBox(
       height: size.height * 0.3,
-      child: _currentLocation == null && widget.latitude == 0
-          ? const CircularProgressIndicator()
-          : GoogleMap(
+      child:  GoogleMap(
         onMapCreated: (GoogleMapController controller) {
           mapController = controller;
           mapController.animateCamera(

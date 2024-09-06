@@ -31,11 +31,11 @@ import 'provider/add_actions_provider.dart';
 import 'widget/googlemap_widget/google_map_widget.dart';
 
 class AddactionsScreen extends StatefulWidget {
-  const AddactionsScreen({Key? key})
+  const AddactionsScreen({Key? key, required this.goalId})
       : super(
     key: key,
   );
-
+  final String goalId;
   @override
   State<AddactionsScreen> createState() =>
       _AddactionsScreenState();
@@ -1005,7 +1005,7 @@ class _AddactionsScreenState extends State<AddactionsScreen> {
                   locationLatitude: addActionsProvider.selectedLatitude,
                   locationLongitude: addActionsProvider.locationLongitude,
                   locationAddress: addActionsProvider.selectedLocationAddress,
-                  goalId: "",
+                  goalId: widget.goalId,
                 );
                 adDreamsGoalsProvider.getAddActionIdAndName(
                   value: addActionsProvider.goalModelIdName!,
@@ -1027,7 +1027,7 @@ class _AddactionsScreenState extends State<AddactionsScreen> {
                 locationLatitude: addActionsProvider.selectedLatitude,
                 locationLongitude: addActionsProvider.locationLongitude,
                 locationAddress: addActionsProvider.selectedLocationAddress,
-                goalId: "",
+                goalId:  widget.goalId,
               );
               adDreamsGoalsProvider.getAddActionIdAndName(
                 value: addActionsProvider.goalModelIdName!,

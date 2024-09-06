@@ -179,6 +179,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(
                     height: 6,
                   ),
+                  homeProvider.journalsModel == null?
+
+                const SizedBox():
                   _buildUserProfileList(context, size, homeProvider),
                   const SizedBox(
                     height: 4,
@@ -224,7 +227,9 @@ class _HomeScreenState extends State<HomeScreen> {
       EditProfileProvider editProfileProvider,
       DashBoardProvider dashBoardProvider) {
     return editProfileProvider.getProfileModel == null
-        ? const SizedBox()
+        ? const SizedBox(
+      height: 70,
+    )
         : Padding(
             padding: const EdgeInsets.only(
               left: 1,
@@ -237,8 +242,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     dashBoardProvider.changeCommentPage(index: 8);
                   },
                   child: CustomImageView(
-                    imagePath: editProfileProvider.getProfileModel!.profileurl
-                        .toString(),
+                    imagePath: editProfileProvider.getProfileModel?.profileurl
+                        .toString() ?? "",
                     height: 58,
                     width: 58,
                     radius: BorderRadius.circular(

@@ -10,6 +10,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/addactions_screen/model/alaram_info.dart';
 import 'package:mentalhelth/screens/addgoals_dreams_screen/model/id_model.dart';
 import 'package:mentalhelth/screens/mental_strength_add_edit_screen/model/all_model.dart';
@@ -32,7 +33,7 @@ class AddActionsProvider extends ChangeNotifier {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   List<DateTime> scheduledTimes = [];
-
+var logger = Logger();
   // Future<void> scheduleAlarm(DateTime scheduledTime) async {
   //   final tz.TZDateTime scheduledTZTime =
   //       tz.TZDateTime.from(scheduledTime, tz.local);
@@ -921,6 +922,7 @@ class AddActionsProvider extends ChangeNotifier {
           id: responseData["id"].toString(),
           name: responseData["title"].toString(),
         );
+        logger.w("goalModelIdName ${goalModelIdName}");
         showCustomSnackBar(
           context: context,
           message: json.decode(response.body)["text"],
@@ -959,6 +961,7 @@ class AddActionsProvider extends ChangeNotifier {
         return true;
       } else {
         updateSaveActionLoadingFunction(false);
+        logger.w("goalModelIdNameelse ${goalModelIdName}");
         // Handle errors based on the status code
         showCustomSnackBar(
           context: context,

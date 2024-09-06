@@ -41,7 +41,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   Future<void> _isTokenExpired() async {
     await homeProvider.fetchChartView(context);
     await homeProvider.fetchJournals(initial: true);
-    //await editProfileProvider.fetchUserProfile();
+    await editProfileProvider.fetchUserProfile();
     tokenStatus = TokenManager.checkTokenExpiry();
     if (tokenStatus) {
       setState(() {
@@ -190,7 +190,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                                 padding: const EdgeInsets.only(
                                                     left: 53),
                                                 child: Text(
-                                                  "Member since ${editProfileProvider.getProfileModel?.dob == null || editProfileProvider.getProfileModel?.dob == null ? "" : dateFormatter(date: editProfileProvider.getProfileModel!.dob.toString())}",
+                                                  "Member since ${editProfileProvider.getProfileModel?.dob == null || editProfileProvider.getProfileModel?.dob == null ? "" : formatTimestampToDate(editProfileProvider.getProfileModel!.createdAt.toString())}",
                                                   style: CustomTextStyles
                                                       .bodyMediumGray700,
                                                   textAlign: TextAlign.center,

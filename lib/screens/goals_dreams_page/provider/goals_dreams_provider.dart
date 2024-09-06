@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/utils/core/url_constant.dart';
 
 import '../../../utils/logic/shared_prefrence.dart';
@@ -11,6 +12,7 @@ import '../model/goals_and_dreams_model.dart';
 
 class GoalsDreamsProvider extends ChangeNotifier {
   bool isScrolling = false;
+  var logger = Logger();
 
   void scrollTrue({required bool value}) {
     isScrolling = value;
@@ -69,7 +71,7 @@ class GoalsDreamsProvider extends ChangeNotifier {
     log(response.body.toString(), name: " fetchGoalsAndDreams");
     if (response.statusCode == 200) {
       goalsAndDreamsModel = goalsAndDreamsModelFromJson(response.body);
-
+      logger.w("goalsAndDreamsModel ${goalsAndDreamsModel}");
       if (initial) {
         goalsanddreams.clear();
 
@@ -89,6 +91,7 @@ class GoalsDreamsProvider extends ChangeNotifier {
       notifyListeners();
     } else {
       goalsAndDreamsModelLoading = false;
+      logger.w("goalsAndDreamsModelelse ${goalsAndDreamsModel}");
       notifyListeners();
     }
     if(response.statusCode == 401){

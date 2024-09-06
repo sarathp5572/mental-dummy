@@ -794,6 +794,7 @@ class MentalStrengthEditProvider extends ChangeNotifier {
         ),
         headers: <String, String>{"authorization": "$token"},
       );
+      logger.w("response ${response.request}");
       print(response.body.toString() + " fetchActionDetails");
       log(token.toString() + "  $actionId", name: " tokentoken");
       if (response.statusCode == 200) {
@@ -1186,7 +1187,7 @@ class MentalStrengthEditProvider extends ChangeNotifier {
               Provider.of<DashBoardProvider>(context, listen: false);
           HomeProvider homeProvider =
               Provider.of<HomeProvider>(context, listen: false);
-          dashBoardProvider.changePage(index: 2);
+          dashBoardProvider.changePage(index: 0);
           await homeProvider.fetchJournals(initial: true);
         }
       } else {

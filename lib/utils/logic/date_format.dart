@@ -34,3 +34,17 @@ String dateTimeFormatter({required String date}) {
   String formattedDate = DateFormat("dd MMM yyyy, hh:mma").format(parsedDate);
   return formattedDate;
 }
+
+
+String formatTimestampToDate(String timestamp) {
+  // Convert the timestamp string to an integer
+  int timestampInt = int.parse(timestamp);
+
+  // Multiply by 1000 if the timestamp is in seconds (Unix time) to get milliseconds
+  DateTime date = DateTime.fromMillisecondsSinceEpoch(timestampInt * 1000);
+
+  // Use DateFormat from intl package to format the date as needed
+  // Import 'package:intl/intl.dart';
+  return DateFormat('dd MMM yyyy').format(date);
+}
+

@@ -238,6 +238,7 @@ import 'package:mentalhelth/widgets/app_bar/appbar_leading_image.dart';
 import 'package:mentalhelth/widgets/background_image/background_imager.dart';
 import 'package:provider/provider.dart';
 
+import '../edit_add_profile_screen/provider/edit_provider.dart';
 import '../token_expiry/tocken_expiry_warning_screen.dart';
 import '../token_expiry/token_expiry.dart';
 import 'provider/journal_list_provider.dart';
@@ -252,12 +253,14 @@ class JournalListPage extends StatefulWidget {
 class _JournalListPageState extends State<JournalListPage> {
   late HomeProvider homeProvider;
   late DashBoardProvider dashBoardProvider;
+  late EditProfileProvider editProfileProvider;
   bool tokenStatus = false;
   var logger = Logger();
 
   Future<void> _isTokenExpired() async {
     await homeProvider.fetchChartView(context);
-    await homeProvider.fetchJournals(initial: true);
+   await homeProvider.fetchJournals(initial: true);
+    await editProfileProvider.fetchUserProfile();
     tokenStatus = TokenManager.checkTokenExpiry();
     if (tokenStatus) {
       setState(() {
@@ -276,6 +279,7 @@ class _JournalListPageState extends State<JournalListPage> {
     super.initState();
     homeProvider = Provider.of<HomeProvider>(context, listen: false);
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
     scheduleMicrotask(() {
       _isTokenExpired();
     });

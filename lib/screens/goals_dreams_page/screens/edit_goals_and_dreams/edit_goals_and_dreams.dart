@@ -343,6 +343,10 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
                                     itemBuilder: (context, index) {
                                       var data = adDreamsGoalsProvider
                                           .goalModelIdName[index];
+                                      logger.w("actions ${adDreamsGoalsProvider
+                                          .goalModelIdName.length}");
+                                      logger.w("message ${widget.goalsanddream
+                                          .action?.length}");
                                       return Row(
                                         children: [
                                           GestureDetector(
@@ -352,8 +356,8 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
                                                   builder: (context) =>
                                                       ActionsFullView(
                                                     id: widget.goalsanddream
-                                                        .action![index].actionId
-                                                        .toString(),
+                                                        .action?[index].actionId
+                                                        .toString() ?? "",
                                                     indexs: index,
                                                     action: actionss.Action(
                                                       id: widget
@@ -444,9 +448,9 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
                                                               ActionsFullView(
                                                             id: widget
                                                                 .goalsanddream
-                                                                .action![index]
+                                                                .action?[index]
                                                                 .actionId
-                                                                .toString(),
+                                                                .toString() ?? "",
                                                             indexs: index,
                                                             action:
                                                                 actionss.Action(
@@ -634,7 +638,7 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
       onPressed: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => const AddactionsScreen(),
+            builder: (context) =>  AddactionsScreen(goalId: widget.goalsanddream.goalId.toString(),),
           ),
         );
       },

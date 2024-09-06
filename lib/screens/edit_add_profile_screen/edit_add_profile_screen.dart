@@ -261,8 +261,11 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
                                                   : editProfileProvider
                                                       .interestsValueController
                                                       .text,
+                                                style:
+                                                CustomTextStyles
+                                                    .bodyMediumOnPrimary
                                             ),
-                                            iconSize: 0,
+                                            iconSize: 30,
                                             icon: null,
                                             borderRadius:
                                                 BorderRadius.circular(10),

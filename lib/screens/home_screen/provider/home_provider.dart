@@ -34,6 +34,7 @@ class HomeProvider extends ChangeNotifier {
       final response = await http.get(url, headers: headers);
       if (response.statusCode == 200) {
         chartViewModel = chartViewModelFromJson(response.body);
+        logger.w("chartViewModel ${chartViewModel?.chart}");
         for (int i = 0; i < chartViewModel!.chart!.length; i++) {
           chartList.add(
             Chart(
@@ -90,9 +91,11 @@ class HomeProvider extends ChangeNotifier {
       String? token = await getUserTokenSharePref();
       journalsModelLoading = true;
       notifyListeners();
+
       Map<String, String> headers = {
         'authorization': token!, // Assuming token is not null
       };
+
       if (initial) {
         pageLoad = 1;
         journalsModelList.clear();
@@ -101,44 +104,55 @@ class HomeProvider extends ChangeNotifier {
         pageLoad += 1;
         notifyListeners();
       }
-      notifyListeners();
+
       Uri url = Uri.parse(
         UrlConstant.journalsUrl(
           page: pageLoad.toString(),
         ),
       );
       logger.w("url $url");
+
       final response = await http.get(url, headers: headers);
+
       if (response.statusCode == 200) {
         journalsModel = journalsModelFromJson(response.body);
         logger.w("journalsModel ${journalsModelFromJson(response.body)}");
-        journalsModelList.addAll(
-          journalsModel!.journals!,
-        );
+
+        // Add new items without duplication
+        final newJournals = journalsModel!.journals ?? [];
+
+        // Ensure uniqueness by checking for duplicates based on a unique field like id
+        for (var journal in newJournals) {
+          if (!journalsModelList.any((existingJournal) => existingJournal.journalId == journal.journalId)) {
+            journalsModelList.add(journal);
+          }
+        }
+
         journalsModelLoading = false;
         notifyListeners();
       } else {
         logger.w("journalsModelelse ${journalsModelFromJson(response.body)}");
         journalsModelLoading = false;
+        journalsModelList.clear();
         notifyListeners();
       }
-      if(response.statusCode == 401){
+
+      // Handle token expiry (401, 403)
+      if (response.statusCode == 401 || response.statusCode == 403) {
         TokenManager.setTokenStatus(true);
-        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+        // CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
-      if(response.statusCode == 403){
-        TokenManager.setTokenStatus(true);
-        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
-      }
+
       journalsModelLoading = false;
       notifyListeners();
     } catch (e) {
-      logger.w("catch ${e}");
+      logger.w("catch $e");
       journalsModelLoading = false;
       notifyListeners();
     }
     notifyListeners();
   }
+
 
   //get journal details
   JournalDetails? journalDetails;
