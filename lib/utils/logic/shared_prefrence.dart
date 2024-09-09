@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mentalhelth/screens/addactions_screen/provider/add_actions_provider.dart';
 import 'package:mentalhelth/screens/addgoals_dreams_screen/provider/ad_goals_dreams_provider.dart';
 import 'package:mentalhelth/screens/auth/sign_in/provider/sign_in_provider.dart';
+import 'package:mentalhelth/screens/auth/sign_in/screen_sign_in.dart';
 import 'package:mentalhelth/screens/auth/signup_screen/provider/signup_provider.dart';
 import 'package:mentalhelth/screens/auth/signup_screen/signup_screen.dart';
 import 'package:mentalhelth/screens/auth/subscribe_plan_page/provider/subscribe_plan_provider.dart';
@@ -38,7 +39,7 @@ Future<void> removeUserDetailsSharePref({required BuildContext context}) async {
   // ignore: use_build_context_synchronously
   Navigator.of(context).pushAndRemoveUntil(
     MaterialPageRoute(
-      builder: (context) => SignupScreen(),
+      builder: (context) => ScreenSignIn(),
     ),
     (route) => false,
   );

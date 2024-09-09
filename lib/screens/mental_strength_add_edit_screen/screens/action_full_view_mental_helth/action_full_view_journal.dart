@@ -195,15 +195,12 @@ class _ActionFullViewJournalCreateBottomSheetState
                             },
                             child: SizedBox(
                               width: size.width * 0.2,
-                              child: const Align(
+                              child:  Align(
                                 alignment: Alignment.topRight,
-                                child: CircleAvatar(
-                                  radius: 13,
-                                  child: Icon(
-                                    Icons.close,
-                                    size: 17,
-                                    color: Colors.black,
-                                  ),
+                                child: CustomImageView(
+                                  imagePath: ImageConstant.imgClosePrimaryNew,
+                                  height: 40,
+                                  width: 40,
                                 ),
                               ),
                             ),

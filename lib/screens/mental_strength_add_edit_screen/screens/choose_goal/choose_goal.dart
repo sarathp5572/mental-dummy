@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:mentalhelth/screens/addgoals_dreams_screen/provider/ad_goals_dreams_provider.dart';
 import 'package:mentalhelth/screens/mental_strength_add_edit_screen/model/get_goals_model.dart';
 import 'package:mentalhelth/screens/mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
@@ -6,7 +7,10 @@ import 'package:mentalhelth/widgets/widget/shimmer.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../utils/core/date_time_utils.dart';
+import '../../../../utils/core/image_constant.dart';
+import '../../../../utils/theme/colors.dart';
 import '../../../../utils/theme/theme_helper.dart';
+import '../../../../widgets/custom_image_view.dart';
 
 class ScreenChooseGoalMentalStrength extends StatefulWidget {
   const ScreenChooseGoalMentalStrength({super.key});
@@ -82,31 +86,72 @@ class _ScreenChooseGoalMentalStrengthState
               mainAxisSize: MainAxisSize.max,
               children: [
                 SizedBox(
-                  height: size.height * 0.01,
+                  height: size.height * 0.015,
                 ),
                 Consumer2<MentalStrengthEditProvider, AdDreamsGoalsProvider>(
                     builder: (context, mentalStrengthEditProvider,
                         adDreamsGoalsProvider, _) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                  return
+                  //   Row(
+                  //   mainAxisAlignment: MainAxisAlignment.end,
+                  //   children: [
+                  //     GestureDetector(
+                  //       onTap: () {
+                  //         mentalStrengthEditProvider.openChooseGoalFunction();
+                  //         adDreamsGoalsProvider.clearAction();
+                  //       },
+                  //       child: CustomImageView(
+                  //         imagePath: ImageConstant.imgClosePrimaryNew,
+                  //         height: 40,
+                  //         width: 40,
+                  //       ),
+                  //     ),
+                  //     SizedBox(
+                  //       width: size.width * 0.03,
+                  //     )
+                  //   ],
+                  // );
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          mentalStrengthEditProvider.openChooseGoalFunction();
-                          adDreamsGoalsProvider.clearAction();
-                        },
-                        child: const CircleAvatar(
-                          radius: 13,
-                          child: Icon(
-                            Icons.close,
-                            size: 17,
-                            color: Colors.black,
+                      SizedBox(
+                        width: size.width * 0.2,
+                      ),
+                      SizedBox(
+                        width: size.width * 0.2,
+                        child: Column(
+                          children: [
+                            SvgPicture.asset(
+                              ImageConstant.dotDot,
+                              color: ColorsContent.greyColor,
+                              height: 8,
+                              width: 8,
+                              fit: BoxFit.contain,
+                            ),
+                            SvgPicture.asset(
+                              ImageConstant.dotDot,
+                              color: ColorsContent.greyColor,
+                              height: 8,
+                              width: 8,
+                              fit: BoxFit.contain,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            mentalStrengthEditProvider.openChooseGoalFunction();
+                            adDreamsGoalsProvider.clearAction();
+                          },
+                          child: CustomImageView(
+                            imagePath: ImageConstant.imgClosePrimaryNew,
+                            height: 40,
+                            width: 40,
                           ),
                         ),
                       ),
-                      SizedBox(
-                        width: size.width * 0.03,
-                      )
                     ],
                   );
                 }),
@@ -305,7 +350,10 @@ class _ScreenChooseGoalMentalStrengthState
                   width: size.width * 0.5,
                   child: Text(
                     goals[index].title.toString(),
-                    style: theme.textTheme.bodyMedium,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),

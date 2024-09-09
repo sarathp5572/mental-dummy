@@ -30,6 +30,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../utils/core/date_time_utils.dart';
 import '../../../../widgets/app_bar/custom_app_bar.dart';
+import '../../../../widgets/functions/popup.dart';
 import '../../../addactions_screen/addactions_screen.dart';
 import '../../../addgoals_dreams_screen/provider/ad_goals_dreams_provider.dart';
 import '../../../dash_borad_screen/provider/dash_board_provider.dart';
@@ -413,13 +414,23 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
                                                 children: [
                                                   GestureDetector(
                                                     onTap: () async {
-                                                      adDreamsGoalsProvider
-                                                          .getAddActionIdAndNameClear(
+                                                      customPopup(
+                                                        context: context,
+                                                        onPressedDelete: () async {
+                                                          adDreamsGoalsProvider
+                                                              .getAddActionIdAndNameClear(
                                                               index);
-                                                      await addActionsProvider
-                                                          .deleteActionFunction(
-                                                        deleteId: data.id,
+                                                          await addActionsProvider
+                                                              .deleteActionFunction(
+                                                            deleteId: data.id,
+                                                          );
+                                                          Navigator.of(context).pop();
+                                                        },
+                                                        yes: "Yes",
+                                                        title: 'Do you Need Delete',
+                                                        content: 'Are you sure do you need delete',
                                                       );
+
                                                     },
                                                     child: CircleAvatar(
                                                       radius: size.width * 0.04,

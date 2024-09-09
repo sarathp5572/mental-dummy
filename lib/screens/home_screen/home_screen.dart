@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _isTokenExpired() async {
       await homeProvider.fetchChartView(context);
       await homeProvider.fetchJournals(initial: true);
-    //  await editProfileProvider.fetchUserProfile();
+      await editProfileProvider.fetchUserProfile();
       tokenStatus = TokenManager.checkTokenExpiry();
       if (tokenStatus) {
         setState(() {

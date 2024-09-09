@@ -30,6 +30,7 @@ import '../../../../utils/theme/theme_helper.dart';
 import '../../../../widgets/app_bar/appbar_leading_image.dart';
 import '../../../../widgets/custom_image_view.dart';
 import '../../../../widgets/custom_rating_bar.dart';
+import '../../../../widgets/functions/popup.dart';
 import '../../../mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
 import '../../../token_expiry/tocken_expiry_warning_screen.dart';
 import '../../../token_expiry/token_expiry.dart';
@@ -434,8 +435,20 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                                     children: [
                                                       GestureDetector(
                                                         onTap: () {
-                                                          mentalStrengthEditProvider
-                                                              .cleaGoalValue();
+                                                          customPopup(
+                                                            context: context,
+                                                            onPressedDelete: () async {
+                                                              mentalStrengthEditProvider
+                                                                  .cleaGoalValue();
+                                                              Navigator.of(context).pop();
+                                                              // Close the bottom sheet after deleting
+                                                              //  Navigator.of(context).pop();  // This will close the galleryBottomSheet as well
+                                                            },
+                                                            yes: "Yes",
+                                                            title: 'Do you Need Delete',
+                                                            content: 'Are you sure do you need delete',
+                                                          );
+
                                                         },
                                                         child: CircleAvatar(
                                                           radius:
@@ -564,9 +577,21 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
-                                                  mentalStrengthEditProvider
-                                                      .clearActionListSelected(
-                                                    index: index,
+                                                  customPopup(
+                                                    context: context,
+                                                    onPressedDelete: () async {
+                                                      mentalStrengthEditProvider
+                                                          .clearActionListSelected(
+                                                        index: index,
+                                                      );
+                                                      Navigator.of(context).pop();
+
+                                                      // Close the bottom sheet after deleting
+                                                      //  Navigator.of(context).pop();  // This will close the galleryBottomSheet as well
+                                                    },
+                                                    yes: "Yes",
+                                                    title: 'Do you Need Delete',
+                                                    content: 'Are you sure do you need delete',
                                                   );
                                                 },
                                                 child: CircleAvatar(

@@ -62,6 +62,7 @@ class _AddGoalsDreamsScreenState extends State<AddGoalsDreamsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isTokenExpired();
       editProfileProvider.fetchCategory();
+      adDreamsGoalsProvider.goalModelIdName.clear();
     });
     super.initState();
   }
@@ -188,7 +189,7 @@ class _AddGoalsDreamsScreenState extends State<AddGoalsDreamsScreen> {
                             );
                           }),
                           const SizedBox(height: 11),
-                          _buildContinueWithFacebookRow(context),
+                          _buildAchievementDate(context),
                           const SizedBox(height: 25),
                           _buildAddMediaColumn(
                             context,
@@ -396,7 +397,7 @@ class _AddGoalsDreamsScreenState extends State<AddGoalsDreamsScreen> {
   }
 
   /// Section Widget
-  Widget _buildContinueWithFacebookRow(BuildContext context) {
+  Widget _buildAchievementDate(BuildContext context) {
     return Consumer<AdDreamsGoalsProvider>(
         builder: (context, adDreamsGoalsProvider, _) {
       return GestureDetector(
@@ -413,8 +414,19 @@ class _AddGoalsDreamsScreenState extends State<AddGoalsDreamsScreen> {
             horizontal: 11,
             vertical: 8,
           ),
-          decoration: AppDecoration.outlineGray700.copyWith(
-            borderRadius: BorderRadiusStyle.roundedBorder4,
+          decoration: const ShapeDecoration(
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 0.8,
+                style: BorderStyle.solid,
+                color: Colors.grey,
+              ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(
+                  5.0,
+                ),
+              ),
+            ),
           ),
           child: Row(
             children: [
@@ -433,7 +445,7 @@ class _AddGoalsDreamsScreenState extends State<AddGoalsDreamsScreen> {
                   bottom: 1,
                 ),
                 child: Text(
-                  adDreamsGoalsProvider.selectedDate.isNotEmpty
+                  adDreamsGoalsProvider.selectedDate.isNotEmpty &&  adDreamsGoalsProvider.selectedDate != null
                       ? adDreamsGoalsProvider.selectedDate
                       : "Achievement Date",
                   style: CustomTextStyles.bodySmallGray700,

@@ -30,6 +30,7 @@ import '../../utils/theme/theme_helper.dart';
 import '../../widgets/app_bar/appbar_leading_image.dart';
 import '../../widgets/custom_image_view.dart';
 import '../../widgets/custom_rating_bar.dart';
+import '../../widgets/functions/popup.dart';
 import '../auth/sign_in/provider/sign_in_provider.dart';
 import '../home_screen/provider/home_provider.dart';
 import '../token_expiry/tocken_expiry_warning_screen.dart';
@@ -194,6 +195,14 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
                               // mentalStrengthEditProvider.mediaSelected == 3
                               //     ? const MentalGoogleMap()
                               //     : const SizedBox(),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              // CustomImageView(
+                              //   imagePath: ImageConstant.imgGroup28,
+                              //   height: 19,
+                              //   width: 5,
+                              // ),
                               const SizedBox(
                                 height: 10,
                               ),
@@ -381,8 +390,21 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
                                         children: [
                                           GestureDetector(
                                             onTap: () {
-                                              mentalStrengthEditProvider
-                                                  .cleaGoalValue();
+                                              customPopup(
+                                                context: context,
+                                                onPressedDelete: () async {
+                                                  mentalStrengthEditProvider
+                                                      .cleaGoalValue();
+                                                  Navigator.of(context).pop();
+
+                                                  // Close the bottom sheet after deleting
+                                                //  Navigator.of(context).pop();  // This will close the galleryBottomSheet as well
+                                                },
+                                                yes: "Yes",
+                                                title: 'Do you Need Delete',
+                                                content: 'Are you sure do you need delete',
+                                              );
+
                                             },
                                             child: CircleAvatar(
                                               radius: size.width * 0.04,
@@ -517,10 +539,23 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
                                         children: [
                                           GestureDetector(
                                             onTap: () {
-                                              mentalStrengthEditProvider
-                                                  .clearActionListSelected(
-                                                index: index,
+                                              customPopup(
+                                                context: context,
+                                                onPressedDelete: () async {
+                                                  mentalStrengthEditProvider
+                                                      .clearActionListSelected(
+                                                    index: index,
+                                                  );
+                                                  Navigator.of(context).pop();
+
+                                                  // Close the bottom sheet after deleting
+                                                  //  Navigator.of(context).pop();  // This will close the galleryBottomSheet as well
+                                                },
+                                                yes: "Yes",
+                                                title: 'Do you Need Delete',
+                                                content: 'Are you sure do you need delete',
                                               );
+
                                             },
                                             child: CircleAvatar(
                                               radius: size.width * 0.04,

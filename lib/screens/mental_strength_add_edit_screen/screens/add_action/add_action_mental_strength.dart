@@ -89,13 +89,10 @@ class AddActionMentalStrengthBottomSheet extends StatelessWidget {
                               mentalStrengthEditProvider
                                   .openAddActionFunction();
                             },
-                            child: const CircleAvatar(
-                              radius: 13,
-                              child: Icon(
-                                Icons.close,
-                                size: 17,
-                                color: Colors.black,
-                              ),
+                            child: CustomImageView(
+                              imagePath: ImageConstant.imgClosePrimaryNew,
+                              height: 40,
+                              width: 40,
                             ),
                           ),
                           SizedBox(

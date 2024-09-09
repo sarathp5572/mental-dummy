@@ -75,6 +75,14 @@ class CustomButtonStyles {
         shadowColor: theme.colorScheme.primary,
         elevation: 38,
       );
+  static ButtonStyle get outlinePrimaryBlue => ElevatedButton.styleFrom(
+    backgroundColor: Colors.blue,  // Use blue from Material design palette
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(5),
+    ),
+    shadowColor: Colors.blue,  // Shadow color also set to blue
+  );
+
 
   // text button style
   static ButtonStyle get none => ButtonStyle(

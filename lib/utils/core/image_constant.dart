@@ -20,6 +20,7 @@ class ImageConstant {
   static String imgLightBulb = '$imagePath/img_light_bulb.svg';
 
   static String imgGroup28 = '$imagePath/img_group_28.svg';
+  static String imgDots = '$imagePath/img_dots.svg';
 
   static String imgGroup29 = '$imagePath/img_group_29.svg';
   static String imgGroup22 = '$imagePath/img_group_22.png';

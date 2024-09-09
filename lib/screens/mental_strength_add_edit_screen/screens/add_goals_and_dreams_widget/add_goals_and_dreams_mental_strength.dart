@@ -136,13 +136,10 @@ class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
                           mentalStrengthEditProvider.openAddGoalFunction();
                           adDreamsGoalsProvider.clearAction();
                         },
-                        child: const CircleAvatar(
-                          radius: 13,
-                          child: Icon(
-                            Icons.close,
-                            size: 17,
-                            color: Colors.black,
-                          ),
+                        child: CustomImageView(
+                          imagePath: ImageConstant.imgClosePrimaryNew,
+                          height: 40,
+                          width: 40,
                         ),
                       ),
                     ],
@@ -167,7 +164,7 @@ class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
                   Consumer<EditProfileProvider>(
                       builder: (context, editProfileProvider, _) {
                     return Container(
-                      height: size.height * 0.045,
+                      height: size.height * 0.050,
                       padding: const EdgeInsets.only(
                         left: 10,
                         right: 10,
@@ -221,7 +218,7 @@ class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
                     );
                   }),
                   const SizedBox(height: 11),
-                  _buildContinueWithFacebookRow(context),
+                  _buildAchievementDate(context),
                   const SizedBox(height: 25),
                   _buildAddMediaColumn(
                     context,
@@ -412,7 +409,7 @@ class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
   }
 
   /// Section Widget
-  Widget _buildContinueWithFacebookRow(BuildContext context) {
+  Widget _buildAchievementDate(BuildContext context) {
     return Consumer<AdDreamsGoalsProvider>(
         builder: (context, adDreamsGoalsProvider, _) {
       return GestureDetector(
@@ -429,8 +426,19 @@ class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
             horizontal: 11,
             vertical: 8,
           ),
-          decoration: AppDecoration.outlineGray700.copyWith(
-            borderRadius: BorderRadiusStyle.roundedBorder4,
+          decoration: const ShapeDecoration(
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 0.8,
+                style: BorderStyle.solid,
+                color: Colors.grey,
+              ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(
+                  5.0,
+                ),
+              ),
+            ),
           ),
           child: Row(
             children: [
@@ -489,6 +497,7 @@ class _AddGoalsDreamsBottomSheetState extends State<AddGoalsDreamsBottomSheet> {
       text: "Add Action",
       margin: const EdgeInsets.only(left: 2),
       buttonTextStyle: CustomTextStyles.titleSmallOnSecondaryContainer_1,
+      buttonStyle: CustomButtonStyles.outlinePrimaryBlue,
     );
   }
 

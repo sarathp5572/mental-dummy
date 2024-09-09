@@ -165,14 +165,10 @@ class _GoalAndDreamFullViewBottomSheetState
                         width: size.width * 0.2,
                         child: Align(
                           alignment: Alignment.topRight,
-                          child: CircleAvatar(
-                            backgroundColor:
-                                ColorsContent.greyColor.withOpacity(0.4),
-                            radius: 13,
-                            child: const Icon(
-                              Icons.close,
-                              size: 17,
-                            ),
+                          child: CustomImageView(
+                            imagePath: ImageConstant.imgClosePrimaryNew,
+                            height: 40,
+                            width: 40,
                           ),
                         ),
                       ),

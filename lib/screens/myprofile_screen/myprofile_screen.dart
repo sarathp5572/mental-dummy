@@ -61,6 +61,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      editProfileProvider.getProfileModel?.profileurl = "";
       _isTokenExpired();
     });
     super.initState();

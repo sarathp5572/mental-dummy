@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/mental_strength_add_edit_screen/model/get_goals_model.dart';
 import 'package:mentalhelth/screens/mental_strength_add_edit_screen/model/list_goal_actions.dart'
@@ -7,7 +8,10 @@ import 'package:mentalhelth/screens/mental_strength_add_edit_screen/provider/men
 import 'package:provider/provider.dart';
 
 import '../../../../utils/core/date_time_utils.dart';
+import '../../../../utils/core/image_constant.dart';
+import '../../../../utils/theme/colors.dart';
 import '../../../../utils/theme/theme_helper.dart';
+import '../../../../widgets/custom_image_view.dart';
 import '../../../dash_borad_screen/provider/dash_board_provider.dart';
 import '../../../edit_add_profile_screen/provider/edit_provider.dart';
 import '../../../home_screen/provider/home_provider.dart';
@@ -103,25 +107,66 @@ class _ChooseActionMentalHelthState extends State<ChooseActionMentalHelth> {
                 ),
                 Consumer<MentalStrengthEditProvider>(
                     builder: (context, mentalStrengthEditProvider, _) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                  return
+                  //   Row(
+                  //   mainAxisAlignment: MainAxisAlignment.end,
+                  //   children: [
+                  //     GestureDetector(
+                  //       onTap: () {
+                  //         mentalStrengthEditProvider.openChooseActionFunction();
+                  //       },
+                  //       child: CustomImageView(
+                  //         imagePath: ImageConstant.imgClosePrimaryNew,
+                  //         height: 40,
+                  //         width: 40,
+                  //       ),
+                  //     ),
+                  //     SizedBox(
+                  //       width: size.width * 0.03,
+                  //     )
+                  //   ],
+                  // );
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          mentalStrengthEditProvider.openChooseActionFunction();
-                        },
-                        child: const CircleAvatar(
-                          radius: 13,
-                          child: Icon(
-                            Icons.close,
-                            size: 17,
-                            color: Colors.black,
+                      SizedBox(
+                        width: size.width * 0.2,
+                      ),
+                      SizedBox(
+                        width: size.width * 0.2,
+                        child: Column(
+                          children: [
+                            SvgPicture.asset(
+                              ImageConstant.dotDot,
+                              color: ColorsContent.greyColor,
+                              height: 8,
+                              width: 8,
+                              fit: BoxFit.contain,
+                            ),
+                            SvgPicture.asset(
+                              ImageConstant.dotDot,
+                              color: ColorsContent.greyColor,
+                              height: 8,
+                              width: 8,
+                              fit: BoxFit.contain,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child:                 GestureDetector(
+                          onTap: () {
+                            mentalStrengthEditProvider.openChooseActionFunction();
+                          },
+                          child: CustomImageView(
+                            imagePath: ImageConstant.imgClosePrimaryNew,
+                            height: 40,
+                            width: 40,
                           ),
                         ),
                       ),
-                      SizedBox(
-                        width: size.width * 0.03,
-                      )
                     ],
                   );
                 }),
