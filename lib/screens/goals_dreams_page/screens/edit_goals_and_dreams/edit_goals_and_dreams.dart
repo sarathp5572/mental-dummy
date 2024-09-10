@@ -344,10 +344,10 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
                                     itemBuilder: (context, index) {
                                       var data = adDreamsGoalsProvider
                                           .goalModelIdName[index];
-                                      logger.w("actions ${adDreamsGoalsProvider
-                                          .goalModelIdName.length}");
-                                      logger.w("message ${widget.goalsanddream
-                                          .action?.length}");
+                                      // logger.w("actions ${adDreamsGoalsProvider
+                                      //     .goalModelIdName.length}");
+                                      // logger.w("message ${widget.goalsanddream
+                                      //     .action?.length}");
                                       return Row(
                                         children: [
                                           GestureDetector(

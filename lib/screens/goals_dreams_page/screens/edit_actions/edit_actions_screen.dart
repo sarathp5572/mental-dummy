@@ -310,7 +310,7 @@ class _EditActionScreenState extends State<EditActionScreen> {
                                                     Padding(
                                                       padding:
                                                           const EdgeInsets.only(
-                                                        left: 19,
+                                                        left: 5,
                                                         top: 2,
                                                         bottom: 1,
                                                       ),
@@ -380,7 +380,7 @@ class _EditActionScreenState extends State<EditActionScreen> {
                                                     Padding(
                                                       padding:
                                                           const EdgeInsets.only(
-                                                        left: 19,
+                                                        left: 5,
                                                         top: 2,
                                                         bottom: 1,
                                                       ),
@@ -462,7 +462,7 @@ class _EditActionScreenState extends State<EditActionScreen> {
                                                     Padding(
                                                       padding:
                                                           const EdgeInsets.only(
-                                                        left: 19,
+                                                        left: 5,
                                                         top: 2,
                                                         bottom: 1,
                                                       ),
@@ -532,7 +532,7 @@ class _EditActionScreenState extends State<EditActionScreen> {
                                                     Padding(
                                                       padding:
                                                           const EdgeInsets.only(
-                                                        left: 19,
+                                                        left: 5,
                                                         top: 2,
                                                         bottom: 1,
                                                       ),

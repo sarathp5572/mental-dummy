@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tzData;
 import 'package:ffmpeg_kit_flutter_min_gpl/ffmpeg_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -155,106 +156,136 @@ var logger = Logger();
     return box.get(id);
   }
 
+// Function to schedule the alarm
   Future<void> scheduleAlarm(
-    String startTime,
-    String endtime,
-    DateTime startDate,
-    DateTime endDate,
-    String actionId,
-    RepeatInterval repeatInterval, {
-    required String title,
-    required String body,
-  }) async {
-    tz.initializeTimeZones();
+      String startTime,
+      String endTime,
+      DateTime startDate,
+      DateTime endDate,
+      String actionId,
+      RepeatInterval repeatInterval, {
+        required String title,
+        required String body,
+      }) async {
 
+    // Initialize timezones if needed
+    tzData.initializeTimeZones();
+
+    // Ensure times are correctly parsed
     final hour = reminderStartTime?.hour ?? 0;
     final minute = reminderStartTime?.minute ?? 0;
 
-    final combinedDateTime =
-        DateTime(startDate.year, startDate.month, startDate.day, hour, minute);
+    // Combine date and time
+    final combinedDateTime = DateTime(startDate.year, startDate.month, startDate.day, hour, minute);
 
-    final tz.TZDateTime scheduledTZTime =
-        tz.TZDateTime.from(combinedDateTime, tz.local);
-    const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
+    // Convert to local timezone
+    final tz.TZDateTime scheduledTZTime = tz.TZDateTime.from(combinedDateTime, tz.local);
+
+    // Check if the alarm time is in the past
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+
+    if (scheduledTZTime.isBefore(now)) {
+      print('Cannot schedule alarm in the past.');
+      return;
+    }
+
+    // Configure the notification details
+    const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
       'alarm_channel',
       'Alarm Channel',
       channelDescription: 'Channel for alarms',
       importance: Importance.max,
       priority: Priority.high,
       ticker: 'ticker',
+      fullScreenIntent: true,
     );
-    const NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-    if (repeatInterval == RepeatInterval.never) {
-      await flutterLocalNotificationsPlugin.zonedSchedule(
-        int.parse(actionId),
-        title,
-        body,
-        scheduledTZTime,
-        notificationDetails,
-        // ignore: deprecated_member_use
-        androidAllowWhileIdle: true,
-        payload: 'Alarm payload',
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-      );
-    } else {
-      // Handle repeating notifications
-      Duration interval;
-      switch (repeatInterval) {
-        case RepeatInterval.daily:
-          interval = const Duration(days: 1);
-          break;
-        case RepeatInterval.weekly:
-          interval = const Duration(days: 7);
-          break;
-        case RepeatInterval.monthly:
-          interval = const Duration(days: 30); // Approximation
-          break;
-        case RepeatInterval.yearly:
-          interval = const Duration(days: 365); // Approximation
-          break;
-        default:
-          throw Exception("Unsupported repeat interval");
-      }
 
-      tz.TZDateTime firstInstanceTime = scheduledTZTime;
-      while (firstInstanceTime.isBefore(endDate)) {
+    const NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
+
+    try {
+      if (repeatInterval == RepeatInterval.never) {
+        // Schedule a one-time alarm
         await flutterLocalNotificationsPlugin.zonedSchedule(
           int.parse(actionId),
           title,
           body,
           scheduledTZTime,
           notificationDetails,
-          // ignore: deprecated_member_use
-          androidAllowWhileIdle: true,
           payload: 'Alarm payload',
-          uiLocalNotificationDateInterpretation:
-              UILocalNotificationDateInterpretation.absoluteTime,
-          matchDateTimeComponents:
-              convertRepeatIntervalToDateTimeComponents(repeatInterval),
+          androidAllowWhileIdle: true,
+          uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
         );
-        firstInstanceTime = firstInstanceTime.add(interval);
+        print('Alarm scheduled successfully for: $scheduledTZTime');
+      } else {
+        // Handle repeat intervals
+        Duration interval;
+        switch (repeatInterval) {
+          case RepeatInterval.daily:
+            interval = const Duration(days: 1);
+            break;
+          case RepeatInterval.weekly:
+            interval = const Duration(days: 7);
+            break;
+          case RepeatInterval.monthly:
+            interval = const Duration(days: 30);
+            break;
+          case RepeatInterval.yearly:
+            interval = const Duration(days: 365);
+            break;
+          default:
+            throw Exception("Unsupported repeat interval");
+        }
+
+        tz.TZDateTime firstInstanceTime = scheduledTZTime;
+        while (firstInstanceTime.isBefore(tz.TZDateTime.from(endDate, tz.local))) {
+          print('Scheduling repeat alarm for: $firstInstanceTime');
+          await flutterLocalNotificationsPlugin.zonedSchedule(
+            int.parse(actionId),
+            title,
+            body,
+            firstInstanceTime,
+            notificationDetails,
+            payload: 'Alarm payload',
+            androidAllowWhileIdle: true,
+            uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+            matchDateTimeComponents: convertRepeatIntervalToDateTimeComponents(repeatInterval),
+          );
+          firstInstanceTime = firstInstanceTime.add(interval);
+        }
       }
+    } catch (e) {
+      print('Error scheduling alarm: $e');
     }
-    String formattedStartDate = DateFormat('yyyy-MM-dd').format(startDate);
-    String formattedEndDate = DateFormat('yyyy-MM-dd').format(endDate);
-    AlarmInfo alarmInfo = AlarmInfo(
+
+    // Save alarm information
+    await addAlarmHive(AlarmInfo(
       id: int.parse(actionId),
       title: title,
       description: body,
-      startDate: formattedStartDate,
-      endDate: formattedEndDate,
+      startDate: DateFormat('yyyy-MM-dd').format(startDate),
+      endDate: DateFormat('yyyy-MM-dd').format(endDate),
       startTime: startTime,
-      endTime: endtime,
+      endTime: endTime,
       repeat: repeteGetString(repeatInterval),
-    );
+    ));
 
-    await addAlarmHive(alarmInfo);
-    scheduledTimes.add(startDate);
     notifyListeners();
   }
+
+
+
+  void convertAndPrintScheduledTime(DateTime utcTime) {
+    // Initialize time zones
+    tz.initializeTimeZones();
+
+    // Convert UTC DateTime to TZDateTime in local timezone
+    final localTime = tz.TZDateTime.from(utcTime, tz.local);
+
+    print("UTC Scheduled Time: $utcTime");
+    print("Local Scheduled Time: $localTime");
+  }
+
+
 
   String repeteGetString(RepeatInterval intervel) {
     return intervel == RepeatInterval.never
@@ -876,19 +907,20 @@ var logger = Logger();
     notifyListeners();
   }
 
+
   GoalModelIdName? goalModelIdName;
 
   Future<bool> saveGemFunction(
-    BuildContext context, {
-    required String title,
-    required String details,
-    required List<String> mediaName,
-    required String locationName,
-    required String locationLatitude,
-    required String locationLongitude,
-    required String locationAddress,
-    required String goalId,
-  }) async {
+      BuildContext context, {
+        required String title,
+        required String details,
+        required List<String> mediaName,
+        required String locationName,
+        required String locationLatitude,
+        required String locationLongitude,
+        required String locationAddress,
+        required String goalId,
+      }) async {
     try {
       updateSaveActionLoadingFunction(true);
       notifyListeners();
@@ -908,9 +940,7 @@ var logger = Logger();
       }
       print(body.toString() + "   saveGemFunction");
       final response = await http.post(
-        Uri.parse(
-          UrlConstant.savegemUrl,
-        ),
+        Uri.parse(UrlConstant.savegemUrl),
         headers: <String, String>{"authorization": "$token"},
         body: body,
       );
@@ -922,60 +952,55 @@ var logger = Logger();
           id: responseData["id"].toString(),
           name: responseData["title"].toString(),
         );
-        logger.w("goalModelIdName ${goalModelIdName}");
+
         showCustomSnackBar(
           context: context,
           message: json.decode(response.body)["text"],
         );
+
         if (goalId == null || goalId == "") {
           Navigator.of(context).pop();
         }
+
         if (setRemainder) {
+          // Here we call the scheduling function
           scheduleAlarm(
             reminderStartTime!.format(context).toString(),
             reminderEndTime!.format(context).toString(),
-            DateFormat('d MMM y').parse(
-              reminderStartDate,
-            ),
-            DateFormat('d MMM y').parse(
-              reminderEndDate,
-            ),
+            DateFormat('d MMM y').parse(reminderStartDate),
+            DateFormat('d MMM y').parse(reminderEndDate),
             responseData["id"].toString(),
             repeat == "Never"
                 ? RepeatInterval.never
                 : repeat == "Daily"
-                    ? RepeatInterval.daily
-                    : repeat == "Weekly"
-                        ? RepeatInterval.weekly
-                        : repeat == "Monthly"
-                            ? RepeatInterval.monthly
-                            : repeat == "Yearly"
-                                ? RepeatInterval.yearly
-                                : RepeatInterval.daily,
+                ? RepeatInterval.daily
+                : repeat == "Weekly"
+                ? RepeatInterval.weekly
+                : repeat == "Monthly"
+                ? RepeatInterval.monthly
+                : repeat == "Yearly"
+                ? RepeatInterval.yearly
+                : RepeatInterval.daily,
             title: title,
             body: details,
           );
         }
+
         clearFunction();
         updateSaveActionLoadingFunction(false);
         return true;
       } else {
         updateSaveActionLoadingFunction(false);
-        logger.w("goalModelIdNameelse ${goalModelIdName}");
-        // Handle errors based on the status code
         showCustomSnackBar(
           context: context,
           message: json.decode(response.body)["text"],
         );
       }
-      if(response.statusCode == 401){
+
+      if (response.statusCode == 401 || response.statusCode == 403) {
         TokenManager.setTokenStatus(true);
-        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
-      if(response.statusCode == 403){
-        TokenManager.setTokenStatus(true);
-        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
-      }
+
       updateSaveActionLoadingFunction(false);
       return false;
     } catch (error) {
@@ -985,6 +1010,7 @@ var logger = Logger();
       return false;
     }
   }
+
 
   //editActions function
 
@@ -1258,6 +1284,18 @@ var logger = Logger();
       notifyListeners();
     }
   }
+
+  static Future<void> checkAndroidScheduleExactAlarmPermission() async {
+    final status = await Permission.scheduleExactAlarm.status;
+   // alarmPrint('Schedule exact alarm permission: $status.');
+    if (status.isDenied) {
+     // alarmPrint('Requesting schedule exact alarm permission...');
+      final res = await Permission.scheduleExactAlarm.request();
+    //  alarmPrint('Schedule exact alarm permission ${res.isGranted ? '' : 'not'} granted',);
+    }
+  }
 }
+
+
 
 enum RepeatInterval { never, daily, weekly, monthly, yearly }
