@@ -197,23 +197,23 @@ Widget buildPopupDialog(BuildContext context, Size size) {
             SizedBox(
               height: size.height * 0.005,
             ),
-            // GestureDetector(
-            //   onTap: () {},
-            //   child: Align(
-            //     alignment: Alignment.topLeft,
-            //     child: Text(
-            //       "Reminders",
-            //       maxLines: 13,
-            //       overflow: TextOverflow.ellipsis,
-            //       style: CustomTextStyles.titleMediumOnSecondaryContainerMedium
-            //           .copyWith(
-            //         height: 2.19,
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            GestureDetector(
+              onTap: () {},
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Reminders",
+                  maxLines: 13,
+                  overflow: TextOverflow.ellipsis,
+                  style: CustomTextStyles.titleMediumOnSecondaryContainerMedium
+                      .copyWith(
+                    height: 2.19,
+                  ),
+                ),
+              ),
+            ),
             SizedBox(
-              height: size.height * 0.03,
+              height: size.height * 0.005,
             ),
             Consumer<DashBoardProvider>(
                 builder: (context, dashBoardProvider, _) {

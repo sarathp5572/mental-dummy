@@ -22,6 +22,7 @@ import '../../utils/theme/custom_text_style.dart';
 import '../../utils/theme/theme_helper.dart';
 import '../../widgets/custom_image_view.dart';
 import '../auth/sign_in/provider/sign_in_provider.dart';
+import '../goals_dreams_page/provider/goals_dreams_provider.dart';
 import '../home_screen/widgets/userprofilelist_item_widget.dart';
 import '../mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
 import '../token_expiry/tocken_expiry_warning_screen.dart';
@@ -40,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late MentalStrengthEditProvider mentalStrengthEditProvider;
   late EditProfileProvider editProfileProvider;
   late DashBoardProvider dashBoardProvider;
+  late GoalsDreamsProvider goalsDreamsProvider;
   bool tokenStatus = false;
   var logger = Logger();
 
@@ -66,7 +68,11 @@ class _HomeScreenState extends State<HomeScreen> {
     mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
     editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    goalsDreamsProvider = Provider.of<GoalsDreamsProvider>(context, listen: false);
     scheduleMicrotask(() {
+      goalsDreamsProvider.goalsanddreams.clear();
+      goalsDreamsProvider.goalsanddreams = [];
+      mentalStrengthEditProvider.mediaSelected = -1;
       _isTokenExpired();
     });
   }
@@ -145,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         left: 1,
                       ),
                       child: Text(
-                        "2023",
+                        "2024",
                         style: CustomTextStyles.titleMediumBlue300,
                       ),
                     ),

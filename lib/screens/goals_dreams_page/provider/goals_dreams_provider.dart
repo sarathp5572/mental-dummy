@@ -80,13 +80,14 @@ class GoalsDreamsProvider extends ChangeNotifier {
             goalsanddreams.addAll(goalsAndDreamsModel!.goalsanddreams!);
           }
         }
-      } else {
-        if (goalsAndDreamsModel != null) {
-          if (goalsAndDreamsModel!.goalsanddreams != null) {
-            goalsanddreams.addAll(goalsAndDreamsModel!.goalsanddreams!);
-          }
-        }
       }
+      // else {
+      //   if (goalsAndDreamsModel != null) {
+      //     if (goalsAndDreamsModel!.goalsanddreams != null) {
+      //       goalsanddreams.addAll(goalsAndDreamsModel!.goalsanddreams!);
+      //     }
+      //   }
+      // }
 
       notifyListeners();
     } else {

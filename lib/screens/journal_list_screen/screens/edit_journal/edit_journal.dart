@@ -64,6 +64,7 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
     editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
     adDreamsGoalsProvider = Provider.of<AdDreamsGoalsProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      mentalStrengthEditProvider.mediaSelected = -1;
       _isTokenExpired();
     });
     super.initState();

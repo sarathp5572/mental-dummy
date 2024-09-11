@@ -272,8 +272,6 @@ class _JournalListPageState extends State<JournalListPage> {
     }
 
   }
-
-
   @override
   void initState() {
     super.initState();

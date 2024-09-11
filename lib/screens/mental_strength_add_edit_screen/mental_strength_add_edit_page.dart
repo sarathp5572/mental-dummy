@@ -78,6 +78,7 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
     editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     scheduleMicrotask(() {
+      mentalStrengthEditProvider.mediaSelected = -1;
       _isTokenExpired();
     });
   }

@@ -72,7 +72,12 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
      mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
      dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
      editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
+     goalsDreamsProvider.goalsanddreams.clear();
+     goalsDreamsProvider.goalsanddreams = [];
+
      WidgetsBinding.instance.addPostFrameCallback((_) {
+       goalsDreamsProvider.goalsanddreams = [];
+       goalsDreamsProvider.goalsanddreams.clear();
        goalsDreamsProvider.fetchGoalsAndDreams(initial: true);
        _isTokenExpired();
      });

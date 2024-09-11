@@ -18,6 +18,7 @@ class JournalListViewWidget extends StatefulWidget {
 class _JournalListViewWidgetState extends State<JournalListViewWidget> {
   final ScrollController _scrollController = ScrollController();
   late HomeProvider homeProvider;
+  bool isLoading = true;
 
   @override
   void dispose() {
@@ -35,6 +36,11 @@ class _JournalListViewWidgetState extends State<JournalListViewWidget> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
 //      homeProvider.journalsModelList.clear();
       _scrollController.addListener(_loadMoreData);
+      Future.delayed(const Duration(seconds: 1), () {
+        setState(() {
+          isLoading = false;
+        });
+      });
     });
     super.initState();
   }
@@ -64,6 +70,13 @@ class _JournalListViewWidgetState extends State<JournalListViewWidget> {
               : null,
           padding: const EdgeInsets.symmetric(horizontal: 28),
           child:
+          isLoading
+              ? const Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue), // Loading spinner with custom color
+            ),
+          )
+              :
               homeProvider.journalsModelList == null &&
                       !homeProvider.journalsModelLoading
                   ? Center(
