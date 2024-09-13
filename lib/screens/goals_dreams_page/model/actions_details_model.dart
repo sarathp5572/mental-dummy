@@ -49,6 +49,7 @@ class Actions {
   String? actionStatus;
   String? actionDatetime;
   Location? location;
+  Reminder? reminder;
   List<GemMedia>? gemMedia;
 
   Actions({
@@ -60,6 +61,7 @@ class Actions {
     this.actionStatus,
     this.actionDatetime,
     this.location,
+    this.reminder,
     this.gemMedia,
   });
 
@@ -74,6 +76,9 @@ class Actions {
         location: json["location"] == null
             ? null
             : Location.fromJson(json["location"]),
+    reminder: json["reminder"] == null
+        ? null
+        : Reminder.fromJson(json["reminder"]),
         gemMedia: json["gem_media"] == null
             ? []
             : List<GemMedia>.from(
@@ -89,10 +94,61 @@ class Actions {
         "action_status": actionStatus,
         "action_datetime": actionDatetime,
         "location": location?.toJson(),
+        "reminder":reminder?.toJson(),
         "gem_media": gemMedia == null
             ? []
             : List<dynamic>.from(gemMedia!.map((x) => x.toJson())),
       };
+}
+
+class Reminder {
+  String? reminder_id;
+  String? reminder_title;
+  String? reminder_desc;
+  String? reminder_startdate;
+  String? reminder_enddate;
+  String? from_time;
+  String? to_time;
+  String? reminder_before;
+  String? reminder_repeat;
+
+
+
+  Reminder({
+    this.reminder_id,
+    this.reminder_title,
+    this.reminder_desc,
+    this.reminder_startdate,
+    this.reminder_enddate,
+    this.from_time,
+    this.to_time,
+    this.reminder_before,
+    this.reminder_repeat,
+  });
+
+  factory Reminder.fromJson(Map<String, dynamic> json) => Reminder(
+    reminder_id: json["reminder_id"],
+    reminder_title: json["reminder_title"],
+    reminder_desc: json["reminder_desc"],
+    reminder_startdate: json["reminder_startdate"],
+    reminder_enddate: json["reminder_enddate"],
+    from_time: json["from_time"],
+    to_time: json["to_time"],
+    reminder_before: json["reminder_before"],
+    reminder_repeat: json["reminder_repeat"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "reminder_id": reminder_id,
+    "reminder_title": reminder_title,
+    "reminder_desc": reminder_desc,
+    "reminder_startdate": reminder_startdate,
+    "reminder_enddate": reminder_enddate,
+    "from_time": from_time,
+    "to_time": to_time,
+    "reminder_before": reminder_before,
+    "reminder_repeat": reminder_repeat,
+  };
 }
 
 class GemMedia {

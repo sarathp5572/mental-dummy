@@ -14,6 +14,7 @@ class WeightLossComponentListItemWidget extends StatelessWidget {
     required this.status,
     required this.startDate,
     required this.endDate,
+
   }) : super(
           key: key,
         );
@@ -96,6 +97,24 @@ class WeightLossComponentListItemWidget extends StatelessWidget {
                           ),
                         ],
                       ),
+                //
+                // status == false ?
+                // Column(
+                //   children: [
+                //     SizedBox(height: size.height * 0.01,),
+                //     Row(
+                //       children: [
+                //         Text(
+                //         "Related Actions",
+                //           style: CustomTextStyles.titleMedium16,
+                //           overflow: TextOverflow.ellipsis,
+                //         ),
+                //       ],
+                //     ),
+                //
+                //   ],
+                // ):
+                // SizedBox()
               ],
             ),
           ),

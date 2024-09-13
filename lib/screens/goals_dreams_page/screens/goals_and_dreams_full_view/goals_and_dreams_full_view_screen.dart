@@ -20,6 +20,8 @@ import 'package:provider/provider.dart';
 import '../../../../widgets/app_bar/appbar_subtitle.dart';
 import '../../../../widgets/app_bar/custom_app_bar.dart';
 import '../../../../widgets/functions/popup.dart';
+import '../../../addactions_screen/provider/add_actions_provider.dart';
+import '../../../mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
 
 class GoalAndDreamFullViewScreen extends StatefulWidget {
   const GoalAndDreamFullViewScreen(
@@ -40,16 +42,25 @@ class GoalAndDreamFullViewScreen extends StatefulWidget {
 class _GoalAndDreamFullViewScreenState
     extends State<GoalAndDreamFullViewScreen> {
   bool isCompleted = false;
+  bool isSingleActionCompleted = false;
+  late GoalsDreamsProvider goalsDreamsProvider;
+  late MentalStrengthEditProvider mentalStrengthEditProvider;
 
   @override
   void initState() {
     addAudio();
     addImage();
     addVideo();
+    goalsDreamsProvider= Provider.of<GoalsDreamsProvider>(context, listen: false);
+    mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
+    goalsDreamsProvider.fetchGoalsAndDreams(initial: true);
+    mentalStrengthEditProvider.fetchGoalActions(goalId: widget.goalsanddream.goalId.toString(),);
+    isActionCompletedList = List.filled(widget.goalsanddream.action!.length, false);
     super.initState();
   }
 
   int sliderIndex = 1;
+  List<bool> isActionCompletedList = [];
 
   PageController photoController = PageController();
 
@@ -300,8 +311,8 @@ class _GoalAndDreamFullViewScreenState
                 //   context,
                 // ),
                 const SizedBox(height: 20),
-                Consumer<AdDreamsGoalsProvider>(
-                  builder: (context, adDreamsGoalsProvider, _) {
+                Consumer3<MentalStrengthEditProvider,AddActionsProvider,AdDreamsGoalsProvider>(
+                  builder: (context,mentalStrengthEditProvider,addActionsProvider, adDreamsGoalsProvider, _) {
                     return SizedBox(
                       height: widget.goalsanddream.action!.length *
                           size.height *
@@ -364,9 +375,43 @@ class _GoalAndDreamFullViewScreenState
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        SizedBox(
-                                          width: size.width * 0.04,
-                                        ),
+                                        mentalStrengthEditProvider.getListGoalActionsModel?.actions?[index].actionStatus != "1" ?
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                          child: CustomCheckboxButton(
+                                            text: "",
+                                            value: isActionCompletedList[index],
+                                            onChange: (value) async {
+                                              customPopup(
+                                                context: context,
+                                                onPressedDelete: () async {
+                                                  setState(() {
+                                                    isActionCompletedList[index] = value!;
+                                                  });
+                                                  await addActionsProvider.updateActionStatusFunction(
+                                                    context,
+                                                    goalId:widget.goalsanddream.goalId ?? "",
+                                                    actionId:
+                                                    widget.goalsanddream
+                                                        .action![index].actionId ?? "",
+                                                  );
+                                                  mentalStrengthEditProvider
+                                                      .fetchGoalActions(
+                                                    goalId: widget.goalsanddream.goalId ?? "",
+                                                  );
+                                                  Navigator.of(context).pop();
+                                                },
+                                                yes: "Yes",
+                                                title: 'Action Completed',
+                                                content:
+                                                'Are you sure You want to mark this action as completed?',
+                                              );
+
+
+                                            },
+                                          ),
+                                        ):
+                                            const SizedBox(),
                                         Text(
                                           widget.goalsanddream.action![index]
                                               .actionTitle
@@ -443,9 +488,9 @@ class _GoalAndDreamFullViewScreenState
                                         widget.goalsanddream.goalId.toString(),
                                     status: "1",
                                   );
-                                  goalsDreamsProvider.fetchGoalsAndDreams(
-                                    initial: true,
-                                  );
+                                  await
+                                  goalsDreamsProvider.fetchGoalsAndDreams(initial: true,);
+                                  mentalStrengthEditProvider.fetchGoalActions(goalId: widget.goalsanddream.goalId.toString(),);
                                   setState(() {
                                     isCompleted = true;
                                   });

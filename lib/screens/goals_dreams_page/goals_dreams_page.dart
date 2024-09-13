@@ -79,6 +79,7 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
        goalsDreamsProvider.goalsanddreams = [];
        goalsDreamsProvider.goalsanddreams.clear();
        goalsDreamsProvider.fetchGoalsAndDreams(initial: true);
+      // mentalStrengthEditProvider.fetchGoalActions(goalId: widget.goalsanddream.goalId.toString(),);
        _isTokenExpired();
      });
 

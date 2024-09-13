@@ -45,6 +45,7 @@ class _AddactionsScreenState extends State<AddactionsScreen> {
   late MentalStrengthEditProvider mentalStrengthEditProvider;
   late EditProfileProvider editProfileProvider;
   late DashBoardProvider dashBoardProvider;
+  late AddActionsProvider addActionsProvider;
   bool tokenStatus = false;
   var logger = Logger();
 
@@ -70,6 +71,14 @@ class _AddactionsScreenState extends State<AddactionsScreen> {
     mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
+    addActionsProvider = Provider.of<AddActionsProvider>(context, listen: false);
+    addActionsProvider.titleEditTextController.text = "";
+    addActionsProvider.descriptionEditTextController.text = "";
+    addActionsProvider.reminderStartTime = null;
+    addActionsProvider.reminderEndTime = null;
+    addActionsProvider.reminderStartDate = "";
+    addActionsProvider.reminderEndDate = "";
+    addActionsProvider.repeat = "";
     WidgetsBinding.instance.addPostFrameCallback((_) {
       editProfileProvider.fetchCategory();
       _isTokenExpired();
@@ -1006,6 +1015,7 @@ class _AddactionsScreenState extends State<AddactionsScreen> {
                   locationLongitude: addActionsProvider.locationLongitude,
                   locationAddress: addActionsProvider.selectedLocationAddress,
                   goalId: widget.goalId,
+                  isReminder: "1"
                 );
                 adDreamsGoalsProvider.getAddActionIdAndName(
                   value: addActionsProvider.goalModelIdName!,
@@ -1028,6 +1038,7 @@ class _AddactionsScreenState extends State<AddactionsScreen> {
                 locationLongitude: addActionsProvider.locationLongitude,
                 locationAddress: addActionsProvider.selectedLocationAddress,
                 goalId:  widget.goalId,
+                  isReminder: "0"
               );
               adDreamsGoalsProvider.getAddActionIdAndName(
                 value: addActionsProvider.goalModelIdName!,

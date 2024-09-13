@@ -12,6 +12,7 @@ class UrlConstant {
 
   static const String socialmedialoginUrl = "${baseUrl}socialmedialogin";
   static const String savefirebasetokenUrl = "${baseUrl}token/";
+  static const String saveReminderUrl = "${baseUrl}reminder/";
 
   static const String otpPhoneLoginUrl = "${baseUrl}otplogin";
   static const String verifyOtpUrl = "${baseUrl}verifyOtp";

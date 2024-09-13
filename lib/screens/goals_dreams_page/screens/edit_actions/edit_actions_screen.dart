@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/addactions_screen/provider/add_actions_provider.dart';
 import 'package:mentalhelth/screens/addactions_screen/widget/googlemap_widget/google_map_widget.dart';
@@ -25,6 +26,7 @@ import 'package:mentalhelth/widgets/custom_text_form_field.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 import 'package:provider/provider.dart';
 
+import '../../../addactions_screen/model/alaram_info.dart';
 import '../../../dash_borad_screen/provider/dash_board_provider.dart';
 import '../../../edit_add_profile_screen/provider/edit_provider.dart';
 import '../../../home_screen/provider/home_provider.dart';
@@ -48,14 +50,19 @@ class _EditActionScreenState extends State<EditActionScreen> {
   late MentalStrengthEditProvider mentalStrengthEditProvider;
   late EditProfileProvider editProfileProvider;
   late DashBoardProvider dashBoardProvider;
+  late AddActionsProvider addActionsProvider;
   bool tokenStatus = false;
   var logger = Logger();
+  AlarmInfo? alarmInfo;
   @override
   void initState() {
     homeProvider = Provider.of<HomeProvider>(context, listen: false);
     mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
+    addActionsProvider =  Provider.of<AddActionsProvider>(context, listen: false);
+    logger.w("addActionsProvider.reminderStartDate${addActionsProvider.reminderStartDate}");
+    alarmDetails();
     _isTokenExpired();
     init();
     super.initState();
@@ -76,6 +83,17 @@ class _EditActionScreenState extends State<EditActionScreen> {
 
   }
 
+
+  Future<void> alarmDetails() async {
+
+    alarmInfo = await addActionsProvider.getDataByIdFromHiveBox(
+      int.parse(
+          mentalStrengthEditProvider.actionsDetailsModel!.actions!.actionId!),
+    );
+    logger.w("alarmInfo $alarmInfo");
+
+  }
+
   // await addActionsProvider.editActionFunction(
   // context,
   // title: addActionsProvider.titleEditTextController.text,
@@ -88,12 +106,88 @@ class _EditActionScreenState extends State<EditActionScreen> {
   // actionId:
   // widget.actionsDetailsModel!.actions!.actionId.toString(),
   // );
+  TimeOfDay? stringToTimeOfDay(String time) {
+    try {
+      // Trim and normalize to uppercase
+      String trimmedTime = time.trim().toUpperCase();
+
+      // Remove any extraneous characters (e.g., '?')
+      String cleanedTime = trimmedTime.replaceAll(RegExp(r'[^\d:APM]'), '');
+
+      // Check if the cleaned time contains AM/PM
+      bool isPM = cleanedTime.contains("PM");
+      bool isAM = cleanedTime.contains("AM");
+
+      // Remove AM/PM suffix
+      cleanedTime = cleanedTime.replaceAll(RegExp(r'[APM]'), '').trim();
+
+      // Validate format
+      RegExp timeRegExp = RegExp(r'^(\d{1,2}):(\d{2})$');
+      Match? match = timeRegExp.firstMatch(cleanedTime);
+
+      if (match == null) {
+        print("Invalid time format: $time");
+        return null;
+      }
+
+      // Parse hour and minute
+      int hour = int.parse(match.group(1)!);
+      int minute = int.parse(match.group(2)!);
+
+      // Adjust hour based on AM/PM
+      if (isPM && hour < 12) {
+        hour += 12;
+      } else if (isAM && hour == 12) {
+        hour = 0;
+      }
+
+      // Ensure hour is within valid range (0-23)
+      if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+        print("Invalid time values: hour $hour, minute $minute");
+        return null;
+      }
+
+      return TimeOfDay(hour: hour, minute: minute);
+    } catch (e) {
+      print("Error parsing time: $e");
+      return null;
+    }
+  }
+
+  String unixTimestampToDate(String timestamp) {
+    try {
+      // Convert the timestamp to an integer
+      int unixTimestamp = int.parse(timestamp);
+
+      // Create a DateTime object from the Unix timestamp (assumes timestamp is in seconds)
+      DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(unixTimestamp * 1000);
+
+      // Format the DateTime object into the desired string format
+      final DateFormat formatter = DateFormat('dd MMM yyyy');
+      String formattedDate = formatter.format(dateTime);
+
+      return formattedDate;
+    } catch (e) {
+      print("Error converting timestamp: $e");
+      return "Invalid date";
+    }
+  }
+
+
   void init() {
     AddActionsProvider addActionsProvider = Provider.of(context, listen: false);
     // Clear lists to avoid duplicates
     addActionsProvider.alreadyRecordedFilePath.clear();
     addActionsProvider.alreadyPickedImages.clear();
-
+    addActionsProvider
+        .reminderStartDate = unixTimestampToDate(widget.actionsDetailsModel!.actions!.reminder?.reminder_startdate ?? "");
+    addActionsProvider
+        .reminderEndDate = unixTimestampToDate(widget.actionsDetailsModel!.actions!.reminder?.reminder_enddate ?? "");
+    addActionsProvider
+        .reminderStartTime = stringToTimeOfDay(widget.actionsDetailsModel!.actions!.reminder?.from_time ?? "");
+    addActionsProvider
+        .reminderEndTime = stringToTimeOfDay(widget.actionsDetailsModel!.actions!.reminder?.to_time ?? "");
+    addActionsProvider.repeat = widget.actionsDetailsModel!.actions!.reminder?.reminder_repeat ?? "";
     addActionsProvider.titleEditTextController.text =
         widget.actionsDetailsModel!.actions!.actionTitle.toString();
     addActionsProvider.descriptionEditTextController.text =

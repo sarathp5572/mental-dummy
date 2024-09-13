@@ -64,16 +64,21 @@ class _ActionsFullViewState extends State<ActionsFullView> {
     await mentalStrengthEditProvider.fetchActionDetails(
       actionId: widget.id,
     );
-    addAudio(
-        actionsDetailsModel: mentalStrengthEditProvider.actionsDetailsModel!);
-    addImage(
-        actionsDetailsModel: mentalStrengthEditProvider.actionsDetailsModel!);
-    addVideo(
-        actionsDetailsModel: mentalStrengthEditProvider.actionsDetailsModel!);
-    alarmInfo = await addActionsProvider.getDataByIdFromHiveBox(
-      int.parse(
-          mentalStrengthEditProvider.actionsDetailsModel!.actions!.actionId!),
-    );
+    //added sarath
+    if( mentalStrengthEditProvider.actionsDetailsModel != null){
+      addAudio(
+          actionsDetailsModel: mentalStrengthEditProvider.actionsDetailsModel!);
+      addImage(
+          actionsDetailsModel: mentalStrengthEditProvider.actionsDetailsModel!);
+      addVideo(
+          actionsDetailsModel: mentalStrengthEditProvider.actionsDetailsModel!);
+      alarmInfo = await addActionsProvider.getDataByIdFromHiveBox(
+        int.parse(
+            mentalStrengthEditProvider.actionsDetailsModel!.actions!.actionId!),
+      );
+    }
+
+
     setState(() {});
   }
 
@@ -679,8 +684,7 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => EditActionScreen(
-                            actionsDetailsModel:
-                                mentalStrengthEditProvider.actionsDetailsModel!,
+                            actionsDetailsModel: mentalStrengthEditProvider.actionsDetailsModel!,
                           ),
                         ),
                       );

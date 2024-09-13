@@ -907,6 +907,30 @@ var logger = Logger();
     notifyListeners();
   }
 
+  int convertToUnixTimestamp(String date) {
+    try {
+      // Parse the date string with the format "d MMM y" (e.g., "13 Sep 2024")
+      DateTime parsedDate = DateFormat('d MMM y').parse(date);
+
+      // Convert to Unix timestamp (seconds since epoch)
+      int timestamp = parsedDate.millisecondsSinceEpoch ~/ 1000;
+
+      return timestamp;
+    } catch (e) {
+      print("Error parsing date: $e");
+      return 0; // Return 0 or handle the error accordingly
+    }
+  }
+
+  String convertTimeOfDayTo12Hour(TimeOfDay time) {
+    // Create a DateTime object for formatting purposes
+    final now = DateTime.now();
+    final dateTime = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+
+    // Format the time using intl package in 12-hour format with AM/PM
+    return DateFormat.jm().format(dateTime);
+  }
+
 
   GoalModelIdName? goalModelIdName;
 
@@ -920,11 +944,14 @@ var logger = Logger();
         required String locationLongitude,
         required String locationAddress,
         required String goalId,
+        String? isReminder,
       }) async {
     try {
       updateSaveActionLoadingFunction(true);
       notifyListeners();
       String? token = await getUserTokenSharePref();
+
+      // Ensure all fields are passed as strings
       var body = {
         'title': title,
         'gem_type': 'action',
@@ -932,19 +959,32 @@ var logger = Logger();
         'location_name': locationName,
         'location_latitude': locationLatitude,
         'location_longitude': locationLongitude,
-        'goal_id': goalId,
         'location_address': locationAddress,
+        'goal_id': goalId,
+        'is_reminder': isReminder ?? '',
+        'reminder_startdate': convertToUnixTimestamp(reminderStartDate).toString(),  // Convert to string
+        'reminder_enddate': convertToUnixTimestamp(reminderEndDate).toString(),      // Convert to string
+        'reminder_repeat': repeat.toString(),  // Ensure repeat is a string
+        'from_time': convertTimeOfDayTo12Hour(reminderStartTime!).toString(),        // Convert to string
+        'to_time': convertTimeOfDayTo12Hour(reminderEndTime!).toString(),            // Convert to string
       };
+
+      logger.w("body $body");
+
+      print(UrlConstant.savegemUrl + " saveGemFunction");
+      print(body.toString() + " saveGemFunction");
+
       for (int i = 0; i < mediaName.length; i++) {
         body['media_name[$i]'] = mediaName[i];
       }
-      print(body.toString() + "   saveGemFunction");
+
       final response = await http.post(
         Uri.parse(UrlConstant.savegemUrl),
         headers: <String, String>{"authorization": "$token"},
         body: body,
       );
-      print(response.body.toString() + "   saveGemFunction");
+
+      print(response.body.toString() + " saveGemFunction");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         Map<String, dynamic> responseData = json.decode(response.body);
@@ -952,10 +992,9 @@ var logger = Logger();
           id: responseData["id"].toString(),
           name: responseData["title"].toString(),
         );
-
         showCustomSnackBar(
           context: context,
-          message: json.decode(response.body)["text"],
+          message: responseData["text"].toString(),
         );
 
         if (goalId == null || goalId == "") {
@@ -963,7 +1002,7 @@ var logger = Logger();
         }
 
         if (setRemainder) {
-          // Here we call the scheduling function
+          // Scheduling function call
           scheduleAlarm(
             reminderStartTime!.format(context).toString(),
             reminderEndTime!.format(context).toString(),
@@ -991,10 +1030,10 @@ var logger = Logger();
         return true;
       } else {
         updateSaveActionLoadingFunction(false);
-        showCustomSnackBar(
-          context: context,
-          message: json.decode(response.body)["text"],
-        );
+        // showCustomSnackBar(
+        //   context: context,
+        //   message: responseData["text"].toString(),
+        // );
       }
 
       if (response.statusCode == 401 || response.statusCode == 403) {
@@ -1004,12 +1043,14 @@ var logger = Logger();
       updateSaveActionLoadingFunction(false);
       return false;
     } catch (error) {
+      logger.w("error Failed ${error}");
       showToast(context: context, message: "Failed");
       updateSaveActionLoadingFunction(false);
       notifyListeners();
       return false;
     }
   }
+
 
 
   //editActions function
@@ -1294,7 +1335,74 @@ var logger = Logger();
     //  alarmPrint('Schedule exact alarm permission ${res.isGranted ? '' : 'not'} granted',);
     }
   }
+
+  Future<bool> saveActionReminderFunction(
+      BuildContext context, {
+        required String title,
+        required String details,
+        required String actionId,
+        required String goalId,
+      }) async {
+    try {
+      notifyListeners();
+      String? token = await getUserTokenSharePref();
+      var body = {
+        'goal_id': goalId,
+        'action_id': actionId,
+        'reminder_title': title,
+        'reminder_desc': details,
+        'reminder_startdate': reminderStartDate,
+        'reminder_enddate': reminderEndDate,
+        'from_time': reminderStartTime,
+        'to_time': reminderEndTime,
+        'reminder_before':reminderStartTime,
+        'reminder_repeat':repeat,
+      };
+      print(body.toString() + "   saveActionReminderFunction");
+      final response = await http.post(
+        Uri.parse(UrlConstant.saveReminderUrl),
+        headers: <String, String>{"authorization": "$token"},
+        body: body,
+      );
+      print(response.body.toString() + "   saveActionReminderFunction");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Map<String, dynamic> responseData = json.decode(response.body);
+
+        logger.w("responseData $responseData");
+        showCustomSnackBar(
+          context: context,
+          message: json.decode(response.body)["text"],
+        );
+
+        clearFunction();
+        return true;
+      } else {
+
+        showCustomSnackBar(
+          context: context,
+          message: json.decode(response.body)["text"],
+        );
+      }
+
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        TokenManager.setTokenStatus(true);
+      }
+
+
+      return false;
+    } catch (error) {
+      showToast(context: context, message: "Failed");
+
+      notifyListeners();
+      return false;
+    }
+  }
 }
+
+
+
+
 
 
 
