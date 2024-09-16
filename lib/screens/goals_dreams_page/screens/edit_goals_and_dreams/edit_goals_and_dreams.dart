@@ -718,7 +718,7 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
                 categoryId: editProfileProvider.categorys!.id.toString(),
                 gemEndDate: adDreamsGoalsProvider.formattedDate,
                 actionId: adDreamsGoalsProvider.goalModelIdName,
-                goalId: widget.goalsanddream.goalId.toString(),
+                gemId: widget.goalsanddream.goalId.toString(),
               );
               GoalsDreamsProvider goalsDreamsProvider =
                   Provider.of<GoalsDreamsProvider>(

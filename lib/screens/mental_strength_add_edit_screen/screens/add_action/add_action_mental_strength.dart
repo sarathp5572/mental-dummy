@@ -799,6 +799,7 @@ class AddActionMentalStrengthBottomSheet extends StatelessWidget {
                   locationLongitude: addActionsProvider.locationLongitude,
                   locationAddress: addActionsProvider.selectedLocationAddress,
                   goalId: goalId,
+                    isReminder: "1"
                 );
                 if (getGemStatus) {
                   Navigator.of(context).pop();
@@ -827,6 +828,7 @@ class AddActionMentalStrengthBottomSheet extends StatelessWidget {
                 locationLongitude: addActionsProvider.locationLongitude,
                 locationAddress: addActionsProvider.selectedLocationAddress,
                 goalId: goalId,
+                  isReminder: "0"
               );
               adDreamsGoalsProvider.getAddActionIdAndName(
                 value: addActionsProvider.goalModelIdName!,

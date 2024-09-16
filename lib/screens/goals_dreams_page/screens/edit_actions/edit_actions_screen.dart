@@ -1611,24 +1611,52 @@ class _EditActionScreenState extends State<EditActionScreen> {
             if (addActionsProvider.titleEditTextController.text.isNotEmpty &&
                 addActionsProvider
                     .descriptionEditTextController.text.isNotEmpty) {
-              await addActionsProvider.editActionFunction(
-                context,
-                title: addActionsProvider.titleEditTextController.text,
-                details: addActionsProvider.descriptionEditTextController.text,
-                mediaName: addActionsProvider.addMediaUploadResponseList,
-                locationName: addActionsProvider.selectedLocationName,
-                locationLatitude: addActionsProvider.selectedLatitude,
-                locationLongitude: addActionsProvider.locationLongitude,
-                locationAddress: addActionsProvider.selectedLocationAddress,
-                actionId:
-                    widget.actionsDetailsModel!.actions!.actionId.toString(),
-              );
-              adDreamsGoalsProvider.getAddActionIdAndName(
-                value: addActionsProvider.goalModelIdName!,
-              );
-              addActionsProvider.clearFunction();
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
+              if (addActionsProvider.setRemainder){
+                await addActionsProvider.editActionFunction(
+                  context,
+                  title: addActionsProvider.titleEditTextController.text,
+                  details: addActionsProvider.descriptionEditTextController.text,
+                  mediaName: addActionsProvider.addMediaUploadResponseList,
+                  locationName: addActionsProvider.selectedLocationName,
+                  locationLatitude: addActionsProvider.selectedLatitude,
+                  locationLongitude: addActionsProvider.locationLongitude,
+                  locationAddress: addActionsProvider.selectedLocationAddress,
+                  actionId:
+                  widget.actionsDetailsModel!.actions!.actionId.toString(),
+                    goalId:  widget.actionsDetailsModel!.actions?.goalId ?? "",
+                    isReminder: "1"
+                );
+                adDreamsGoalsProvider.getAddActionIdAndName(
+                  value: addActionsProvider.goalModelIdName!,
+                );
+                addActionsProvider.clearFunction();
+                Navigator.of(context).pop();
+               // Navigator.of(context).pop();
+
+              }else{
+                await addActionsProvider.editActionFunction(
+                  context,
+                  title: addActionsProvider.titleEditTextController.text,
+                  details: addActionsProvider.descriptionEditTextController.text,
+                  mediaName: addActionsProvider.addMediaUploadResponseList,
+                  locationName: addActionsProvider.selectedLocationName,
+                  locationLatitude: addActionsProvider.selectedLatitude,
+                  locationLongitude: addActionsProvider.locationLongitude,
+                  locationAddress: addActionsProvider.selectedLocationAddress,
+                  actionId:
+                  widget.actionsDetailsModel!.actions!.actionId.toString(),
+                  goalId:  widget.actionsDetailsModel!.actions?.goalId ?? "",
+                  isReminder: "0"
+                );
+                adDreamsGoalsProvider.getAddActionIdAndName(
+                  value: addActionsProvider.goalModelIdName!,
+                );
+                addActionsProvider.clearFunction();
+                Navigator.of(context).pop();
+                //Navigator.of(context).pop();
+
+              }
+
             } else {
               showCustomSnackBar(
                 context: context,

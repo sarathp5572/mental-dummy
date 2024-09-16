@@ -458,7 +458,7 @@ class AdDreamsGoalsProvider extends ChangeNotifier {
     required String categoryId,
     required String gemEndDate,
     required List<GoalModelIdName> actionId,
-    required String goalId,
+    required String gemId,
   }) async {
     try {
       updateGoalLoading = true;
@@ -474,14 +474,15 @@ class AdDreamsGoalsProvider extends ChangeNotifier {
         'location_longitude': locationLongitude,
         'category_id': categoryId,
         'location_address': locationAddress,
-        'gem_id': goalId,
+        'gem_id': gemId,
       };
       for (int i = 0; i < mediaName.length; i++) {
         body['media_name[$i]'] = mediaName[i];
       }
-      for (int i = 0; i < actionId.length; i++) {
-        body['action_id[$i]'] = actionId[i].id;
-      }
+      //comented sarath on 16-09-2024
+      // for (int i = 0; i < actionId.length; i++) {
+      //   body['action_id[$i]'] = actionId[i].id;
+      // }
       final response = await http.post(
         Uri.parse(
           UrlConstant.savegemUrl,

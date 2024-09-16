@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mentalhelth/screens/addactions_screen/model/alaram_info.dart';
 import 'package:mentalhelth/screens/addactions_screen/provider/add_actions_provider.dart';
 import 'package:mentalhelth/screens/goals_dreams_page/model/actions_details_model.dart';
@@ -448,7 +449,7 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                       bottom: 10,
                                     ),
                                     child: addActionsProvider.setRemainder
-                                        ? alarmInfo == null
+                                        ? mentalStrengthEditProvider.actionsDetailsModel?.actions?.reminder == null
                                             ? const SizedBox()
                                             : SizedBox(
                                                 child: Column(
@@ -471,7 +472,13 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                                           width: 5,
                                                         ),
                                                         Text(
-                                                            ": ${alarmInfo!.startDate} to ${alarmInfo!.endDate}"),
+                                                            mentalStrengthEditProvider.actionsDetailsModel?.actions?.reminder?.reminder_startdate != null &&
+                                                                mentalStrengthEditProvider.actionsDetailsModel?.actions?.reminder?.reminder_enddate != null
+                                                                ? ": ${unixTimestampToDate(mentalStrengthEditProvider.actionsDetailsModel!.actions!.reminder!.reminder_startdate!)} "
+                                                                "to ${unixTimestampToDate(mentalStrengthEditProvider.actionsDetailsModel!.actions!.reminder!.reminder_enddate!)}"
+                                                                : ""
+                                                        ),
+
                                                       ],
                                                     ),
                                                     const SizedBox(
@@ -491,7 +498,13 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                                           width: 5,
                                                         ),
                                                         Text(
-                                                            ": ${alarmInfo!.startTime} to ${alarmInfo!.endTime}"),
+                                                            mentalStrengthEditProvider.actionsDetailsModel?.actions?.reminder?.from_time != null &&
+                                                                mentalStrengthEditProvider.actionsDetailsModel?.actions?.reminder?.to_time != null
+                                                                ? "${formatTimeOfDay(stringToTimeOfDay(mentalStrengthEditProvider.actionsDetailsModel!.actions!.reminder!.from_time!)!)} "
+                                                                "to ${formatTimeOfDay(stringToTimeOfDay(mentalStrengthEditProvider.actionsDetailsModel!.actions!.reminder!.to_time!)!)}"
+                                                                : ""
+                                                        ),
+
                                                       ],
                                                     ),
                                                     const SizedBox(
@@ -511,7 +524,11 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                                           width: 5,
                                                         ),
                                                         Text(
-                                                            ": ${alarmInfo!.repeat}"),
+                                                            mentalStrengthEditProvider.actionsDetailsModel?.actions?.reminder?.reminder_repeat != null
+                                                                ? ": ${mentalStrengthEditProvider.actionsDetailsModel!.actions!.reminder!.reminder_repeat!}"
+                                                                : ""
+                                                        ),
+
                                                       ],
                                                     ),
                                                   ],
@@ -718,5 +735,79 @@ class _ActionsFullViewState extends State<ActionsFullView> {
         ),
       ],
     );
+  }
+  String unixTimestampToDate(String timestamp) {
+    try {
+      // Convert the timestamp to an integer
+      int unixTimestamp = int.parse(timestamp);
+
+      // Create a DateTime object from the Unix timestamp (assumes timestamp is in seconds)
+      DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(unixTimestamp * 1000);
+
+      // Format the DateTime object into the desired string format
+      final DateFormat formatter = DateFormat('dd MMM yyyy');
+      String formattedDate = formatter.format(dateTime);
+
+      return formattedDate;
+    } catch (e) {
+      print("Error converting timestamp: $e");
+      return "Invalid date";
+    }
+  }
+  TimeOfDay? stringToTimeOfDay(String time) {
+    try {
+      // Trim and normalize to uppercase
+      String trimmedTime = time.trim().toUpperCase();
+
+      // Remove any extraneous characters (e.g., '?')
+      String cleanedTime = trimmedTime.replaceAll(RegExp(r'[^\d:APM]'), '');
+
+      // Check if the cleaned time contains AM/PM
+      bool isPM = cleanedTime.contains("PM");
+      bool isAM = cleanedTime.contains("AM");
+
+      // Remove AM/PM suffix
+      cleanedTime = cleanedTime.replaceAll(RegExp(r'[APM]'), '').trim();
+
+      // Validate format
+      RegExp timeRegExp = RegExp(r'^(\d{1,2}):(\d{2})$');
+      Match? match = timeRegExp.firstMatch(cleanedTime);
+
+      if (match == null) {
+        print("Invalid time format: $time");
+        return null;
+      }
+
+      // Parse hour and minute
+      int hour = int.parse(match.group(1)!);
+      int minute = int.parse(match.group(2)!);
+
+      // Adjust hour based on AM/PM
+      if (isPM && hour < 12) {
+        hour += 12;
+      } else if (isAM && hour == 12) {
+        hour = 0;
+      }
+
+      // Ensure hour is within valid range (0-23)
+      if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+        print("Invalid time values: hour $hour, minute $minute");
+        return null;
+      }
+
+      return TimeOfDay(hour: hour, minute: minute);
+    } catch (e) {
+      print("Error parsing time: $e");
+      return null;
+    }
+  }
+
+  String formatTimeOfDay(TimeOfDay time) {
+    final hour = time.hourOfPeriod; // Hour within the 12-hour range
+    final period = time.period == DayPeriod.am ? "AM" : "PM";
+    final formattedHour = (hour == 0 ? 12 : hour).toString(); // Adjust for midnight and noon
+    final formattedMinute = time.minute.toString().padLeft(2, '0'); // Ensure two-digit minute
+
+    return "$formattedHour:$formattedMinute $period";
   }
 }

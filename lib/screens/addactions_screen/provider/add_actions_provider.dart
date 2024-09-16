@@ -1067,6 +1067,8 @@ var logger = Logger();
     required String locationLongitude,
     required String locationAddress,
     required String actionId,
+        required String goalId,
+        String? isReminder,
   }) async {
     try {
       updateSaveActionLoadingFunction(true);
@@ -1081,6 +1083,13 @@ var logger = Logger();
         'location_longitude': locationLongitude,
         'location_address': locationAddress,
         'gem_id': actionId,
+        'goal_id': goalId,
+        'is_reminder': isReminder ?? '',
+        'reminder_startdate': convertToUnixTimestamp(reminderStartDate).toString(),  // Convert to string
+        'reminder_enddate': convertToUnixTimestamp(reminderEndDate).toString(),      // Convert to string
+        'reminder_repeat': repeat.toString(),  // Ensure repeat is a string
+        'from_time': convertTimeOfDayTo12Hour(reminderStartTime!).toString(),        // Convert to string
+        'to_time': convertTimeOfDayTo12Hour(reminderEndTime!).toString(),            // Convert to string
       };
       for (int i = 0; i < mediaName.length; i++) {
         body['media_name[$i]'] = mediaName[i];
@@ -1098,6 +1107,29 @@ var logger = Logger();
           id: responseData["id"].toString(),
           name: responseData["title"].toString(),
         );
+        // If a reminder is set, reschedule the updated alarm
+        if (setRemainder) {
+          scheduleAlarm(
+            reminderStartTime!.format(context).toString(),
+            reminderEndTime!.format(context).toString(),
+            DateFormat('d MMM y').parse(reminderStartDate),
+            DateFormat('d MMM y').parse(reminderEndDate),
+            responseData["id"].toString(),
+            repeat == "Never"
+                ? RepeatInterval.never
+                : repeat == "Daily"
+                ? RepeatInterval.daily
+                : repeat == "Weekly"
+                ? RepeatInterval.weekly
+                : repeat == "Monthly"
+                ? RepeatInterval.monthly
+                : repeat == "Yearly"
+                ? RepeatInterval.yearly
+                : RepeatInterval.daily,
+            title: title,
+            body: details,
+          );
+        }
         clearFunction();
         showCustomSnackBar(
           context: context,
