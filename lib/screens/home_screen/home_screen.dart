@@ -49,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
       await homeProvider.fetchChartView(context);
       await homeProvider.fetchJournals(initial: true);
       await editProfileProvider.fetchUserProfile();
+      await homeProvider.fetchRemindersDetails();
       tokenStatus = TokenManager.checkTokenExpiry();
       if (tokenStatus) {
         setState(() {

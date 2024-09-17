@@ -186,6 +186,8 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
                                       goalsanddream: goalsDreamsProvider
                                           .goalsanddreams[index],
                                       indexs: index,
+                                          goalStatus:goalsDreamsProvider
+                                              .goalsanddreams[index].goalStatus ?? "" ,
                                     ),
                                   ),
                                 );

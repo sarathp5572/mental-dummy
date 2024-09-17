@@ -29,7 +29,8 @@ class ActionsFullView extends StatefulWidget {
       required this.id,
       required this.indexs,
       required this.action,
-      required this.goalId})
+      required this.goalId,
+         this.actionStatus})
       : super(
           key: key,
         );
@@ -37,6 +38,7 @@ class ActionsFullView extends StatefulWidget {
   final String id;
   final int indexs;
   final String goalId;
+  final String? actionStatus;
 
   @override
   State<ActionsFullView> createState() => _ActionsFullViewState();
@@ -140,7 +142,10 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                       .toString()),
                   id: mentalStrengthEditProvider
                       .actionsDetailsModel!.actions!.actionId
-                      .toString()),
+                      .toString(),
+          actionStatus:  mentalStrengthEditProvider
+              .actionsDetailsModel!.actions!.actionStatus
+              .toString(),),
           body: Padding(
             padding: const EdgeInsets.only(
               left: 20,
@@ -667,7 +672,7 @@ class _ActionsFullViewState extends State<ActionsFullView> {
   }
 
   PreferredSizeWidget buildAppBarActionView(BuildContext context, Size size,
-      {String? heading, required String id}) {
+      {String? heading, required String id,required actionStatus}) {
     return CustomAppBar(
       leadingWidth: 36,
       leading: AppbarLeadingImage(
@@ -696,6 +701,7 @@ class _ActionsFullViewState extends State<ActionsFullView> {
               onSelected: (value) {},
               itemBuilder: (BuildContext context) {
                 return [
+                  if(actionStatus == "0")
                   PopupMenuItem<String>(
                     onTap: () {
                       Navigator.of(context).push(

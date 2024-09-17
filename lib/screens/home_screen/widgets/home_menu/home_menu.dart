@@ -15,6 +15,7 @@ import '../../../../utils/core/image_constant.dart';
 import '../../../../utils/theme/custom_text_style.dart';
 import '../../../../utils/theme/theme_helper.dart';
 import '../../../../widgets/custom_image_view.dart';
+import '../../../view_reminder_screen/screens/view_reminder_screen.dart';
 
 Widget buildPopupDialog(BuildContext context, Size size) {
   return AlertDialog(
@@ -198,7 +199,14 @@ Widget buildPopupDialog(BuildContext context, Size size) {
               height: size.height * 0.005,
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                    const ViewReminderScreen(),
+                  ),
+                );
+              },
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Text(

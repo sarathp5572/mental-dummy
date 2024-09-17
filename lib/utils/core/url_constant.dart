@@ -37,7 +37,9 @@ class UrlConstant {
   static String fetchJournalDetails({required String journalId}) {
     return "${baseUrl}journal/$journalId";
   }
-
+  static String fetchRemindersDetails() {
+    return "${baseUrl}reminder/";
+  }
   static const String journalChartViewUrl = "${baseUrl}journalchartview";
   static const String emotionsUrl = "${baseUrl}emotions/";
   static const String goalsUrl = "${baseUrl}goals/";

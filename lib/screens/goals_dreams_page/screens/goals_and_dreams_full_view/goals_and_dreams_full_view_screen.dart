@@ -25,7 +25,7 @@ import '../../../mental_strength_add_edit_screen/provider/mental_strenght_edit_p
 
 class GoalAndDreamFullViewScreen extends StatefulWidget {
   const GoalAndDreamFullViewScreen(
-      {Key? key, required this.goalsanddream, required this.indexs})
+      {Key? key, required this.goalsanddream, required this.indexs,required this.goalStatus})
       : super(
           key: key,
         );
@@ -33,6 +33,7 @@ class GoalAndDreamFullViewScreen extends StatefulWidget {
   final Goalsanddream goalsanddream;
 
   final int indexs;
+  final String goalStatus;
 
   @override
   State<GoalAndDreamFullViewScreen> createState() =>
@@ -111,7 +112,8 @@ class _GoalAndDreamFullViewScreenState
       child: Scaffold(
         appBar: buildAppBarGoalView(context, size,
             heading: widget.goalsanddream.goalTitle.toString(),
-            id: widget.goalsanddream.goalId.toString()),
+            id: widget.goalsanddream.goalId.toString(),
+        goalStatus: widget.goalStatus),
         body: Padding(
           padding: const EdgeInsets.only(
             left: 20,
@@ -707,6 +709,7 @@ class _GoalAndDreamFullViewScreenState
     Size size, {
     String? heading,
     required String id,
+        required String goalStatus,
   }) {
     return CustomAppBar(
       leadingWidth: 36,
@@ -734,6 +737,7 @@ class _GoalAndDreamFullViewScreenState
               onSelected: (value) {},
               itemBuilder: (BuildContext context) {
                 return [
+                  if(goalStatus == "0")
                   PopupMenuItem<String>(
                     onTap: () {
                       Navigator.of(context).push(
