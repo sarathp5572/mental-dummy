@@ -51,9 +51,15 @@ class _AddNewReminderScreenScreenState
     goalsDreamsProvider.fetchGoalsAndDreams(initial: true);
     addActionsProvider =
         Provider.of<AddActionsProvider>(context, listen: false);
-
+    _loadGoalListDropDown();
     super.initState();
   }
+  Future<void> _loadGoalListDropDown() async {
+    final homeProvider =
+    Provider.of<HomeProvider>(context, listen: false);
+    await homeProvider.fetchGoals();
+  }
+
 
   @override
   Widget build(BuildContext context) {

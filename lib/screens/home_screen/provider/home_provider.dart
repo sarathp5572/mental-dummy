@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +11,8 @@ import 'package:mentalhelth/utils/core/url_constant.dart';
 import 'package:mentalhelth/utils/logic/shared_prefrence.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 
+import '../../mental_strength_add_edit_screen/model/get_goals_model.dart';
+import '../../mental_strength_add_edit_screen/model/list_goal_actions.dart';
 import '../../token_expiry/token_expiry.dart';
 import '../model/chart_view_model.dart';
 import '../model/journal_details.dart';
@@ -206,7 +210,7 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
-  ReminderDetails? remindersDetails;
+  RemindersDetails? remindersDetails;
   bool remindersDetailsLoading = false;
   int reminderStatusCode = 0;
   TextEditingController descriptionEditTextController = TextEditingController();
@@ -233,7 +237,7 @@ class HomeProvider extends ChangeNotifier {
       );
       reminderStatusCode = response.statusCode;
       if (response.statusCode == 200) {
-        remindersDetails = reminderDetailsFromJson(response.body);
+        remindersDetails = remindersDetailsFromJson(response.body);
         logger.w("remindersDetails ${remindersDetails}");
         notifyListeners();
         reminderStatusCode = response.statusCode;
@@ -387,6 +391,186 @@ class HomeProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+
+  bool editRemindersDetailsLoading = false;
+  Future<bool> editReminderFunction(
+      BuildContext context, {
+        required String title,
+        required String details,
+        required String actionId,
+        required String goalId,
+        required String reminderId,
+      }) async {
+    try {
+      editRemindersDetailsLoading = true;
+      notifyListeners();
+      String? token = await getUserTokenSharePref();
+      var body = {
+        'goal_id': goalId,
+        'action_id': actionId,
+        'reminder_title': title,
+        'reminder_desc': details,
+        'reminder_startdate': convertToUnixTimestamp(reminderStartDate).toString(),
+        'reminder_enddate': convertToUnixTimestamp(reminderEndDate).toString(),
+        'from_time': convertTimeOfDayTo12Hour(reminderStartTime!).toString(),
+        'to_time': convertTimeOfDayTo12Hour(reminderEndTime!).toString(),
+        'reminder_before':"",
+        'reminder_repeat':repeat,
+        'reminder_id':reminderId,
+      };
+      print(body.toString() + "   editReminderFunction");
+      final response = await http.post(
+        Uri.parse(UrlConstant.saveReminderUrl),
+        headers: <String, String>{"authorization": "$token"},
+        body: body,
+      );
+      print(response.body.toString() + "   editReminderFunction");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Map<String, dynamic> responseData = json.decode(response.body);
+        editRemindersDetailsLoading = false;
+        logger.w("responseData $responseData");
+        showCustomSnackBar(
+          context: context,
+          message: json.decode(response.body)["text"],
+        );
+       // clearFunction();
+        return true;
+      } else {
+        editRemindersDetailsLoading = false;
+        showCustomSnackBar(
+          context: context,
+          message: json.decode(response.body)["text"],
+        );
+      }
+
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        TokenManager.setTokenStatus(true);
+      }
+      editRemindersDetailsLoading = false;
+      return false;
+    } catch (error) {
+      showToast(context: context, message: "Failed");
+      editRemindersDetailsLoading = false;
+      logger.w("error $error");
+      notifyListeners();
+      return false;
+    }
+  }
+  void clearFunction() {
+    titleEditTextController.clear();
+    descriptionEditTextController.clear();
+    reminderStartDate = '';
+    reminderEndDate = '';
+    reminderStartTime = null;
+    reminderEndTime = null;
+    remindTime = null;
+    repeat = 'Never';
+  }
+
+  String convertTimeOfDayTo12Hour(TimeOfDay time) {
+    // Create a DateTime object for formatting purposes
+    final now = DateTime.now();
+    final dateTime = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+
+    // Format the time using intl package in 12-hour format with AM/PM
+    return DateFormat.jm().format(dateTime);
+  }
+
+
+  int convertToUnixTimestamp(String date) {
+    try {
+      // Parse the date string with the format "d MMM y" (e.g., "13 Sep 2024")
+      DateTime parsedDate = DateFormat('d MMM y').parse(date);
+
+      // Convert to Unix timestamp (seconds since epoch)
+      int timestamp = parsedDate.millisecondsSinceEpoch ~/ 1000;
+
+      return timestamp;
+    } catch (e) {
+      print("Error parsing date: $e");
+      return 0; // Return 0 or handle the error accordingly
+    }
+  }
+
+  bool getGoalsModelLoading = false;
+  GetGoalsModel? getGoalsModelDropDown;
+
+  Future<void> fetchGoals() async {
+    try {
+      String? token = await getUserTokenSharePref();
+      getGoalsModelLoading = true;
+      notifyListeners();
+
+      final response = await http.get(
+        Uri.parse(
+          UrlConstant.goalsUrl,
+        ),
+        headers: <String, String>{"authorization": "$token"},
+      );
+      if (response.statusCode == 200) {
+        getGoalsModelDropDown = getGoalsModelFromJson(response.body);
+        logger.w("getGoalsModelDropDown ${getGoalsModelDropDown}");
+        notifyListeners();
+      } else {
+
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      getGoalsModelLoading = false;
+      notifyListeners();
+    } catch (e) {
+      getGoalsModelLoading = false;
+      notifyListeners();
+    }
+  }
+
+
+
+  GetListGoalActionsModel? getListGoalActionsModel;
+  bool getListGoalActionsModelLoading = false;
+
+  Future<void> fetchGoalActions({required String goalId}) async {
+    try {
+      String? token = await getUserTokenSharePref();
+      getListGoalActionsModelLoading = true;
+      notifyListeners();
+      final response = await http.get(
+        Uri.parse(
+          UrlConstant.goalActionsUrl(goalId: goalId.toString()),
+        ),
+        headers: <String, String>{"authorization": "$token"},
+      );
+
+      if (response.statusCode == 200) {
+        getListGoalActionsModel =
+            getListGoalActionsModelFromJson(response.body);
+
+        notifyListeners();
+      } else {}
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      getListGoalActionsModelLoading = false;
+      notifyListeners();
+    } catch (e) {
+      getListGoalActionsModelLoading = false;
+      notifyListeners();
+    }
+  }
+
 
 
 

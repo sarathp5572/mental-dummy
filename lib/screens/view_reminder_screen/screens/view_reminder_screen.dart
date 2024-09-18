@@ -206,8 +206,8 @@ class _ViewReminderScreenState extends State<ViewReminderScreen> {
                                        EditReminderScreenScreen(
                                         title: homeProvider.remindersDetails?.reminders![index].reminderTitle ?? "",
                                          description: homeProvider.remindersDetails?.reminders![index].reminderDesc ?? "",
-                                         startDate: homeProvider.remindersDetails?.reminders![index].reminderStartDate ?? "",
-                                         endDate: homeProvider.remindersDetails?.reminders![index].reminderEndDate ?? "",
+                                         startDate: homeProvider.remindersDetails?.reminders![index].reminderStartdate ?? "",
+                                         endDate: homeProvider.remindersDetails?.reminders![index].reminderEnddate ?? "",
                                          startTime: homeProvider.remindersDetails?.reminders![index].fromTime ?? "",
                                          endTime: homeProvider.remindersDetails?.reminders![index].toTime ?? "",
                                          repeat: homeProvider.remindersDetails?.reminders![index].reminderRepeat ?? "",
@@ -221,8 +221,9 @@ class _ViewReminderScreenState extends State<ViewReminderScreen> {
                                 child: ReminderListItemWidget(
                                   headding: homeProvider.remindersDetails?.reminders![index].reminderTitle ?? "",
                                   content: homeProvider.remindersDetails?.reminders![index].reminderDesc ?? "",
-                                  startDate: homeProvider.remindersDetails?.reminders![index].reminderStartDate ?? "",
-                                  endDate: homeProvider.remindersDetails?.reminders![index].reminderEndDate ?? "",
+                                  startDate: homeProvider.remindersDetails?.reminders![index].reminderStartdate ?? "",
+                                  endDate: homeProvider.remindersDetails?.reminders![index].reminderEnddate ?? "",
+                                  imagePath: homeProvider.remindersDetails?.reminders![index].imageUrl ?? "",
                                 ),
                               );
 
@@ -266,12 +267,12 @@ class _ViewReminderScreenState extends State<ViewReminderScreen> {
                                   backgroundColor: ColorsContent.primaryColor,
                                 ),
                                 onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                      const AddNewReminderScreenScreen(),
-                                    ),
-                                  );
+                                  // Navigator.of(context).push(
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) =>
+                                  //     const AddNewReminderScreenScreen(),
+                                  //   ),
+                                  // );
                                 },
                                 child: const Text(
                                   "Create Reminder",

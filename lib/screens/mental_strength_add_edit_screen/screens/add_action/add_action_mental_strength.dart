@@ -195,7 +195,7 @@ class AddActionMentalStrengthBottomSheet extends StatelessWidget {
                                               ),
                                               Padding(
                                                 padding: const EdgeInsets.only(
-                                                  left: 19,
+                                                  left: 5,
                                                   top: 2,
                                                   bottom: 1,
                                                 ),
@@ -262,7 +262,7 @@ class AddActionMentalStrengthBottomSheet extends StatelessWidget {
                                               ),
                                               Padding(
                                                 padding: const EdgeInsets.only(
-                                                  left: 19,
+                                                  left: 5,
                                                   top: 2,
                                                   bottom: 1,
                                                 ),
@@ -341,7 +341,7 @@ class AddActionMentalStrengthBottomSheet extends StatelessWidget {
                                               ),
                                               Padding(
                                                 padding: const EdgeInsets.only(
-                                                  left: 19,
+                                                  left: 5,
                                                   top: 2,
                                                   bottom: 1,
                                                 ),
@@ -408,7 +408,7 @@ class AddActionMentalStrengthBottomSheet extends StatelessWidget {
                                               ),
                                               Padding(
                                                 padding: const EdgeInsets.only(
-                                                  left: 19,
+                                                  left: 5,
                                                   top: 2,
                                                   bottom: 1,
                                                 ),
@@ -464,7 +464,7 @@ class AddActionMentalStrengthBottomSheet extends StatelessWidget {
                                               left: 2,
                                             ),
                                             padding: const EdgeInsets.only(
-                                              left: 11,
+                                              left: 5,
                                               right: 8,
                                               bottom: 6,
                                               top: 6,

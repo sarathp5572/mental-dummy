@@ -1,34 +1,34 @@
+// To parse this JSON data, do
+//
+//     final remindersDetails = remindersDetailsFromJson(jsonString);
+
 import 'dart:convert';
 
-ReminderDetails reminderDetailsFromJson(String str) =>
-    ReminderDetails.fromJson(json.decode(str));
+RemindersDetails remindersDetailsFromJson(String str) => RemindersDetails.fromJson(json.decode(str));
 
-String reminderDetailsToJson(ReminderDetails data) => json.encode(data.toJson());
+String remindersDetailsToJson(RemindersDetails data) => json.encode(data.toJson());
 
-class ReminderDetails {
+class RemindersDetails {
   bool? status;
   String? text;
   List<Reminder>? reminders;
 
-  ReminderDetails({
+  RemindersDetails({
     this.status,
     this.text,
     this.reminders,
   });
 
-  factory ReminderDetails.fromJson(Map<String, dynamic> json) => ReminderDetails(
+  factory RemindersDetails.fromJson(Map<String, dynamic> json) => RemindersDetails(
     status: json["status"],
     text: json["text"],
-    reminders: List<Reminder>.from(json.entries
-        .where((entry) => int.tryParse(entry.key) != null)
-        .map((entry) => Reminder.fromJson(entry.value))),
+    reminders: json["reminders"] == null ? [] : List<Reminder>.from(json["reminders"]!.map((x) => Reminder.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "status": status,
     "text": text,
-    if (reminders != null)
-      for (int i = 0; i < reminders!.length; i++) "$i": reminders![i].toJson(),
+    "reminders": reminders == null ? [] : List<dynamic>.from(reminders!.map((x) => x.toJson())),
   };
 }
 
@@ -38,12 +38,13 @@ class Reminder {
   String? reminderId;
   String? reminderTitle;
   String? reminderDesc;
-  String? reminderStartDate;
-  String? reminderEndDate;
+  String? reminderStartdate;
+  String? reminderEnddate;
   String? fromTime;
   String? toTime;
   String? reminderBefore;
   String? reminderRepeat;
+  String? imageUrl;
 
   Reminder({
     this.goalId,
@@ -51,12 +52,13 @@ class Reminder {
     this.reminderId,
     this.reminderTitle,
     this.reminderDesc,
-    this.reminderStartDate,
-    this.reminderEndDate,
+    this.reminderStartdate,
+    this.reminderEnddate,
     this.fromTime,
     this.toTime,
     this.reminderBefore,
     this.reminderRepeat,
+    this.imageUrl,
   });
 
   factory Reminder.fromJson(Map<String, dynamic> json) => Reminder(
@@ -65,12 +67,13 @@ class Reminder {
     reminderId: json["reminder_id"],
     reminderTitle: json["reminder_title"],
     reminderDesc: json["reminder_desc"],
-    reminderStartDate: json["reminder_startdate"],
-    reminderEndDate: json["reminder_enddate"],
+    reminderStartdate: json["reminder_startdate"],
+    reminderEnddate: json["reminder_enddate"],
     fromTime: json["from_time"],
     toTime: json["to_time"],
     reminderBefore: json["reminder_before"],
-    reminderRepeat: json["reminder_repeat"],
+    reminderRepeat:json["reminder_repeat"],
+    imageUrl: json["image_url"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -79,11 +82,12 @@ class Reminder {
     "reminder_id": reminderId,
     "reminder_title": reminderTitle,
     "reminder_desc": reminderDesc,
-    "reminder_startdate": reminderStartDate,
-    "reminder_enddate": reminderEndDate,
+    "reminder_startdate": reminderStartdate,
+    "reminder_enddate": reminderEnddate,
     "from_time": fromTime,
     "to_time": toTime,
     "reminder_before": reminderBefore,
     "reminder_repeat": reminderRepeat,
+    "image_url": imageUrl,
   };
 }

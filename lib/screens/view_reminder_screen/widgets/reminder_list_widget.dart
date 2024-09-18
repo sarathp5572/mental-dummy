@@ -14,6 +14,7 @@ class ReminderListItemWidget extends StatelessWidget {
     required this.content,
     required this.startDate,
     required this.endDate,
+    required this.imagePath,
 
   }) : super(
     key: key,
@@ -22,6 +23,7 @@ class ReminderListItemWidget extends StatelessWidget {
   final String content;
   final String startDate;
   final String endDate;
+  final String imagePath;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +46,12 @@ class ReminderListItemWidget extends StatelessWidget {
           // image == null
           //     ? const SizedBox()
           //     :
+          imagePath != null && imagePath.isNotEmpty ?
+           CircleAvatar(
+             backgroundColor: appTheme.gray50,
+             radius: size.height * 0.032,
+             backgroundImage: NetworkImage(imagePath),
+           ):
           SvgPicture.asset(
             'assets/images/alarmclock_fill.svg',  // Assuming 'image' is a URL to an SVG
             fit: BoxFit.cover, // Optional: Adjust fit as needed

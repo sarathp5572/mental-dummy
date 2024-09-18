@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/goals_dreams_page/model/goals_and_dreams_model.dart';
@@ -18,6 +19,8 @@ import '../../../utils/theme/theme_helper.dart';
 import '../../../widgets/custom_elevated_button.dart';
 import '../../../widgets/custom_image_view.dart';
 import '../../../widgets/custom_text_form_field.dart';
+import '../../../widgets/functions/popup.dart';
+import '../../../widgets/functions/snack_bar.dart';
 import '../../addactions_screen/provider/add_actions_provider.dart';
 import '../../addgoals_dreams_screen/provider/ad_goals_dreams_provider.dart';
 import '../../home_screen/model/reminder_details.dart';
@@ -801,11 +804,56 @@ class _EditReminderScreenScreenScreenState
   }
 
   Widget _buildSaveButton(BuildContext context) {
-    return Consumer2<AddActionsProvider, AdDreamsGoalsProvider>(
-        builder: (context, addActionsProvider, adDreamsGoalsProvider, _) {
+    return Consumer2<HomeProvider, AdDreamsGoalsProvider>(
+        builder: (context, homeProvider, adDreamsGoalsProvider, _) {
           return CustomElevatedButton(
-            loading: addActionsProvider.saveAddActionsLoading,
+            loading: homeProvider.editRemindersDetailsLoading,
             onPressed: () async {
+              customPopup(
+                context: context,
+                onPressedDelete: () async {
+                  if (homeProvider.titleEditTextController.text.isNotEmpty &&
+                      homeProvider
+                          .descriptionEditTextController.text.isNotEmpty) {
+                    await homeProvider.editReminderFunction(
+                        context,
+                        title: homeProvider.titleEditTextController.text,
+                        details: homeProvider.descriptionEditTextController.text,
+                        goalId:  widget.goalId ?? "",
+                        actionId: widget.actionId ?? "",
+                        reminderId: widget.reminderId ?? ""
+                    );
+                    Fluttertoast.showToast(
+                      msg: "Updated",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM, // You can change the position
+                      backgroundColor: Colors.blue,
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
+                    // adDreamsGoalsProvider.getAddActionIdAndName(
+                    //   value: addActionsProvider.goalModelIdName!,
+                    // );
+                    homeProvider.clearFunction();
+                    Navigator.of(context).pop();
+                    // Navigator.of(context).pop();
+
+                  }
+                  else {
+                    showCustomSnackBar(
+                      context: context,
+                      message: "Please fill in all the fields",
+                    );
+                  }
+                  Navigator.of(context).pop();
+                },
+                yes: "Yes",
+                title: 'Remainder Update',
+                content:
+                'Are you sure You want to Update?',
+              );
+
+
 
             },
             height: 40,

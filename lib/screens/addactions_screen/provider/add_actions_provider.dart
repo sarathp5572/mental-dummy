@@ -1368,68 +1368,6 @@ var logger = Logger();
     }
   }
 
-  Future<bool> saveActionReminderFunction(
-      BuildContext context, {
-        required String title,
-        required String details,
-        required String actionId,
-        required String goalId,
-      }) async {
-    try {
-      notifyListeners();
-      String? token = await getUserTokenSharePref();
-      var body = {
-        'goal_id': goalId,
-        'action_id': actionId,
-        'reminder_title': title,
-        'reminder_desc': details,
-        'reminder_startdate': reminderStartDate,
-        'reminder_enddate': reminderEndDate,
-        'from_time': reminderStartTime,
-        'to_time': reminderEndTime,
-        'reminder_before':reminderStartTime,
-        'reminder_repeat':repeat,
-      };
-      print(body.toString() + "   saveActionReminderFunction");
-      final response = await http.post(
-        Uri.parse(UrlConstant.saveReminderUrl),
-        headers: <String, String>{"authorization": "$token"},
-        body: body,
-      );
-      print(response.body.toString() + "   saveActionReminderFunction");
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        Map<String, dynamic> responseData = json.decode(response.body);
-
-        logger.w("responseData $responseData");
-        showCustomSnackBar(
-          context: context,
-          message: json.decode(response.body)["text"],
-        );
-
-        clearFunction();
-        return true;
-      } else {
-
-        showCustomSnackBar(
-          context: context,
-          message: json.decode(response.body)["text"],
-        );
-      }
-
-      if (response.statusCode == 401 || response.statusCode == 403) {
-        TokenManager.setTokenStatus(true);
-      }
-
-
-      return false;
-    } catch (error) {
-      showToast(context: context, message: "Failed");
-
-      notifyListeners();
-      return false;
-    }
-  }
 }
 
 
