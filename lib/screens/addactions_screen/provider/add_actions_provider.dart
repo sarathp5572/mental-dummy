@@ -951,29 +951,46 @@ var logger = Logger();
       notifyListeners();
       String? token = await getUserTokenSharePref();
 
-      // Ensure all fields are passed as strings
-      var body = {
-        'title': title,
-        'gem_type': 'action',
-        'details': details,
-        'location_name': locationName,
-        'location_latitude': locationLatitude,
-        'location_longitude': locationLongitude,
-        'location_address': locationAddress,
-        'goal_id': goalId,
-        'is_reminder': isReminder ?? '',
-        'reminder_startdate': convertToUnixTimestamp(reminderStartDate).toString(),  // Convert to string
-        'reminder_enddate': convertToUnixTimestamp(reminderEndDate).toString(),      // Convert to string
-        'reminder_repeat': repeat.toString(),  // Ensure repeat is a string
-        'from_time': convertTimeOfDayTo12Hour(reminderStartTime!).toString(),        // Convert to string
-        'to_time': convertTimeOfDayTo12Hour(reminderEndTime!).toString(),            // Convert to string
-      };
+      // Create the body based on the value of isReminder
+      var body;
+      if (isReminder == '1') {
+        body = {
+          'title': title,
+          'gem_type': 'action',
+          'details': details,
+          'location_name': locationName,
+          'location_latitude': locationLatitude,
+          'location_longitude': locationLongitude,
+          'location_address': locationAddress,
+          'goal_id': goalId,
+          'is_reminder': isReminder ?? '',
+          'reminder_startdate': convertToUnixTimestamp(reminderStartDate).toString(),  // Convert to string
+          'reminder_enddate': convertToUnixTimestamp(reminderEndDate).toString(),      // Convert to string
+          'reminder_before': '${remindTime?.hour.toString().padLeft(2, '0')}:${remindTime?.minute.toString().padLeft(2, '0')}',
+          'reminder_repeat': repeat.toString(),  // Ensure repeat is a string
+          'from_time': convertTimeOfDayTo12Hour(reminderStartTime!).toString(),        // Convert to string
+          'to_time': convertTimeOfDayTo12Hour(reminderEndTime!).toString(),            // Convert to string
+        };
+      } else {
+        body = {
+          'title': title,
+          'gem_type': 'action',
+          'details': details,
+          'location_name': locationName,
+          'location_latitude': locationLatitude,
+          'location_longitude': locationLongitude,
+          'location_address': locationAddress,
+          'goal_id': goalId,
+          'is_reminder': isReminder ?? '',         // Convert to string
+        };
+      }
 
       logger.w("body $body");
 
       print(UrlConstant.savegemUrl + " saveGemFunction");
       print(body.toString() + " saveGemFunction");
 
+      // Add media files to the body
       for (int i = 0; i < mediaName.length; i++) {
         body['media_name[$i]'] = mediaName[i];
       }
@@ -1030,10 +1047,6 @@ var logger = Logger();
         return true;
       } else {
         updateSaveActionLoadingFunction(false);
-        // showCustomSnackBar(
-        //   context: context,
-        //   message: responseData["text"].toString(),
-        // );
       }
 
       if (response.statusCode == 401 || response.statusCode == 403) {
@@ -1043,13 +1056,14 @@ var logger = Logger();
       updateSaveActionLoadingFunction(false);
       return false;
     } catch (error) {
-      logger.w("error Failed ${error}");
+      logger.w("error Failed $error");
       showToast(context: context, message: "Failed");
       updateSaveActionLoadingFunction(false);
       notifyListeners();
       return false;
     }
   }
+
 
 
 
@@ -1087,6 +1101,7 @@ var logger = Logger();
         'is_reminder': isReminder ?? '',
         'reminder_startdate': convertToUnixTimestamp(reminderStartDate).toString(),  // Convert to string
         'reminder_enddate': convertToUnixTimestamp(reminderEndDate).toString(),      // Convert to string
+        'reminder_before': '${remindTime?.hour.toString().padLeft(2, '0')}:${remindTime?.minute.toString().padLeft(2, '0')}',
         'reminder_repeat': repeat.toString(),  // Ensure repeat is a string
         'from_time': convertTimeOfDayTo12Hour(reminderStartTime!).toString(),        // Convert to string
         'to_time': convertTimeOfDayTo12Hour(reminderEndTime!).toString(),            // Convert to string

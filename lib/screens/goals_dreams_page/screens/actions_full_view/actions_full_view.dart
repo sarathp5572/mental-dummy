@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/addactions_screen/model/alaram_info.dart';
 import 'package:mentalhelth/screens/addactions_screen/provider/add_actions_provider.dart';
 import 'package:mentalhelth/screens/goals_dreams_page/model/actions_details_model.dart';
@@ -22,6 +23,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../widgets/app_bar/appbar_subtitle.dart';
 import '../../../../widgets/app_bar/custom_app_bar.dart';
+import '../../../../widgets/functions/popup.dart';
 
 class ActionsFullView extends StatefulWidget {
   const ActionsFullView(
@@ -47,6 +49,7 @@ class ActionsFullView extends StatefulWidget {
 class _ActionsFullViewState extends State<ActionsFullView> {
   bool isCompleted = false;
   AlarmInfo? alarmInfo;
+  var logger = Logger();
 
   @override
   void initState() {
@@ -81,6 +84,7 @@ class _ActionsFullViewState extends State<ActionsFullView> {
       );
     }
 
+    logger.w("widget.action.actionStatus${mentalStrengthEditProvider.actionsDetailsModel!.actions!.actionStatus!}");
 
     setState(() {});
   }
@@ -424,22 +428,22 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                 builder: (context, addActionsProvider, _) {
                               return Column(
                                 children: [
-                                  alarmInfo == null
+                                  mentalStrengthEditProvider.actionsDetailsModel?.actions?.reminder == null
                                       ? const SizedBox()
-                                      : Row(
+                                      : const Row(
                                           children: [
-                                            Checkbox(
-                                              value: addActionsProvider
-                                                  .setRemainder,
-                                              onChanged: (value) {
-                                                addActionsProvider
-                                                    .changeSetRemainder(value!);
-                                              },
-                                            ),
-                                            SizedBox(
-                                              width: size.width * 0.01,
-                                            ),
-                                            const Text(
+                                            // Checkbox(
+                                            //   value: addActionsProvider
+                                            //       .setRemainder,
+                                            //   onChanged: (value) {
+                                            //     addActionsProvider
+                                            //         .changeSetRemainder(value!);
+                                            //   },
+                                            // ),
+                                            // SizedBox(
+                                            //   width: size.width * 0.01,
+                                            // ),
+                                            Text(
                                               "Reminder",
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
@@ -447,14 +451,14 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                             ),
                                           ],
                                         ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 15),
                                   Padding(
                                     padding: EdgeInsets.only(
                                       left: size.width * 0.04,
                                       bottom: 10,
                                     ),
-                                    child: addActionsProvider.setRemainder
-                                        ? mentalStrengthEditProvider.actionsDetailsModel?.actions?.reminder == null
+                                    child:
+                                    mentalStrengthEditProvider.actionsDetailsModel?.actions?.reminder == null
                                             ? const SizedBox()
                                             : SizedBox(
                                                 child: Column(
@@ -539,14 +543,13 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                                   ],
                                                 ),
                                               )
-                                        : const SizedBox(),
                                   )
                                 ],
                               );
                             }),
 
                             const SizedBox(height: 20),
-                            widget.action.actionStatus == "1"
+                            mentalStrengthEditProvider.actionsDetailsModel!.actions!.actionStatus! == "1"
                                 ? const Padding(
                                     padding: EdgeInsets.only(
                                       left: 0,
@@ -571,23 +574,36 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                         bottom: 10,
                                       ),
                                       child: CustomCheckboxButton(
-                                        text: "Mark this goal as Completed",
+                                        text: "Mark this action is completed",
                                         value: isCompleted,
                                         onChange: (value) async {
-                                          setState(() {
-                                            isCompleted = true;
-                                          });
-                                          await addActionsProvider
-                                              .updateActionStatusFunction(
-                                            context,
-                                            goalId: widget.goalId.toString(),
-                                            actionId:
+                                          customPopup(
+                                            context: context,
+                                            onPressedDelete: () async {
+                                              setState(() {
+                                                isCompleted = true;
+                                              });
+                                              await addActionsProvider
+                                                  .updateActionStatusFunction(
+                                                context,
+                                                goalId: widget.goalId.toString(),
+                                                actionId:
                                                 widget.action.id.toString(),
+                                              );
+                                              mentalStrengthEditProvider
+                                                  .fetchGoalActions(
+                                                goalId: widget.goalId.toString(),
+                                              );
+                                              Navigator.of(context).pop();
+                                              Navigator.of(context).pop();
+                                            },
+                                            yes: "Yes",
+                                            title: 'Action Completed',
+                                            content:
+                                            'Are you sure You want to mark this action as completed?',
                                           );
-                                          mentalStrengthEditProvider
-                                              .fetchGoalActions(
-                                            goalId: widget.goalId.toString(),
-                                          );
+
+
                                         },
                                       ),
                                     );

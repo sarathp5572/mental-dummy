@@ -346,6 +346,7 @@ class _GoalAndDreamFullViewScreenState
                                         ),
                                         goalId: widget.goalsanddream.goalId
                                             .toString(),
+                                        actionStatus:  mentalStrengthEditProvider.getListGoalActionsModel?.actions?[index].actionStatus,
                                       ),
                                     ),
                                   );

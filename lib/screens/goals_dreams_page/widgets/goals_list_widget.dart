@@ -292,6 +292,11 @@ class _GoalsListWidgetState extends State<GoalsListWidget> {
                                         goalId: widget
                                             .goalsanddreams[widget.index].goalId
                                             .toString(),
+                                        actionStatus: mentalStrengthEditProvider
+                                            .getListGoalActionsModel!
+                                            .actions![index]
+                                            .actionStatus
+                                            .toString(),
                                       ),
                                     ),
                                   );

@@ -415,7 +415,7 @@ class HomeProvider extends ChangeNotifier {
         'reminder_enddate': convertToUnixTimestamp(reminderEndDate).toString(),
         'from_time': convertTimeOfDayTo12Hour(reminderStartTime!).toString(),
         'to_time': convertTimeOfDayTo12Hour(reminderEndTime!).toString(),
-        'reminder_before':"",
+        'reminder_before': '${remindTime?.hour.toString().padLeft(2, '0')}:${remindTime?.minute.toString().padLeft(2, '0')}',
         'reminder_repeat':repeat,
         'reminder_id':reminderId,
       };
@@ -571,6 +571,52 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
+  bool deleteActionLoading = false;
+  Future<bool> deleteReminderFunction({required String reminder_id}) async {
+    try {
+      // String? userId = await getUserIdSharePref();
+      String? token = await getUserTokenSharePref();
+      deleteActionLoading = true;
+      notifyListeners();
+      Map<String, String> headers = {
+        'authorization': token ?? '',
+      };
+      notifyListeners();
+      Uri url = Uri.parse(
+        UrlConstant.deleteReminders(
+          reminder_id: reminder_id,
+        ),
+      );
+      final response = await http.delete(
+        url,
+        headers: headers,
+      );
+      print(response.body.toString());
+      notifyListeners();      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+
+      if (response.statusCode == 200) {
+        deleteActionLoading = false;
+
+        notifyListeners();
+        return true;
+      } else {
+        deleteActionLoading = false;
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      deleteActionLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
 
 
 

@@ -190,6 +190,20 @@ class _EditActionScreenState extends State<EditActionScreen> {
     addActionsProvider.repeat = widget.actionsDetailsModel!.actions!.reminder?.reminder_repeat ?? "";
     addActionsProvider.titleEditTextController.text =
         widget.actionsDetailsModel!.actions!.actionTitle.toString();
+    if (widget.actionsDetailsModel!.actions!.reminder?.reminder_before != null ) {
+      // Parse the hour and minute from widget.reminderBefore (assuming the format is "HH:mm")
+      List<String>? timeParts = widget.actionsDetailsModel!.actions!.reminder?.reminder_before?.split(":");
+      if (timeParts?.length == 2) {
+        int hour = int.tryParse(timeParts![0]) ?? 0;
+        int minute = int.tryParse(timeParts[1]) ?? 0;
+
+        // Assign both hour and minute to homeProvider.remindTime
+        addActionsProvider.remindTime = TimeOfDay(hour: hour, minute: minute);
+      } else {
+        // Handle incorrect format
+        addActionsProvider.remindTime = TimeOfDay(hour: 0, minute: 0); // Default to 00:00 if format is invalid
+      }
+    }
     addActionsProvider.descriptionEditTextController.text =
         widget.actionsDetailsModel!.actions!.actionDetails.toString();
     if (widget.actionsDetailsModel!.actions!.gemMedia != null) {
@@ -715,22 +729,12 @@ class _EditActionScreenState extends State<EditActionScreen> {
                                                             bottom: 1,
                                                           ),
                                                           child: Text(
-                                                            addActionsProvider
-                                                                        .remindTime !=
-                                                                    null
-                                                                ?
-                                                                // formatTimeOfDay(
-                                                                //         addActionsProvider
-                                                                //             .reminderEndTime!)
-                                                                addActionsProvider
-                                                                            .remindTime!
-                                                                            .hour <=
-                                                                        0
-                                                                    ? '${addActionsProvider.remindTime!.minute} Minute'
-                                                                    : '${addActionsProvider.remindTime!.hour} Hour ${addActionsProvider.remindTime!.minute} Minut'
-                                                                : "Choose Time   ",
-                                                            style: CustomTextStyles
-                                                                .bodySmallGray700,
+                                                            addActionsProvider.remindTime != null
+                                                                ? (addActionsProvider.remindTime!.hour == 0
+                                                                ? '${addActionsProvider.remindTime!.minute} Minute'
+                                                                : '${addActionsProvider.remindTime!.hour} Hour ${addActionsProvider.remindTime!.minute} Minute')
+                                                                : "Choose Time",
+                                                            style: CustomTextStyles.bodySmallGray700,
                                                           ),
                                                         ),
                                                         const Spacer(),

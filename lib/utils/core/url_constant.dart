@@ -73,9 +73,20 @@ class UrlConstant {
     return "${baseUrl}actions/$action";
   }
 
+  static String deleteReminders({required String reminder_id}) {
+    return "${baseUrl}reminder/$reminder_id";
+  }
+
   static const String removemediaUrl = "${baseUrl}removemedia";
 
   static String webContentPolicy({required String type}) {
     return "${baseUrl}content/$type";
   }
 }
+
+/// ///
+/// ///
+/// ///
+/// ///
+/// ///]
+///]

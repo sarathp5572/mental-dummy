@@ -1020,6 +1020,7 @@ class _AddactionsScreenState extends State<AddactionsScreen> {
                 adDreamsGoalsProvider.getAddActionIdAndName(
                   value: addActionsProvider.goalModelIdName!,
                 );
+                Navigator.of(context).pop();
               } else {
                 showCustomSnackBar(
                   context: context,
@@ -1043,6 +1044,7 @@ class _AddactionsScreenState extends State<AddactionsScreen> {
               adDreamsGoalsProvider.getAddActionIdAndName(
                 value: addActionsProvider.goalModelIdName!,
               );
+              Navigator.of(context).pop();
             }
           } else {
             showCustomSnackBar(

@@ -210,6 +210,7 @@ class _ViewReminderScreenState extends State<ViewReminderScreen> {
                                          endDate: homeProvider.remindersDetails?.reminders![index].reminderEnddate ?? "",
                                          startTime: homeProvider.remindersDetails?.reminders![index].fromTime ?? "",
                                          endTime: homeProvider.remindersDetails?.reminders![index].toTime ?? "",
+                                         reminderBefore: homeProvider.remindersDetails?.reminders![index].reminderBefore ?? "",
                                          repeat: homeProvider.remindersDetails?.reminders![index].reminderRepeat ?? "",
                                          goalId: homeProvider.remindersDetails?.reminders![index].goalId ?? "",
                                          actionId: homeProvider.remindersDetails?.reminders![index].actionId ?? "",
@@ -227,67 +228,42 @@ class _ViewReminderScreenState extends State<ViewReminderScreen> {
                                 ),
                               );
 
-                              // }
-                              //   }
-                              //   else if (goalsDreamsProvider
-                              //       .goalsAndDreamsModelLoading) {
-                              //     return shimmerList(
-                              //       height: size.height,
-                              //       list: 10,
-                              //       shimmerHeight: size.height * 0.1,
-                              //     );
-                              //   }
-                              //   else if (goalsDreamsProvider
-                              //       .goalsanddreams.isEmpty) {
-                              //     return Center(
-                              //       child: Image.asset(
-                              //         ImageConstant.noData,
-                              //       ),
-                              //     );
-                              //   } else {
-                              //     return Center(
-                              //       child: Image.asset(
-                              //         ImageConstant.noData,
-                              //       ),
-                              //     );
-                              //   }
-                              // },
                             }
                           ),
                         ),
-                        goalsDreamsProvider.isScrolling
-                            ? const SizedBox()
-                            : Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: ColorsContent.primaryColor,
-                                ),
-                                onPressed: () {
-                                  // Navigator.of(context).push(
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) =>
-                                  //     const AddNewReminderScreenScreen(),
-                                  //   ),
-                                  // );
-                                },
-                                child: const Text(
-                                  "Create Reminder",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: size.height * 0.01,
-                              )
-                            ],
-                          ),
-                        ),
+                        // goalsDreamsProvider.isScrolling
+                        //     ? const SizedBox()
+                        //     : Align(
+                        //   alignment: Alignment.bottomCenter,
+                        //   child: Column(
+                        //     mainAxisSize: MainAxisSize.min,
+                        //     children: [
+                        //       ElevatedButton(
+                        //         style: ElevatedButton.styleFrom(
+                        //           backgroundColor: ColorsContent.primaryColor,
+                        //         ),
+                        //         onPressed: () {
+                        //           // Navigator.of(context).push(
+                        //           //   MaterialPageRoute(
+                        //           //     builder: (context) =>
+                        //           //     const AddNewReminderScreenScreen(),
+                        //           //   ),
+                        //           // );
+                        //         },
+                        //         child: const Text(
+                        //           "Create Reminder",
+                        //           style: TextStyle(
+                        //             fontWeight: FontWeight.bold,
+                        //             color: Colors.white,
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       SizedBox(
+                        //         height: size.height * 0.01,
+                        //       )
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     );
                   }),

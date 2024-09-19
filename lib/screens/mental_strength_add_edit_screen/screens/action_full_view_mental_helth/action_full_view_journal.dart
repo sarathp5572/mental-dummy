@@ -588,7 +588,7 @@ class _ActionFullViewJournalCreateBottomSheetState
                                 bottom: 10,
                               ),
                               child: CustomCheckboxButton(
-                                text: "Mark this goal as Completed",
+                                text: "Mark this action is completed",
                                 value: isCompleted,
                                 onChange: (value) async {
                                   setState(() {

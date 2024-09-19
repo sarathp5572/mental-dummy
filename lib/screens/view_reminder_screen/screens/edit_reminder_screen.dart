@@ -30,7 +30,7 @@ class EditReminderScreenScreen extends StatefulWidget {
   const EditReminderScreenScreen(
       {Key? key, required this.title,required this.description,
         required this.startDate,required this.endDate,
-        required this.startTime,required this.endTime,
+        required this.startTime,required this.endTime,required this.reminderBefore,
         required this.repeat,required this.goalId,required this.actionId,required this.reminderId})
       : super(
     key: key,
@@ -42,6 +42,7 @@ class EditReminderScreenScreen extends StatefulWidget {
   final String? endDate;
   final String? startTime;
   final String? endTime;
+  final String? reminderBefore;
   final String? repeat;
   final String? goalId;
   final String? actionId;
@@ -92,7 +93,35 @@ class _EditReminderScreenScreenScreenState
         widget.title ?? "";
     homeProvider.descriptionEditTextController.text =
         widget.description ?? "";
+    if (widget.reminderBefore != null && widget.reminderBefore!.isNotEmpty) {
+      // Parse the hour and minute from widget.reminderBefore (assuming the format is "HH:mm")
+      List<String> timeParts = widget.reminderBefore!.split(":");
+      if (timeParts.length == 2) {
+        int hour = int.tryParse(timeParts[0]) ?? 0;
+        int minute = int.tryParse(timeParts[1]) ?? 0;
+
+        // Assign both hour and minute to homeProvider.remindTime
+        homeProvider.remindTime = TimeOfDay(hour: hour, minute: minute);
+      } else {
+        // Handle incorrect format
+        homeProvider.remindTime = TimeOfDay(hour: 0, minute: 0); // Default to 00:00 if format is invalid
+      }
+    }
+
   }
+
+  TimeOfDay? parseTimeOfDay(String time) {
+    if (time.isEmpty) return null; // Handle empty string
+    final parts = time.split(":");
+    if (parts.length != 2) return null; // Handle incorrect format
+    final hour = int.tryParse(parts[0]);
+    final minute = int.tryParse(parts[1]);
+
+    if (hour == null || minute == null) return null;
+
+    return TimeOfDay(hour: hour, minute: minute);
+  }
+
 
   TimeOfDay? stringToTimeOfDay(String time) {
     try {
@@ -552,23 +581,14 @@ class _EditReminderScreenScreenScreenState
                                                 bottom: 1,
                                               ),
                                               child: Text(
-                                                homeProvider
-                                                    .remindTime !=
-                                                    null
-                                                    ?
-                                                // formatTimeOfDay(
-                                                //         addActionsProvider
-                                                //             .reminderEndTime!)
-                                                homeProvider
-                                                    .remindTime!
-                                                    .hour <=
-                                                    0
+                                                homeProvider.remindTime != null
+                                                    ? (homeProvider.remindTime!.hour == 0
                                                     ? '${homeProvider.remindTime!.minute} Minute'
-                                                    : '${homeProvider.remindTime!.hour} Hour ${homeProvider.remindTime!.minute} Minut'
-                                                    : "Choose Time   ",
-                                                style: CustomTextStyles
-                                                    .bodySmallGray700,
+                                                    : '${homeProvider.remindTime!.hour} Hour ${homeProvider.remindTime!.minute} Minute')
+                                                    : "Choose Time",
+                                                style: CustomTextStyles.bodySmallGray700,
                                               ),
+
                                             ),
                                             const Spacer(),
                                             const Icon(
@@ -823,6 +843,7 @@ class _EditReminderScreenScreenScreenState
                         actionId: widget.actionId ?? "",
                         reminderId: widget.reminderId ?? ""
                     );
+                    homeProvider.fetchRemindersDetails();
                     Fluttertoast.showToast(
                       msg: "Updated",
                       toastLength: Toast.LENGTH_SHORT,
@@ -834,6 +855,7 @@ class _EditReminderScreenScreenScreenState
                     // adDreamsGoalsProvider.getAddActionIdAndName(
                     //   value: addActionsProvider.goalModelIdName!,
                     // );
+
                     homeProvider.clearFunction();
                     Navigator.of(context).pop();
                     // Navigator.of(context).pop();
@@ -891,8 +913,8 @@ class _EditReminderScreenScreenScreenState
         ),
       ),
       actions: [
-        Consumer<GoalsDreamsProvider>(
-          builder: (contexts, goalsDreamsProvider, _) {
+        Consumer2<HomeProvider,GoalsDreamsProvider>(
+          builder: (contexts, homeProvider,goalsDreamsProvider, _) {
             return PopupMenuButton<String>(
               onSelected: (value) {},
               itemBuilder: (BuildContext context) {
@@ -915,18 +937,17 @@ class _EditReminderScreenScreenScreenState
                   ),
                   PopupMenuItem<String>(
                     onTap: () {
-                      // customPopup(
-                      //   context: context,
-                      //   onPressedDelete: () {
-                      //     goalsDreamsProvider.deleteGoalsFunction(
-                      //       deleteId: id,
-                      //     );
-                      //     Navigator.of(context).pop();
-                      //     Navigator.of(context).pop();
-                      //   },
-                      //   title: 'Confirm Delete',
-                      //   content: 'Are you sure You want to Delete this Goal ?',
-                      // );
+                      customPopup(
+                        context: context,
+                        onPressedDelete: () {
+                          homeProvider.deleteReminderFunction(reminder_id: widget.reminderId ?? "");
+                          homeProvider.fetchRemindersDetails();
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                        title: 'Confirm Delete',
+                        content: 'Are you sure You want to Delete this Reminder ?',
+                      );
                     },
                     value: 'Delete',
                     child: Text(

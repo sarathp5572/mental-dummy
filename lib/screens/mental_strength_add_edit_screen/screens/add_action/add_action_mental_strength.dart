@@ -788,7 +788,7 @@ class AddActionMentalStrengthBottomSheet extends StatelessWidget {
                   addActionsProvider.reminderStartTime != null &&
                   addActionsProvider.reminderEndTime != null &&
                   addActionsProvider.remindTime != null) {
-                bool getGemStatus = await addActionsProvider.saveGemFunction(
+              await addActionsProvider.saveGemFunction(
                   context,
                   title: addActionsProvider.titleEditTextController.text,
                   details:
@@ -801,9 +801,9 @@ class AddActionMentalStrengthBottomSheet extends StatelessWidget {
                   goalId: goalId,
                     isReminder: "1"
                 );
-                if (getGemStatus) {
-                  Navigator.of(context).pop();
-                }
+                // if (getGemStatus) {
+                //   Navigator.of(context).pop();
+                // }
                 adDreamsGoalsProvider.getAddActionIdAndName(
                   value: addActionsProvider.goalModelIdName!,
                 );
@@ -811,6 +811,7 @@ class AddActionMentalStrengthBottomSheet extends StatelessWidget {
                   goalId: goalId,
                 );
                 mentalStrengthEditProvider.openAddActionFunction();
+               //   Navigator.of(context).pop();
               } else {
                 showCustomSnackBar(
                   context: context,
@@ -837,6 +838,7 @@ class AddActionMentalStrengthBottomSheet extends StatelessWidget {
                 goalId: goalId,
               );
               mentalStrengthEditProvider.openAddActionFunction();
+              // Navigator.of(context).pop();
             }
           } else {
             showCustomSnackBar(
