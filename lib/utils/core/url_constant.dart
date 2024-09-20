@@ -79,14 +79,12 @@ class UrlConstant {
 
   static const String removemediaUrl = "${baseUrl}removemedia";
 
+  static const String sendOtpEmailPhone = "${baseUrl}send_otp_email_phone";
+
+  static const String verifyOtpEmailPhone = "${baseUrl}verify_otp_email_phone";
+
   static String webContentPolicy({required String type}) {
     return "${baseUrl}content/$type";
   }
 }
 
-/// ///
-/// ///
-/// ///
-/// ///
-/// ///]
-///]

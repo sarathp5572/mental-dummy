@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/auth/sign_in/model/login_model.dart';
 import 'package:mentalhelth/screens/auth/sign_in/model/social_media_login.dart';
 import 'package:mentalhelth/screens/dash_borad_screen/dash_board_screen.dart';
@@ -19,12 +20,16 @@ import '../../subscribe_plan_page/subscribe_plan_page.dart';
 class SignInProvider extends ChangeNotifier {
   TextEditingController emailFieldController = TextEditingController();
   TextEditingController passwordFieldController = TextEditingController();
-
+  TextEditingController forgotEmailFieldController = TextEditingController();
+  int forgotPasswordStatus = 0;
+  String? forgotPasswordMessage = "";
+  var logger = Logger();
   //stripe webview functions
 
   void clearTextEditingController() {
     emailFieldController.clear();
     passwordFieldController.clear();
+    forgotEmailFieldController.clear();
     notifyListeners();
   }
 
@@ -122,9 +127,11 @@ class SignInProvider extends ChangeNotifier {
   ) async {
     try {
       forgetLoading = true;
+      forgotPasswordStatus = 0;
+      forgotPasswordMessage = '';
       notifyListeners();
       var body = {
-        'email': emailFieldController.text,
+        'email': forgotEmailFieldController.text,
       };
       final response = await http.post(
         Uri.parse(
@@ -138,30 +145,43 @@ class SignInProvider extends ChangeNotifier {
       var jsonResponse = jsonDecode(response.body);
       print('Decoded response: $jsonResponse');
       if (response.statusCode == 200 || response.statusCode == 201) {
+        forgotPasswordStatus = response.statusCode;
+        forgotPasswordMessage = response.reasonPhrase;
         showToast(
           context: context,
           message: jsonResponse['text'] ??
               "Please check your mail to reset your password!",
         );
       } else {
+        forgotPasswordStatus = response.statusCode;
+        forgotPasswordMessage = response.reasonPhrase;
+        logger.w("forgotPasswordMessage$forgotPasswordMessage");
         showToast(
           context: context,
           message: jsonResponse['text'] ?? 'Forget password failed',
         );
       }
+      forgotPasswordMessage = jsonResponse;
+      forgotPasswordStatus = response.statusCode;
       if(response.statusCode == 401){
         TokenManager.setTokenStatus(true);
+        forgotPasswordStatus = response.statusCode;
         //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
+      forgotPasswordStatus = response.statusCode;
       if(response.statusCode == 403){
         TokenManager.setTokenStatus(true);
+        forgotPasswordStatus = response.statusCode;
         //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
+      forgotPasswordStatus = response.statusCode;
       forgetLoading = false;
       notifyListeners();
+      forgotEmailFieldController.clear();
       emailFieldController.clear();
       passwordFieldController.clear();
     } catch (error) {
+      forgotEmailFieldController.clear();
       emailFieldController.clear();
       passwordFieldController.clear();
       forgetLoading = false;

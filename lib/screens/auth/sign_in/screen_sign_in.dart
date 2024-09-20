@@ -10,6 +10,8 @@ import 'package:mentalhelth/widgets/custom_image_view.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 import 'package:provider/provider.dart';
 
+import 'forgot_password/forgot_password_screen.dart';
+
 class ScreenSignIn extends StatelessWidget {
   ScreenSignIn({Key? key}) : super(key: key);
 
@@ -105,17 +107,25 @@ class ScreenSignIn extends StatelessWidget {
                             builder: (context, signInProvider, _) {
                           return GestureDetector(
                             onTap: () {
-                              if (signInProvider
-                                  .emailFieldController.text.isEmpty) {
-                                showToast(
-                                  context: context,
-                                  message: "Please enter your email",
-                                );
-                              } else {
-                                signInProvider.forgetPassword(
-                                  context,
-                                );
-                              }
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ForgotPasswordScreen(
+                                      ),
+                                ),
+                              );
+                              // if (signInProvider
+                              //     .emailFieldController.text.isEmpty) {
+                              //
+                              //   showToast(
+                              //     context: context,
+                              //     message: "Please enter your email",
+                              //   );
+                              // } else {
+                              //   signInProvider.forgetPassword(
+                              //     context,
+                              //   );
+                              // }
                             },
                             child: Text(
                               "Forgot your password ?",

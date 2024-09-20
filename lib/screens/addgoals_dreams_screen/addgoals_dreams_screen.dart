@@ -59,6 +59,13 @@ class _AddGoalsDreamsScreenState extends State<AddGoalsDreamsScreen> {
     editProfileProvider.interestsValueController.text = "";
     adDreamsGoalsProvider.selectedDate = "";
     adDreamsGoalsProvider.commentEditTextController.text = "";
+    adDreamsGoalsProvider.goalModelIdName.clear();
+    mentalStrengthEditProvider.recordedFilePath.clear();
+    mentalStrengthEditProvider.pickedImages.clear();
+    mentalStrengthEditProvider.takedImages.clear();
+    mentalStrengthEditProvider.selectedLocationName = "";
+
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isTokenExpired();
       editProfileProvider.fetchCategory();

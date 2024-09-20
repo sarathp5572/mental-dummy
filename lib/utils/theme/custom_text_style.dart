@@ -46,6 +46,12 @@ class CustomTextStyles {
   static get bodyMedium14 => theme.textTheme.bodyMedium!.copyWith(
         fontSize: 14,
       );
+  static get bodyMedium12 => theme.textTheme.bodyMedium!.copyWith(
+    fontSize: 12,
+  );
+  static get bodyMedium18 => theme.textTheme.bodyMedium!.copyWith(
+    fontSize: 18,
+  );
 
   static get bodyMediumGray50001 => theme.textTheme.bodyMedium!.copyWith(
         color: appTheme.gray50001,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mentalhelth/screens/auth/subscribe_plan_page/subscribe_plan_page.dart';
 import 'package:mentalhelth/utils/theme/custom_button_style.dart';
 import 'package:mentalhelth/widgets/custom_elevated_button.dart';
@@ -108,6 +109,19 @@ class ConfirmPlanScreen extends StatelessWidget {
           textInputType: TextInputType.number,
           controller: confirmPlanProvider.phoneEditTextController,
           hintText: "+1 00 000000",
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly, // Only allow digits
+            LengthLimitingTextInputFormatter(10),   // Limit to 10 digits
+          ],
+          validator: (value) {
+            // Check if the field is empty or does not have exactly 10 digits
+            if (value == null || value.isEmpty) {
+              return 'Please enter a phone number';
+            } else if (value.length != 10) {
+              return 'Phone number must be 10 digits';
+            }
+            return null; // Valid input
+          },
           hintStyle: CustomTextStyles.bodySmallGray500);
     });
   }
@@ -164,6 +178,9 @@ class ConfirmPlanScreen extends StatelessWidget {
       return CustomElevatedButton(
           loading: confirmPlanProvider.subScribePlanModelLoading,
           buttonStyle: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0), // Small curve
+            ),
             backgroundColor: Colors.blue,
           ),
           width: size.width * 0.3,

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/dash_borad_screen/provider/dash_board_provider.dart';
 import 'package:mentalhelth/screens/edit_add_profile_screen/provider/edit_provider.dart';
+import 'package:mentalhelth/screens/myprofile_screen/verifyEmail/send_otp_mail_screen.dart';
+import 'package:mentalhelth/screens/myprofile_screen/verifyPhone/send_otp_phone_screen.dart';
 import 'package:mentalhelth/screens/phone_singin_screen/phone_sign_in_screen.dart';
 import 'package:mentalhelth/screens/phone_singin_screen/provider/phone_sign_in_provider.dart';
 import 'package:mentalhelth/utils/logic/date_format.dart';
@@ -246,34 +248,36 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                                                     TapGestureRecognizer()
                                                                       ..onTap =
                                                                           () async {
-                                                                        if (editProfileProvider.getProfileModel!.phone ==
+                                                                        if (editProfileProvider.getProfileModel!.phone !=
                                                                             null) {
                                                                           Navigator.of(context)
                                                                               .push(
                                                                             MaterialPageRoute(
-                                                                              builder: (context) => PhoneSignInScreen(),
+                                                                              builder: (context) =>  SendOtpPhoneScreen(),
                                                                             ),
                                                                           );
                                                                         } else {
-                                                                          phoneSignInProvider.addPhoneNumber(editProfileProvider
-                                                                              .getProfileModel!
-                                                                              .phone
-                                                                              .toString());
-                                                                          await phoneSignInProvider
-                                                                              .phoneLoginUser(
-                                                                            context,
-                                                                            phone:
-                                                                                editProfileProvider.getProfileModel!.phone ?? '',
-                                                                          );
+                                                                          // phoneSignInProvider.addPhoneNumber(editProfileProvider
+                                                                          //     .getProfileModel!
+                                                                          //     .phone
+                                                                          //     .toString());
+                                                                          // await phoneSignInProvider
+                                                                          //     .phoneLoginUser(
+                                                                          //   context,
+                                                                          //   phone:
+                                                                          //       editProfileProvider.getProfileModel!.phone ?? '',
+                                                                          // );
                                                                         }
                                                                       },
                                                               ),
+
                                                     TextSpan(
                                                       text:
                                                           "${editProfileProvider.getProfileModel!.email}\n",
                                                       style: CustomTextStyles
                                                           .bodyLargeff000000,
                                                     ),
+                                                    if(editProfileProvider.getProfileModel!.emailVerify != "1")
                                                     TextSpan(
                                                       text: "Verify Email\n\n",
                                                       style: CustomTextStyles
@@ -283,6 +287,25 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                                             TextDecoration
                                                                 .underline,
                                                       ),
+                                                        recognizer:TapGestureRecognizer()
+                                                          ..onTap =
+                                                              () async {
+                                                            if (editProfileProvider.getProfileModel!.email !=
+                                                                null) {
+                                                              Navigator.of(context).push(
+                                                                MaterialPageRoute(
+                                                                  builder: (context) => const SendOtpMailScreen(),
+                                                                ),
+                                                              );
+                                                            } else {
+                                                              // Navigator.of(context)
+                                                              //     .push(
+                                                              //   MaterialPageRoute(
+                                                              //     builder: (context) => const SendOtpMailScreen(),
+                                                              //   ),
+                                                              // );
+                                                            }
+                                                          },
                                                     ),
                                                     TextSpan(
                                                       text: "Date Of Birth\n",

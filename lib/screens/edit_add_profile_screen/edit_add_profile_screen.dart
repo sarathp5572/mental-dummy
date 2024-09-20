@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/dash_borad_screen/provider/dash_board_provider.dart';
 import 'package:mentalhelth/screens/edit_add_profile_screen/provider/edit_provider.dart';
@@ -485,7 +486,12 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
                   "I am working as a designer, I love to make User interfaces with a better UX and flexibility",
               hintStyle: CustomTextStyles.bodyMediumGray70013,
               textInputAction: TextInputAction.done,
-              maxLines: 4));
+              maxLines: 4,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(
+                RegExp(r"[a-zA-Z0-9,. ]"), // Allow only letters, numbers, space, comma, and period
+              ),
+            ],));
     });
   }
 

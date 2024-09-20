@@ -80,7 +80,7 @@ class SignUpProvider extends ChangeNotifier {
         clearSignupControllers();
       } else {
         // ignore: use_build_context_synchronously
-        showToast(context: context, message: 'Register failed.');
+        showToast(context: context, message: "Email is already registered !");
       }
 
       if(response.statusCode == 401){

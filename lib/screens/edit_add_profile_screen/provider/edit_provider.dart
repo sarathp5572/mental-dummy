@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/edit_add_profile_screen/model/edit_profile_model.dart';
 import 'package:mentalhelth/screens/edit_add_profile_screen/model/get_category.dart';
 import 'package:mentalhelth/utils/core/url_constant.dart';
@@ -24,11 +25,22 @@ class EditProfileProvider extends ChangeNotifier {
   TextEditingController interestsValueController = TextEditingController();
 
   TextEditingController aboutYouValueController = TextEditingController();
+  TextEditingController sendOtpEmailController = TextEditingController();
+  TextEditingController sendOtpPhoneController = TextEditingController();
+  var logger = Logger();
   String selectedDate = '';
   String profileUrl =
       'https://www.clevelanddentalhc.com/wp-content/uploads/2018/03/sample-avatar.jpg';
   GetProfileModel? getProfileModel;
   bool getProfileLoading = false;
+
+  void clearTextEditingController() {
+    sendOtpEmailController.clear();
+    sendOtpPhoneController.clear();
+    phoneOtp = '';
+    otp = '';
+    notifyListeners();
+  }
 
   Future<void> fetchUserProfile() async {
     try {
@@ -362,5 +374,276 @@ class EditProfileProvider extends ChangeNotifier {
   bool validatePhoneNumber(String value) {
     final RegExp phoneRegex = RegExp(r'^(\d{3}[-\s]?\d{3}[-\s]?\d{4})$');
     return phoneRegex.hasMatch(value);
+  }
+
+
+  bool sendOtpLoading = false;
+  bool verifyOtpLoading = false;
+  int sendOtpStatus = 0;
+  int verifyOtpStatus = 0;
+  String? sendOtpMailMessage = "";
+  String? verifyOtpMailMessage = "";
+  int sendOtpPhoneStatus = 0;
+  bool sendOtpPhoneLoading = false;
+  String? sendOtpPhoneMessage = "";
+  int verifyOtpPhoneStatus = 0;
+  String? verifyOtpPhoneMessage = "";
+  bool verifyOtpPhoneLoading = false;
+
+  String otp = '';
+  String phoneOtp = '';
+
+  Future<void> sendOtpFunction(
+      BuildContext context, {
+        String? type,
+      }) async {
+    try {
+      sendOtpStatus = 0;
+      sendOtpMailMessage = '';
+      sendOtpLoading = true;
+      notifyListeners();
+      String? token = await getUserTokenSharePref();
+      var body = {
+        'type': sendOtpEmailController.text,
+      };
+
+      logger.w("body $body");
+
+      print(UrlConstant.sendOtpEmailPhone + " sendOtpFunction");
+      print(body.toString() + " sendOtpFunction");
+      final response = await http.post(
+        Uri.parse(
+          UrlConstant.sendOtpEmailPhone,
+        ),
+        headers: <String, String>{"authorization": "$token"},
+        body: body,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Map<String, dynamic> responseData = json.decode(response.body);
+        sendOtpLoading = false;
+        sendOtpStatus = response.statusCode;
+        sendOtpMailMessage = response.reasonPhrase;
+        showCustomSnackBar(
+          context: context,
+          message: json.decode(response.body)["text"],
+        );
+        Navigator.of(context).pop();
+      } else {
+        sendOtpLoading = false;
+        sendOtpStatus = response.statusCode;
+        sendOtpMailMessage =  response.reasonPhrase;
+        // Handle errors based on the status code
+        showCustomSnackBar(
+          context: context,
+          message: json.decode(response.body)["text"],
+        );
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      notifyListeners();
+    } catch (error) {
+      showCustomSnackBar(context: context, message: "Failed");
+      notifyListeners();
+    }
+  }
+  void addOtpFunction({required String value}) {
+    if (value.length == 6) {
+      otp = value;
+      notifyListeners();
+    }
+  }
+  void addPhoneOtpFunction({required String value}) {
+    if (value.length == 6) {
+      phoneOtp = value;
+      notifyListeners();
+    }
+  }
+
+  Future<void> verifyOtpFunction(
+      BuildContext context, {
+        String? type,
+      }) async {
+    try {
+      verifyOtpStatus = 0;
+      verifyOtpMailMessage = '';
+      verifyOtpLoading = true;
+      notifyListeners();
+      String? token = await getUserTokenSharePref();
+      var body = {
+        'type': 'email',
+        'otp':otp
+      };
+
+      logger.w("body $body");
+
+      print(UrlConstant.verifyOtpEmailPhone + " verifyOtpFunction");
+      print(body.toString() + " verifyOtpFunction");
+      final response = await http.post(
+        Uri.parse(
+          UrlConstant.verifyOtpEmailPhone,
+        ),
+        headers: <String, String>{"authorization": "$token"},
+        body: body,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Map<String, dynamic> responseData = json.decode(response.body);
+        verifyOtpLoading = false;
+        verifyOtpStatus = response.statusCode;
+        verifyOtpMailMessage = response.reasonPhrase;
+        showCustomSnackBar(
+          context: context,
+          message: json.decode(response.body)["text"],
+        );
+        Navigator.of(context).pop();
+      } else {
+        verifyOtpLoading = false;
+        verifyOtpStatus = response.statusCode;
+        verifyOtpMailMessage = response.reasonPhrase;
+        // Handle errors based on the status code
+        showCustomSnackBar(
+          context: context,
+          message: json.decode(response.body)["text"],
+        );
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      notifyListeners();
+    } catch (error) {
+      showCustomSnackBar(context: context, message: "Failed");
+      notifyListeners();
+    }
+  }
+
+  Future<void> sendOtpPhoneFunction(
+      BuildContext context, {
+        String? type,
+      }) async {
+    try {
+      sendOtpPhoneStatus = 0;
+      sendOtpPhoneMessage = '';
+      sendOtpPhoneLoading = true;
+      notifyListeners();
+      String? token = await getUserTokenSharePref();
+      var body = {
+        'type': sendOtpPhoneController.text,
+      };
+
+      logger.w("body $body");
+
+      print(UrlConstant.sendOtpEmailPhone + " sendOtpPhoneFunction");
+      print(body.toString() + " sendOtpPhoneFunction");
+      final response = await http.post(
+        Uri.parse(
+          UrlConstant.sendOtpEmailPhone,
+        ),
+        headers: <String, String>{"authorization": "$token"},
+        body: body,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Map<String, dynamic> responseData = json.decode(response.body);
+        sendOtpPhoneLoading = false;
+        sendOtpPhoneStatus = response.statusCode;
+        sendOtpPhoneMessage = response.reasonPhrase;
+        showCustomSnackBar(
+          context: context,
+          message: json.decode(response.body)["text"],
+        );
+        Navigator.of(context).pop();
+      } else {
+        sendOtpPhoneLoading = false;
+        sendOtpPhoneStatus = response.statusCode;
+        sendOtpPhoneMessage =  response.reasonPhrase;
+        // Handle errors based on the status code
+        showCustomSnackBar(
+          context: context,
+          message: json.decode(response.body)["text"],
+        );
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      notifyListeners();
+    } catch (error) {
+      showCustomSnackBar(context: context, message: "Failed");
+      notifyListeners();
+    }
+  }
+
+  Future<void> verifyOtpPhoneFunction(
+      BuildContext context, {
+        String? type,
+      }) async {
+    try {
+      verifyOtpPhoneStatus = 0;
+      verifyOtpPhoneMessage = '';
+      verifyOtpPhoneLoading = true;
+      notifyListeners();
+      String? token = await getUserTokenSharePref();
+      var body = {
+        'type': 'phone',
+        'otp':phoneOtp
+      };
+
+      logger.w("body $body");
+
+      print(UrlConstant.verifyOtpEmailPhone + " verifyOtpPhoneFunction");
+      print(body.toString() + " verifyOtpPhoneFunction");
+      final response = await http.post(
+        Uri.parse(
+          UrlConstant.verifyOtpEmailPhone,
+        ),
+        headers: <String, String>{"authorization": "$token"},
+        body: body,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Map<String, dynamic> responseData = json.decode(response.body);
+        verifyOtpPhoneLoading = false;
+        verifyOtpPhoneStatus = response.statusCode;
+        verifyOtpPhoneMessage = response.reasonPhrase;
+        showCustomSnackBar(
+          context: context,
+          message: json.decode(response.body)["text"],
+        );
+        Navigator.of(context).pop();
+      } else {
+        verifyOtpPhoneLoading = false;
+        verifyOtpPhoneStatus = response.statusCode;
+        verifyOtpPhoneMessage = response.reasonPhrase;
+        // Handle errors based on the status code
+        showCustomSnackBar(
+          context: context,
+          message: json.decode(response.body)["text"],
+        );
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      notifyListeners();
+    } catch (error) {
+      showCustomSnackBar(context: context, message: "Failed");
+      notifyListeners();
+    }
   }
 }

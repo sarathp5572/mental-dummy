@@ -1,5 +1,6 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mentalhelth/screens/phone_singin_screen/provider/phone_sign_in_provider.dart';
 import 'package:mentalhelth/utils/core/image_constant.dart';
 import 'package:mentalhelth/utils/theme/theme_helper.dart';
@@ -131,13 +132,26 @@ class PhoneSignInScreen extends StatelessWidget {
                                   left: 4,
                                 ),
                                 child: CustomTextFormField(
-                                  controller:
-                                      phoneSignInProvider.phoneNumberController,
+                                  controller: phoneSignInProvider.phoneNumberController,
                                   hintText: "Phone number",
                                   hintStyle: theme.textTheme.bodySmall,
                                   textInputAction: TextInputAction.done,
                                   textInputType: TextInputType.phone,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly, // Only allow digits
+                                    LengthLimitingTextInputFormatter(10),   // Limit to 10 digits
+                                  ],
+                                  validator: (value) {
+                                    // Check if the field is empty or does not have exactly 10 digits
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter a phone number';
+                                    } else if (value.length != 10) {
+                                      return 'Phone number must be 10 digits';
+                                    }
+                                    return null; // Valid input
+                                  },
                                 ),
+
                               ),
                             );
                           })

@@ -10,6 +10,7 @@ import 'package:mentalhelth/widgets/functions/popup.dart';
 import 'package:mentalhelth/widgets/widget/shimmer.dart';
 import 'package:provider/provider.dart';
 
+import '../sign_in/screen_sign_in.dart';
 import 'widgets/subscribeplan_item_widget.dart';
 
 // ignore: must_be_immutable
@@ -55,7 +56,7 @@ class _SubscribePlanPageState extends State<SubscribePlanPage> {
                   await removeUserDetailsSharePref(context: context);
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
-                      builder: (context) => SignupScreen(),
+                      builder: (context) => ScreenSignIn(),
                     ),
                     (route) => false,
                   );

@@ -59,7 +59,7 @@ class SubscribePlanItemWidget extends StatelessWidget {
           CustomPlanButton(
             onPressed: onPressed,
             height: size.height * 0.04,
-            width: size.width * 0.25,
+            width: size.width * 0.30,
             text: "Buy Now",
             margin: const EdgeInsets.only(
               top: 9,
