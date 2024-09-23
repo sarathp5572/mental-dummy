@@ -186,8 +186,8 @@ class ScreenSignIn extends StatelessWidget {
                           context,
                           message: "Continue with Google",
                           imageMessage: ImageConstant.imgGoogle,
-                          onPressed: () {
-                            signInProvider.signInWithGoogle(context: context);
+                          onPressed: () async {
+                            await signInProvider.loginWithGoogle();
                           },
                         );
                       },

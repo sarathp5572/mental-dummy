@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -36,6 +37,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(AlarmInfoAdapter());
   await Hive.openBox<AlarmInfo>("alarm");
+  //await Firebase.initializeApp(); // Initialize Firebase
   await LocalNotifications.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

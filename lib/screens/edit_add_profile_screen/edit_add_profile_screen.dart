@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/dash_borad_screen/provider/dash_board_provider.dart';
 import 'package:mentalhelth/screens/edit_add_profile_screen/provider/edit_provider.dart';
+import 'package:mentalhelth/screens/edit_add_profile_screen/widgets/dropdown_widget.dart';
 import 'package:mentalhelth/utils/theme/custom_button_style.dart';
 import 'package:mentalhelth/widgets/background_image/background_imager.dart';
 import 'package:mentalhelth/widgets/custom_elevated_button.dart';
@@ -212,79 +213,115 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10),
+                                          padding: const EdgeInsets.only(left: 10),
                                           child: Text(
                                             "Interests",
-                                            style: CustomTextStyles
-                                                .bodyMediumGray700,
+                                            style: CustomTextStyles.bodyMediumGray700,
                                           ),
                                         ),
                                       ),
                                       const SizedBox(height: 1),
-                                      // _buildInterestsValue(context),
-                                      Consumer<EditProfileProvider>(builder:
-                                          (context, editProfileProvider, _) {
+                                      Consumer<EditProfileProvider>(builder: (context, editProfileProvider, _) {
                                         return Container(
-                                          height: size.height * 0.05,
-                                          margin: const EdgeInsets.only(
-                                            left: 10,
-                                          ),
-                                          padding: const EdgeInsets.only(
-                                            left: 10,
-                                            right: 10,
-                                          ),
+                                          height: size.height * 0.05, // Adjust this height as needed
+                                          margin: const EdgeInsets.only(left: 10),
+                                          padding: const EdgeInsets.only(left: 2, right: 2),
                                           decoration: const ShapeDecoration(
+                                            color: Colors.transparent,
                                             shape: RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                  width: 1.0,
-                                                  style: BorderStyle.solid),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5.0)),
+                                             // side: BorderSide(width: 1.0, style: BorderStyle.solid),
+                                              //borderRadius: BorderRadius.all(Radius.circular(5.0)),
                                             ),
                                           ),
-                                          child: DropdownButton<Category>(
-                                            items: editProfileProvider
-                                                .getCategoryModel!.category!
-                                                .map((Category value) {
-                                              return DropdownMenuItem<Category>(
-                                                value: value,
-                                                child: Text(value.categoryName
-                                                    .toString()),
-                                              );
-                                            }).toList(),
-                                            hint: Text(
-                                              editProfileProvider
-                                                      .interestsValueController
-                                                      .text
-                                                      .isEmpty
-                                                  ? 'Music, Badminton'
-                                                  : editProfileProvider
-                                                      .interestsValueController
-                                                      .text,
-                                                style:
-                                                CustomTextStyles
-                                                    .bodyMediumOnPrimary
-                                            ),
-                                            iconSize: 30,
-                                            icon: null,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            underline: const SizedBox(),
-                                            isExpanded: true,
-                                            onChanged: (value) {
-                                              if (value != null) {
-                                                editProfileProvider
-                                                    .selectCategory(
-                                                  value: value.categoryName
-                                                      .toString(),
-                                                  mainCategory: value,
-                                                );
-                                              }
-                                            },
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () async {
+                                                    // Open modal to select items
+                                                    List<Category>? selectedCategories = await showModalBottomSheet(
+                                                      context: context,
+                                                      builder: (BuildContext context) {
+                                                        return MultiSelectCategoryWidget(
+                                                          categories: editProfileProvider.getCategoryModel!.category!,
+                                                          selectedCategories: editProfileProvider.selectedCategories,
+                                                        );
+                                                      },
+                                                    );
+
+                                                    // If categories are selected, update provider
+                                                    if (selectedCategories != null) {
+                                                      editProfileProvider.setSelectedCategories(selectedCategories);
+                                                    }
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: SingleChildScrollView(
+                                                          scrollDirection: Axis.horizontal,
+                                                          child: Row(
+                                                            children: editProfileProvider.selectedCategories.map((category) {
+                                                              return Padding(
+                                                                padding: const EdgeInsets.only(right: 8.0), // Space between items
+                                                                child: Chip(
+                                                                  label: Text(category.categoryName ?? ""),
+                                                                  deleteIcon: const Icon(Icons.close),
+                                                                  onDeleted: () {
+                                                                    // Remove the item from the selected list
+                                                                    editProfileProvider.removeSelectedCategory(category);
+                                                                  },
+                                                                ),
+                                                              );
+                                                            }).toList(),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      // Text for selecting interests
+                                                      if (editProfileProvider.selectedCategories.isEmpty)
+                                                        Text(
+                                                          'Select Interests',
+                                                          style: CustomTextStyles.bodyMediumOnPrimary,
+                                                        ),
+                                                    ],
+                                                  ),
+
+
+
+                                                ),
+                                              ),
+                                              // Wrap selected categories in a scrollable view
+                                              // if (editProfileProvider.selectedCategories.isNotEmpty)
+                                              //   Expanded(
+                                              //     child: SingleChildScrollView(
+                                              //       scrollDirection: Axis.horizontal,
+                                              //       child: Row(
+                                              //         mainAxisSize: MainAxisSize.min,
+                                              //         children: editProfileProvider.selectedCategories.map((category) {
+                                              //           return Row(
+                                              //             children: [
+                                              //               Text(category.categoryName ?? ""),
+                                              //               IconButton(
+                                              //                 icon: Icon(Icons.close),
+                                              //                 onPressed: () {
+                                              //                   // Remove the item from the selected list
+                                              //                   editProfileProvider.removeSelectedCategory(category);
+                                              //                 },
+                                              //               ),
+                                              //             ],
+                                              //           );
+                                              //         }).toList(),
+                                              //       ),
+                                              //     ),
+                                              //   ),
+                                            ],
                                           ),
                                         );
                                       }),
+
+
+
+
+
                                       const SizedBox(height: 8),
                                       Align(
                                         alignment: Alignment.centerLeft,
@@ -519,9 +556,11 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
               dob: editProfileProvider.date.toString(),
               phone: editProfileProvider.phoneController.text,
               context: context,
-              intrestId: editProfileProvider.categorys == null
-                  ? "1"
-                  : editProfileProvider.categorys!.id.toString(),
+              interestIds: editProfileProvider.selectedCategories.isEmpty
+                  ? ["0"]  // Default if no categories are selected
+                  : editProfileProvider.selectedCategories
+                  .map((category) => category.id.toString())  // Convert categories to a list of IDs
+                  .toList(),
             );
             dashBoardProvider.changeCommentPage(
               index: 8,

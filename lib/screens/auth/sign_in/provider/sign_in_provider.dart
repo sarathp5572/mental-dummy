@@ -193,32 +193,63 @@ class SignInProvider extends ChangeNotifier {
     try {
       socialMediaModelLoading = true;
       notifyListeners();
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+      print("Attempting to sign in with Google...");
+
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        debugPrint("Google sign-in canceled by user.");
+        return;
+      }
+      print("Google user obtained: ${googleUser.displayName}");
+
+      final GoogleSignInAuthentication? googleAuth = await googleUser.authentication;
+      if (googleAuth == null || googleAuth.accessToken == null || googleAuth.idToken == null) {
+        debugPrint("Failed to retrieve Google authentication tokens.");
+        return;
+      }
+      print("Google auth tokens obtained.");
 
       final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
       );
-      String? googleId = googleUser?.id;
+      print("Firebase credential created with Google tokens.");
+
       final UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-      final User user = userCredential.user!;
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      final User? user = userCredential.user;
+      if (user == null) {
+        debugPrint("Firebase sign-in failed, no user returned.");
+        return;
+      }
+      print("Firebase user signed in: ${user.uid}");
 
       String? firebaseRegistrationId = await user.getIdToken();
       String os = Platform.operatingSystem;
+
+      // Social media function
       await socialMediaFunction(
         context,
-        googleid: googleId,
+        googleid: googleUser.id,
       );
+      print("Social media function executed.");
+
+      // Save Firebase token
       await saveFirebaseToken(context,
           registrationId: firebaseRegistrationId.toString(), deviceOs: os);
+      print("Firebase token saved.");
+
     } catch (e) {
-      return null;
+      print("Error during Google Sign-In: $e");
+    } finally {
+      socialMediaModelLoading = false;
+      notifyListeners();
+      print("Google Sign-In process complete.");
     }
   }
+
 
   void signInWithFacebook() async {
     try {
@@ -385,4 +416,42 @@ class SignInProvider extends ChangeNotifier {
       passwordFieldController.clear();
     }
   }
+  final _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  Future<UserCredential?> loginWithGoogle() async {
+    try {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      if (googleUser == null) {
+        // User canceled the sign-in
+        print('Google sign-in was canceled by the user.');
+        return null;
+      }
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      // Check for null tokens
+      if (googleAuth.idToken == null || googleAuth.accessToken == null) {
+        print('Error: Google Auth tokens are null.');
+        return null;
+      }
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+        accessToken: googleAuth.accessToken,
+      );
+
+      // Sign in with the credential
+      return await _auth.signInWithCredential(credential);
+    } catch (e) {
+      print('Error during Google Sign-In: $e');
+      debugPrint('Error during Google Sign-In: ${e.toString()}');
+      return null;
+    }
+  }
+
 }

@@ -1088,24 +1088,59 @@ var logger = Logger();
       updateSaveActionLoadingFunction(true);
       notifyListeners();
       String? token = await getUserTokenSharePref();
-      var body = {
-        'title': title,
-        'gem_type': 'action',
-        'details': details,
-        'location_name': locationName,
-        'location_latitude': locationLatitude,
-        'location_longitude': locationLongitude,
-        'location_address': locationAddress,
-        'gem_id': actionId,
-        'goal_id': goalId,
-        'is_reminder': isReminder ?? '',
-        'reminder_startdate': convertToUnixTimestamp(reminderStartDate).toString(),  // Convert to string
-        'reminder_enddate': convertToUnixTimestamp(reminderEndDate).toString(),      // Convert to string
-        'reminder_before': '${remindTime?.hour.toString().padLeft(2, '0')}:${remindTime?.minute.toString().padLeft(2, '0')}',
-        'reminder_repeat': repeat.toString(),  // Ensure repeat is a string
-        'from_time': convertTimeOfDayTo12Hour(reminderStartTime!).toString(),        // Convert to string
-        'to_time': convertTimeOfDayTo12Hour(reminderEndTime!).toString(),            // Convert to string
-      };
+      // Create the body based on the value of isReminder
+      var body;
+      if (isReminder == '1') {
+        body = {
+          'title': title,
+          'gem_type': 'action',
+          'details': details,
+          'location_name': locationName,
+          'location_latitude': locationLatitude,
+          'location_longitude': locationLongitude,
+          'location_address': locationAddress,
+          'goal_id': goalId,
+          'gem_id':actionId,
+          'is_reminder': isReminder ?? '',
+          'reminder_startdate': convertToUnixTimestamp(reminderStartDate).toString(),  // Convert to string
+          'reminder_enddate': convertToUnixTimestamp(reminderEndDate).toString(),      // Convert to string
+          'reminder_before': '${remindTime?.hour.toString().padLeft(2, '0')}:${remindTime?.minute.toString().padLeft(2, '0')}',
+          'reminder_repeat': repeat.toString(),  // Ensure repeat is a string
+          'from_time': convertTimeOfDayTo12Hour(reminderStartTime!).toString(),        // Convert to string
+          'to_time': convertTimeOfDayTo12Hour(reminderEndTime!).toString(),            // Convert to string
+        };
+      } else {
+        body = {
+          'title': title,
+          'gem_type': 'action',
+          'details': details,
+          'location_name': locationName,
+          'location_latitude': locationLatitude,
+          'location_longitude': locationLongitude,
+          'location_address': locationAddress,
+          'goal_id': goalId,
+          'gem_id':actionId,
+          'is_reminder': isReminder ?? '',         // Convert to string
+        };
+      }
+      // var body = {
+      //   'title': title,
+      //   'gem_type': 'action',
+      //   'details': details,
+      //   'location_name': locationName,
+      //   'location_latitude': locationLatitude,
+      //   'location_longitude': locationLongitude,
+      //   'location_address': locationAddress,
+      //   'gem_id': actionId,
+      //   'goal_id': goalId,
+      //   'is_reminder': isReminder ?? '',
+      //   'reminder_startdate': convertToUnixTimestamp(reminderStartDate).toString(),  // Convert to string
+      //   'reminder_enddate': convertToUnixTimestamp(reminderEndDate).toString(),      // Convert to string
+      //   'reminder_before': '${remindTime?.hour.toString().padLeft(2, '0')}:${remindTime?.minute.toString().padLeft(2, '0')}',
+      //   'reminder_repeat': repeat.toString(),  // Ensure repeat is a string
+      //   'from_time': convertTimeOfDayTo12Hour(reminderStartTime!).toString(),        // Convert to string
+      //   'to_time': convertTimeOfDayTo12Hour(reminderEndTime!).toString(),            // Convert to string
+      // };
       for (int i = 0; i < mediaName.length; i++) {
         body['media_name[$i]'] = mediaName[i];
       }

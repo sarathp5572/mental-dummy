@@ -65,7 +65,20 @@ class SignupScreen extends StatelessWidget {
                           controller: signUpProvider.emailEditTextController,
                           hintText: "Your Email ID",
                           textInputType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email';
+                            }
+                            // Regular expression for validating email format
+                            String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                            RegExp regex = RegExp(pattern);
+                            if (!regex.hasMatch(value)) {
+                              return 'Please enter a valid email address';
+                            }
+                            return null; // Return null if the input is valid
+                          },
                         ),
+
                         const SizedBox(
                           height: 12,
                         ),

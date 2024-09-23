@@ -12,6 +12,7 @@ import 'package:mentalhelth/utils/core/url_constant.dart';
 import 'package:mentalhelth/utils/logic/date_format.dart';
 import 'package:mentalhelth/utils/logic/shared_prefrence.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../token_expiry/token_expiry.dart';
 
@@ -205,44 +206,56 @@ class EditProfileProvider extends ChangeNotifier {
 
   //flutter put profile method
   bool editLoading = false;
+  List<Category> selectedCategories = [];
+  void setSelectedCategories(List<Category> categories) {
+    for (var category in categories) {
+      // Check if category already exists based on its ID
+      if (!selectedCategories.any((selected) => selected.id == category.id)) {
+        selectedCategories.add(category);
+      }
+    }
+    notifyListeners();
+  }
+
+  void removeSelectedCategory(Category category) {
+    selectedCategories.remove(category);
+    notifyListeners();
+  }
 
   Future<void> editProfileFunction(
       {required String firstName,
-      required String note,
-      required String profileimg,
-      required String dob,
-      required String phone,
-      required BuildContext context,
-      required String intrestId}) async {
+        required String note,
+        required String profileimg,
+        required String dob,
+        required String phone,
+        required BuildContext context,
+        required List<String> interestIds}) async {  // Modified to accept a list of interest IDs
     try {
       editLoading = true;
       notifyListeners();
       String? userId = await getUserIdSharePref();
       String? token = await getUserTokenSharePref();
       final Map<String, String> headers = <String, String>{
-        // 'Content-Type': 'application/json',
         "authorization": "$token"
       };
       late Map<String, dynamic> body;
-      if (profileimg.startsWith("https") ||
-          profileimg.startsWith("http") ||
-          profileimg == "") {
-        body = {
-          'firstname': firstName,
-          'note': note,
-          'dob': dob,
-          'phone': phone,
-          'interest[0]': intrestId,
-        };
-      } else {
-        body = {
-          'firstname': firstName,
-          'note': note,
-          'profileimg': profileimg,
-          'dob': dob,
-          'phone': phone,
-          'interest[0]': intrestId,
-        };
+
+      // Common fields
+      body = {
+        'firstname': firstName,
+        'note': note,
+        'dob': dob,
+        'phone': phone,
+      };
+
+      // Add profile image only if it's not an empty string or a URL
+      if (!(profileimg.startsWith("https") || profileimg.startsWith("http") || profileimg == "")) {
+        body['profileimg'] = profileimg;
+      }
+
+      // Dynamically add interest fields
+      for (int i = 0; i < interestIds.length; i++) {
+        body['interest[$i]'] = interestIds[i];
       }
 
       final http.Response response = await http.put(
@@ -252,26 +265,23 @@ class EditProfileProvider extends ChangeNotifier {
         headers: headers,
         body: body,
       );
+
       if (response.statusCode == 200) {
         showCustomSnackBar(
           context: context,
           message: 'Successful.',
         );
         fetchUserProfile();
+      } else if (response.statusCode == 401 || response.statusCode == 403) {
+        TokenManager.setTokenStatus(true);
+        // Handle token refresh or re-authentication logic
       } else {
         showCustomSnackBar(
           context: context,
           message: 'Edit request failed.',
         );
       }
-      if(response.statusCode == 401){
-        TokenManager.setTokenStatus(true);
-        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
-      }
-      if(response.statusCode == 403){
-        TokenManager.setTokenStatus(true);
-        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
-      }
+
       editLoading = false;
       notifyListeners();
     } catch (error) {
@@ -279,6 +289,7 @@ class EditProfileProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
 
   bool saveIntrestsLoading = false;
 
@@ -645,5 +656,22 @@ class EditProfileProvider extends ChangeNotifier {
       showCustomSnackBar(context: context, message: "Failed");
       notifyListeners();
     }
+  }
+
+  Future<void> saveSelectedCategories() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> categoriesJson = selectedCategories.map((category) => jsonEncode(category.toJson())).toList();
+    await prefs.setStringList('selectedCategories', categoriesJson);
+  }
+
+  // Load selected categories from Shared Preferences
+  Future<void> loadSelectedCategories() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? categoriesJson = prefs.getStringList('selectedCategories');
+
+    if (categoriesJson != null) {
+      selectedCategories = categoriesJson.map((json) => Category.fromJson(jsonDecode(json))).toList();
+    }
+    notifyListeners();
   }
 }

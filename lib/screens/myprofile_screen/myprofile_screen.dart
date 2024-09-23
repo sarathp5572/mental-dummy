@@ -327,10 +327,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                                       text:
                                                           "${editProfileProvider.getProfileModel!.interests}",
                                                       style: CustomTextStyles
-                                                          .titleMediumff000000
-                                                          .copyWith(
-                                                        height: 1.69,
-                                                      ),
+                                                          .bodyLargeff000000,
                                                     ),
                                                   ],
                                                 ),
@@ -338,7 +335,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                               ),
                                             ),
                                             const SizedBox(
-                                              height: 4,
+                                              height: 10,
+                                            ),
+                                            Text("About You",
+                                              style: CustomTextStyles
+                                                  .titleMediumff000000,
+                                            ),
+                                            const SizedBox(
+                                              height: 0,
                                             ),
                                             SizedBox(
                                               width: 291,
