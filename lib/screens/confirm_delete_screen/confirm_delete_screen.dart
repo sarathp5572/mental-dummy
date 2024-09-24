@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../../utils/core/image_constant.dart';
 import '../../utils/theme/theme_helper.dart';
+import '../../widgets/functions/popup.dart';
 import 'provider/delete_provider.dart';
 
 // ignore: must_be_immutable
@@ -101,11 +102,20 @@ class ConfirmDeleteScreen extends StatelessWidget {
           CustomElevatedButton(
             loading: deleteProvider.deleteAccountLoading,
             onPressed: () async {
-              await deleteProvider.deleteAccount(context: context);
-              removeAllValuesLogout(context: context);
-              dashBoardProvider.changeCommentPage(
-                index: 0,
+              customPopup(
+                context: context,
+                onPressedDelete: () async {
+                  await deleteProvider.deleteAccount(context: context);
+                  removeAllValuesLogout(context: context);
+                  dashBoardProvider.changeCommentPage(
+                    index: 0,
+                  );
+                },
+                yes: "Yes",
+                title: 'Do you Need Delete',
+                content: 'Are you sure do you need delete',
               );
+
             },
             width: 104,
             text: "Delete",

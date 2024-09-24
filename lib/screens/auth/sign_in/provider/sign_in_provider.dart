@@ -94,10 +94,15 @@ class SignInProvider extends ChangeNotifier {
             );
           }
         }
-      } else {
+      } else if(response.statusCode == 400){
         showCustomSnackBar(
           context: context,
-          message: 'Login failed.',
+          message: 'This account does not exists !',
+        );
+      }else{
+        showCustomSnackBar(
+          context: context,
+          message: 'Incorrect Email or password !',
         );
       }
       if(response.statusCode == 401){
@@ -105,6 +110,10 @@ class SignInProvider extends ChangeNotifier {
         //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
       if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 400){
         TokenManager.setTokenStatus(true);
         //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
@@ -432,6 +441,8 @@ class SignInProvider extends ChangeNotifier {
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      print("googleAuth.idToken${googleAuth.idToken}");
+      print("googleAuth.accessToken${googleAuth.accessToken}");
 
       // Check for null tokens
       if (googleAuth.idToken == null || googleAuth.accessToken == null) {

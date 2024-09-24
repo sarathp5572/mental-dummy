@@ -192,21 +192,21 @@ class ScreenSignIn extends StatelessWidget {
                         );
                       },
                     ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Consumer<SignInProvider>(
-                      builder: (context, signInProvider, _) {
-                        return buildContinueWithPhoneButton(
-                          context,
-                          message: "Continue with Apple",
-                          imageMessage: ImageConstant.imgPath4,
-                          onPressed: () {
-                            signInProvider.googleSignOut();
-                          },
-                        );
-                      },
-                    ),
+                    // const SizedBox(
+                    //   height: 8,
+                    // ),
+                    // Consumer<SignInProvider>(
+                    //   builder: (context, signInProvider, _) {
+                    //     return buildContinueWithPhoneButton(
+                    //       context,
+                    //       message: "Continue with Apple",
+                    //       imageMessage: ImageConstant.imgPath4,
+                    //       onPressed: () {
+                    //         signInProvider.googleSignOut();
+                    //       },
+                    //     );
+                    //   },
+                    // ),
                   ],
                 ),
               ),

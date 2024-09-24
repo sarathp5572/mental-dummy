@@ -69,7 +69,8 @@ class ConfirmPlanProvider extends ChangeNotifier {
           );
         }
       } else {
-        showCustomSnackBar(context: context, message: 'subscribing failed.');
+       // showCustomSnackBar(context: context, message: 'subscribing failed.');
+        showCustomSnackBar(context: context, message: 'Already subscribed!');
       }
       if(response.statusCode == 401){
         TokenManager.setTokenStatus(true);
