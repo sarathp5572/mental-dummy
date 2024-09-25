@@ -112,8 +112,8 @@ class ConfirmDeleteScreen extends StatelessWidget {
                   );
                 },
                 yes: "Yes",
-                title: 'Do you Need Delete',
-                content: 'Are you sure do you need delete',
+                title: 'Are you sue you want to delete',
+                content: 'your account and data forever,you cant undo this action',
               );
 
             },

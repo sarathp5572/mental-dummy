@@ -1,12 +1,16 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/utils/core/image_constant.dart';
 import 'package:mentalhelth/widgets/custom_image_view.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
+import '../../../home_screen/provider/home_provider.dart';
 import '../../provider/mental_strenght_edit_provider.dart';
 
 class MentalGoogleMap extends StatefulWidget {
@@ -21,13 +25,29 @@ class _MentalGoogleMapState extends State<MentalGoogleMap> {
   PermissionStatus permissionStatus = PermissionStatus.denied;
   String currentTime = '';
   Position? _currentLocation;
+  late HomeProvider homeProvider;
+  late  double? savedLatitude = 0.0;
+  late  double? savedLongitude = 0.0;
+  var logger = Logger();
 
   @override
   void initState() {
     super.initState();
-    _checkPermissionStatus();
-    _requestPermission();
-    _getCurrentLocation();
+    homeProvider = Provider.of<HomeProvider>(context, listen: false);
+     savedLatitude = double.parse(homeProvider.journalDetails?.journals?.location?.locationLatitude ?? "0.0");
+     savedLongitude = double.parse(homeProvider.journalDetails?.journals?.location?.locationLongitude ?? "0.0");
+    logger.w("savedLatitude ${savedLatitude}");
+    logger.w("savedLatitude ${savedLongitude}");
+    if (savedLatitude != null && savedLongitude != null) {
+      // If saved location exists, set the selected location and update the map
+      _selectedLocation = LatLng(savedLatitude ?? 0.0, savedLongitude ?? 0.0);
+      _updateMarkerPosition();
+    } else {
+      // Request location permission and get the current location
+      _checkPermissionStatus();
+      _requestPermission();
+      _getCurrentLocation();
+    }
     // if (permissionStatus.isGranted) {
     // _getCurrentLocation();
     // }
@@ -124,26 +144,35 @@ class _MentalGoogleMapState extends State<MentalGoogleMap> {
             ],
           ),
           const SizedBox(height: 10),
-          _currentLocation == null
-              ? const CircularProgressIndicator()
-              : Expanded(
+          // _currentLocation == null ||
+          // _selectedLocation == null
+          //     ? const CircularProgressIndicator()
+          //     :
+          Expanded(
                   child: GoogleMap(
                     onMapCreated: (GoogleMapController controller) {
                       mapController = controller;
                     },
                     onTap: _onMapTapped,
                     initialCameraPosition: CameraPosition(
-                      target: _currentLocation == null
-                          ? const LatLng(10.1632, 76.6413)
-                          : LatLng(
-                              _currentLocation!.latitude,
-                              _currentLocation!.longitude,
-                            ), // San Francisco, CA
-                      zoom: 12.0,
+                      target: _selectedLocation.latitude != 0 && _selectedLocation.longitude != 0
+                          ? _selectedLocation
+                          : const LatLng(10.1632, 76.6413),
+                      zoom: 10.0,  // Adjust zoom for faster pan perception
                     ),
                     markers: _markers,
+                    scrollGesturesEnabled: true,
+                    zoomGesturesEnabled: true,
+                    tiltGesturesEnabled: true,
+                    rotateGesturesEnabled: true,
+                    gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                      Factory<OneSequenceGestureRecognizer>(
+                            () => EagerGestureRecognizer(),
+                      ),
+                    },
                   ),
-                ),
+
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
