@@ -132,11 +132,12 @@ class PhoneSignInScreen extends StatelessWidget {
                                   left: 4,
                                 ),
                                 child: CustomTextFormField(
+
                                   controller: phoneSignInProvider.phoneNumberController,
                                   hintText: "Phone number",
                                   hintStyle: theme.textTheme.bodySmall,
                                   textInputAction: TextInputAction.done,
-                                  textInputType: TextInputType.phone,
+                                  textInputType: TextInputType.numberWithOptions(signed: true, decimal: true),
                                   inputFormatters: [
                                     FilteringTextInputFormatter.digitsOnly, // Only allow digits
                                     LengthLimitingTextInputFormatter(10),   // Limit to 10 digits

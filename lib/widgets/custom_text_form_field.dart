@@ -76,6 +76,7 @@ class CustomTextFormField extends StatelessWidget {
   Widget textFormFieldWidget(BuildContext context) => SizedBox(
         width: width ?? double.maxFinite,
         child: TextFormField(
+
           textAlign: textAlign ?? TextAlign.start,
           onChanged: onChanged,
           scrollPadding:

@@ -18,6 +18,11 @@ import AVFoundation
         } catch {
             print("Failed to set audio session category")
         }
+        var filePath: String!
+
+
+
+
         
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }

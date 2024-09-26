@@ -158,40 +158,41 @@ class ScreenSignIn extends StatelessWidget {
                         message: "Continue with Phone ",
                         imageMessage: ImageConstant.imgMobilelight,
                         onPressed: () {
+                          FocusScope.of(context).unfocus();
                           signInProvider.clearTextEditingController();
                           onTapContinueWithPhoneButton(context);
                         },
                       );
                     }),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Consumer<SignInProvider>(
-                        builder: (context, signInProvider, _) {
-                      return buildContinueWithPhoneButton(
-                        context,
-                        message: "Continue with Facebook",
-                        imageMessage: ImageConstant.imgFacebook,
-                        onPressed: () {
-                          signInProvider.signInWithFacebook();
-                        },
-                      );
-                    }),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Consumer<SignInProvider>(
-                      builder: (context, signInProvider, _) {
-                        return buildContinueWithPhoneButton(
-                          context,
-                          message: "Continue with Google",
-                          imageMessage: ImageConstant.imgGoogle,
-                          onPressed: () async {
-                            await signInProvider.loginWithGoogle();
-                          },
-                        );
-                      },
-                    ),
+                    // const SizedBox(
+                    //   height: 10,
+                    // ),
+                    // Consumer<SignInProvider>(
+                    //     builder: (context, signInProvider, _) {
+                    //   return buildContinueWithPhoneButton(
+                    //     context,
+                    //     message: "Continue with Facebook",
+                    //     imageMessage: ImageConstant.imgFacebook,
+                    //     onPressed: () {
+                    //       signInProvider.signInWithFacebook();
+                    //     },
+                    //   );
+                    // }),
+                    // const SizedBox(
+                    //   height: 8,
+                    // // ),
+                    // Consumer<SignInProvider>(
+                    //   builder: (context, signInProvider, _) {
+                    //     return buildContinueWithPhoneButton(
+                    //       context,
+                    //       message: "Continue with Google",
+                    //       imageMessage: ImageConstant.imgGoogle,
+                    //       onPressed: () async {
+                    //         await signInProvider.loginWithGoogle();
+                    //       },
+                    //     );
+                    //   },
+                    // ),
                     // const SizedBox(
                     //   height: 8,
                     // ),
