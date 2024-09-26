@@ -177,7 +177,7 @@ class _ChartWidgetState extends State<ChartWidget> {
           height: size.height * 0.2,
           child: SfCartesianChart(
             plotAreaBorderWidth: 0,
-            primaryXAxis: const CategoryAxis(
+            primaryXAxis:  CategoryAxis(
               majorGridLines: MajorGridLines(
                 width: 0,
               ), //     axisLine: const AxisLine(
@@ -186,7 +186,7 @@ class _ChartWidgetState extends State<ChartWidget> {
                 color: Colors.blue,
               ),
             ),
-            primaryYAxis: const NumericAxis(
+            primaryYAxis:  NumericAxis(
               axisLine: AxisLine(
                 width: 2,
                 color: Colors.blue,

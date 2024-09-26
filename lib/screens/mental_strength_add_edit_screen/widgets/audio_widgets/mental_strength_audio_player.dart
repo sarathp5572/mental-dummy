@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:mentalhelth/screens/addactions_screen/provider/add_actions_provider.dart';
@@ -106,9 +108,14 @@ class _MentalStrengthAudioPlayerState extends State<MentalStrengthAudioPlayer> {
                           if (isPlaying) {
                             await audioPlayer.pause();
                           } else {
+
+                            final path = "${widget.url}.mp3";
+
+                            await audioPlayer.setSourceUrl(path);
                             await audioPlayer.play(
+
                               UrlSource(
-                                widget.url,
+                                path,
                               ),
                             );
                           }

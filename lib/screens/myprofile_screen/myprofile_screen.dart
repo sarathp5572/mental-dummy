@@ -84,7 +84,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               size,
             ),
             Container(
-              height: size.height * 0.8,
+              height: size.height * 0.75,
               padding: const EdgeInsets.symmetric(
                 horizontal: 28,
                 vertical: 21,

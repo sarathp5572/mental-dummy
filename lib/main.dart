@@ -38,10 +38,11 @@ void main() async {
   Hive.registerAdapter(AlarmInfoAdapter());
   await Hive.openBox<AlarmInfo>("alarm");
   //await Firebase.initializeApp(); // Initialize Firebase
-  await LocalNotifications.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // await LocalNotifications.init();
+
   // SystemChrome.setPreferredOrientations([
   //   DeviceOrientation.portraitUp,
   // ]);
