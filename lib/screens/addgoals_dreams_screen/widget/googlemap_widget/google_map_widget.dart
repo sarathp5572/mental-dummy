@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/addgoals_dreams_screen/provider/ad_goals_dreams_provider.dart';
 import 'package:mentalhelth/utils/core/image_constant.dart';
 import 'package:mentalhelth/widgets/custom_image_view.dart';
@@ -9,11 +12,12 @@ import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-class AddGoalsGoogleMap extends StatefulWidget {
-  const AddGoalsGoogleMap({super.key});
+import '../../../goals_dreams_page/model/goals_and_dreams_model.dart';
 
+class AddGoalsGoogleMap extends StatefulWidget {
+  const AddGoalsGoogleMap({super.key,this.goalsanddream});
+  final Goalsanddream? goalsanddream;
   @override
-  // ignore: library_private_types_in_public_api
   _AddGoalsGoogleMapState createState() => _AddGoalsGoogleMapState();
 }
 
@@ -21,16 +25,33 @@ class _AddGoalsGoogleMapState extends State<AddGoalsGoogleMap> {
   PermissionStatus permissionStatus = PermissionStatus.denied;
   String currentTime = '';
   Position? _currentLocation;
+  late AdDreamsGoalsProvider adDreamsGoalsProvider;
+  late double? savedLatitude = 0.0;
+  late double? savedLongitude = 0.0;
+  var logger = Logger();
 
   @override
   void initState() {
     super.initState();
-    _checkPermissionStatus();
-    _requestPermission();
-    _getCurrentLocation();
-    // if (permissionStatus.isGranted) {
-    // _getCurrentLocation();
-    // }
+    adDreamsGoalsProvider = Provider.of<AdDreamsGoalsProvider>(context, listen: false);
+
+    // Check if there are saved coordinates, otherwise get current location
+    savedLatitude = double.parse(widget.goalsanddream?.location?.locationLatitude ?? "0.0");
+    savedLongitude = double.parse(widget.goalsanddream?.location?.locationLongitude ?? "0.0");
+
+    logger.w("savedLatitude $savedLatitude");
+    logger.w("savedLongitude $savedLongitude");
+
+    if (savedLatitude != null && savedLongitude != null) {
+      // If saved location exists, set the selected location and update the map
+      _selectedLocation = LatLng(savedLatitude ?? 0.0, savedLongitude ?? 0.0);
+      _updateMarkerPosition();
+    } else {
+      // Request location permission and get the current location
+      _checkPermissionStatus();
+      _requestPermission();
+      _getCurrentLocation();
+    }
   }
 
   Future<void> _checkPermissionStatus() async {
@@ -38,9 +59,6 @@ class _AddGoalsGoogleMapState extends State<AddGoalsGoogleMap> {
     setState(() {
       permissionStatus = status;
     });
-    // if (permissionStatus.is) {
-
-    // }
   }
 
   Future<void> _requestPermission() async {
@@ -55,19 +73,14 @@ class _AddGoalsGoogleMapState extends State<AddGoalsGoogleMap> {
       desiredAccuracy: LocationAccuracy.high,
     );
 
-    setState(() {
-      _currentLocation = position;
-      _selectedLocation = LatLng(position.latitude, position.longitude);
-
+    if (mounted) {
+      setState(() {
+        _currentLocation = position;
+        _selectedLocation = LatLng(position.latitude, position.longitude);
+      });
       _updateMarkerPosition();
-      _onMapTapped(
-        LatLng(
-          _currentLocation!.latitude,
-          _currentLocation!.longitude,
-        ),
-      );
-      // 'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
-    });
+      _onMapTapped(LatLng(_currentLocation!.latitude, _currentLocation!.longitude));
+    }
   }
 
   late GoogleMapController mapController;
@@ -88,7 +101,7 @@ class _AddGoalsGoogleMapState extends State<AddGoalsGoogleMap> {
     });
   }
 
-  Set<Marker> markers = {};
+  final Set<Marker> markers = {};
 
   @override
   Widget build(BuildContext context) {
@@ -107,33 +120,37 @@ class _AddGoalsGoogleMapState extends State<AddGoalsGoogleMap> {
                 },
                 child: CustomImageView(
                   imagePath: ImageConstant.imgClosePrimary,
-                  height: 30,
-                  width: 30,
+                  height: 40,
+                  width: 40,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 10),
-          _currentLocation == null
-              ? const CircularProgressIndicator()
-              : Expanded(
-                  child: GoogleMap(
-                    onMapCreated: (GoogleMapController controller) {
-                      mapController = controller;
-                    },
-                    onTap: _onMapTapped,
-                    initialCameraPosition: CameraPosition(
-                      target: _currentLocation == null
-                          ? const LatLng(10.1632, 76.6413)
-                          : LatLng(
-                              _currentLocation!.latitude,
-                              _currentLocation!.longitude,
-                            ), // San Francisco, CA
-                      zoom: 12.0,
-                    ),
-                    markers: markers,
-                  ),
+          Expanded(
+            child: GoogleMap(
+              onMapCreated: (GoogleMapController controller) {
+                mapController = controller;
+              },
+              onTap: _onMapTapped,
+              initialCameraPosition: CameraPosition(
+                target: _selectedLocation.latitude != 0 && _selectedLocation.longitude != 0
+                    ? _selectedLocation
+                    : const LatLng(10.1632, 76.6413),
+                zoom: 10.0,  // Adjust zoom for better view
+              ),
+              markers: markers,
+              scrollGesturesEnabled: true,
+              zoomGesturesEnabled: true,
+              tiltGesturesEnabled: true,
+              rotateGesturesEnabled: true,
+              gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                Factory<OneSequenceGestureRecognizer>(
+                      () => EagerGestureRecognizer(),
                 ),
+              },
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
@@ -147,7 +164,7 @@ class _AddGoalsGoogleMapState extends State<AddGoalsGoogleMap> {
 
   void _onMapTapped(LatLng location) async {
     AdDreamsGoalsProvider adDreamsGoalsProvider =
-        Provider.of<AdDreamsGoalsProvider>(context, listen: false);
+    Provider.of<AdDreamsGoalsProvider>(context, listen: false);
     setState(() {
       _selectedLocation = location;
     });
@@ -155,30 +172,21 @@ class _AddGoalsGoogleMapState extends State<AddGoalsGoogleMap> {
     // Retrieve the address using geocoding
     try {
       List<Placemark> placemarks =
-          await placemarkFromCoordinates(location.latitude, location.longitude);
-      if (placemarks != null && placemarks.isNotEmpty) {
+      await placemarkFromCoordinates(location.latitude, location.longitude);
+      if (placemarks.isNotEmpty) {
         Placemark placemark = placemarks[0];
         setState(() {
           _selectedAddress =
-              '${placemark.name}, ${placemark.locality}, ${placemark.administrativeArea}, ${placemark.country}';
+          '${placemark.name}, ${placemark.locality}, ${placemark.administrativeArea}, ${placemark.country}';
           adDreamsGoalsProvider.addLocationSection(
               selectedAddress: _selectedAddress,
               placemark: placemark,
               location: location);
-          // adDreamsGoalsProvider.selectedLocationName =
-          //     placemark.locality.toString();
-          // adDreamsGoalsProvider.selectedLocationAddress =
-          //     _selectedAddress.toString();
-          // adDreamsGoalsProvider.selectedLatitude = location.latitude.toString();
-          // adDreamsGoalsProvider.locationLongitude =
-          //     location.longitude.toString();
-          // log(adDreamsGoalsProvider.selectedLocationName.toString(),
-          //     name: "selected 1");
         });
       }
       _updateMarkerPosition();
     } catch (e) {
-      showCustomSnackBar(context: context, message: e.toString());
+      logger.e(e.toString());
     }
   }
 

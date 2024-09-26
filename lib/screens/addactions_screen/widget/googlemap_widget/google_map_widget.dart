@@ -63,6 +63,17 @@ class _AddActionGoogleMapState extends State<AddActionGoogleMap> {
     // }
   }
 
+  double parseDouble(String? value) {
+    if (value == null || value.isEmpty) {
+      return 0.0; // Default value if null or empty
+    }
+    try {
+      return double.parse(value);
+    } catch (e) {
+      return 0.0; // Default value if parsing fails
+    }
+  }
+
   Future<void> _checkPermissionStatus() async {
     final status = await Permission.locationWhenInUse.status;
     setState(() {

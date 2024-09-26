@@ -1017,7 +1017,9 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
                               return Container(
                                 width: double.infinity,
                                 padding: const EdgeInsets.all(20),
-                                child: const AddGoalsGoogleMap(),
+                                child:  AddGoalsGoogleMap(
+                                    goalsanddream : widget.goalsanddream
+                                ),
                               );
                             },
                           );
