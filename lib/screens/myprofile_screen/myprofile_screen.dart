@@ -4,7 +4,9 @@ import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/dash_borad_screen/provider/dash_board_provider.dart';
 import 'package:mentalhelth/screens/edit_add_profile_screen/provider/edit_provider.dart';
 import 'package:mentalhelth/screens/myprofile_screen/verifyEmail/send_otp_mail_screen.dart';
+import 'package:mentalhelth/screens/myprofile_screen/verifyEmail/verifyOtpScreen.dart';
 import 'package:mentalhelth/screens/myprofile_screen/verifyPhone/send_otp_phone_screen.dart';
+import 'package:mentalhelth/screens/myprofile_screen/verifyPhone/verifyOtpScreenPhone.dart';
 import 'package:mentalhelth/screens/phone_singin_screen/phone_sign_in_screen.dart';
 import 'package:mentalhelth/screens/phone_singin_screen/provider/phone_sign_in_provider.dart';
 import 'package:mentalhelth/utils/logic/date_format.dart';
@@ -15,6 +17,7 @@ import 'package:mentalhelth/widgets/background_image/background_imager.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/theme/custom_text_style.dart';
+import '../../widgets/functions/snack_bar.dart';
 import '../home_screen/provider/home_provider.dart';
 import '../mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
 import '../token_expiry/tocken_expiry_warning_screen.dart';
@@ -250,12 +253,29 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                                                           () async {
                                                                         if (editProfileProvider.getProfileModel!.phone !=
                                                                             null) {
-                                                                          Navigator.of(context)
-                                                                              .push(
-                                                                            MaterialPageRoute(
-                                                                              builder: (context) =>  SendOtpPhoneScreen(),
-                                                                            ),
-                                                                          );
+                                                                          await editProfileProvider.sendOtpPhoneFunction(context);
+                                                                          if(editProfileProvider.sendOtpPhoneStatus == 200){
+
+                                                                            Future.delayed(Duration.zero, () {
+                                                                              Navigator.of(context).push(
+                                                                                MaterialPageRoute(
+                                                                                  builder: (context) => const VerifyOtpPhoneScreen(),
+                                                                                ),
+                                                                              );
+                                                                            });
+
+                                                                          }else{
+                                                                            showToast(
+                                                                              context: context,
+                                                                              message: editProfileProvider.sendOtpPhoneMessage ?? "",
+                                                                            );
+                                                                          }
+                                                                          // Navigator.of(context)
+                                                                          //     .push(
+                                                                          //   MaterialPageRoute(
+                                                                          //     builder: (context) =>  SendOtpPhoneScreen(),
+                                                                          //   ),
+                                                                          // );
                                                                         } else {
                                                                           // phoneSignInProvider.addPhoneNumber(editProfileProvider
                                                                           //     .getProfileModel!
@@ -292,11 +312,29 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                                               () async {
                                                             if (editProfileProvider.getProfileModel!.email !=
                                                                 null) {
-                                                              Navigator.of(context).push(
-                                                                MaterialPageRoute(
-                                                                  builder: (context) => const SendOtpMailScreen(),
-                                                                ),
-                                                              );
+                                                              await editProfileProvider.sendOtpFunction(context);
+                                                              if (editProfileProvider.sendOtpStatus == 200) {
+                                                                // Schedule the navigation to happen after the current frame
+                                                                Future.delayed(Duration.zero, () {
+                                                                  Navigator.of(context).push(
+                                                                    MaterialPageRoute(
+                                                                      builder: (context) => const VerifyOtpScreen(),
+                                                                    ),
+                                                                  );
+                                                                });
+
+                                                              } else {
+                                                                showToast(
+                                                                  context: context,
+                                                                  message: editProfileProvider.sendOtpMailMessage ?? "",
+                                                                );
+                                                              }
+
+                                                              // Navigator.of(context).push(
+                                                              //   MaterialPageRoute(
+                                                              //     builder: (context) => const SendOtpMailScreen(),
+                                                              //   ),
+                                                              // );
                                                             } else {
                                                               // Navigator.of(context)
                                                               //     .push(

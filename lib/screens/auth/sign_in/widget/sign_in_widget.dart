@@ -78,7 +78,7 @@ Widget buildContinueWithPhoneButton(
       ),
     ),
     buttonStyle: CustomButtonStyles.outlineGray,
-    onPressed: onPressed,
+    onPressed: onPressed
   );
 }
 

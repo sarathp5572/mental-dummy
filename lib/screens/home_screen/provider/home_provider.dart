@@ -92,11 +92,13 @@ class HomeProvider extends ChangeNotifier {
   List<Journal> journalsModelList = [];
   int pageLoad = 1;
   bool journalsModelLoading = false;
+  int journalStatus = 0;
 
   Future fetchJournals({bool initial = false}) async {
     try {
       String? token = await getUserTokenSharePref();
       journalsModelLoading = true;
+      journalStatus = 0;
       notifyListeners();
 
       Map<String, String> headers = {
@@ -122,6 +124,7 @@ class HomeProvider extends ChangeNotifier {
       final response = await http.get(url, headers: headers);
 
       if (response.statusCode == 200) {
+        journalStatus = response.statusCode;
         journalsModel = journalsModelFromJson(response.body);
         logger.w("journalsModel ${journalsModelFromJson(response.body)}");
 
@@ -138,6 +141,7 @@ class HomeProvider extends ChangeNotifier {
         journalsModelLoading = false;
         notifyListeners();
       } else {
+        journalStatus = response.statusCode;
         logger.w("journalsModelelse ${journalsModelFromJson(response.body)}");
         journalsModelLoading = false;
         journalsModelList.clear();
@@ -146,6 +150,7 @@ class HomeProvider extends ChangeNotifier {
 
       // Handle token expiry (401, 403)
       if (response.statusCode == 401 || response.statusCode == 403) {
+        journalStatus = response.statusCode;
         TokenManager.setTokenStatus(true);
         // CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }

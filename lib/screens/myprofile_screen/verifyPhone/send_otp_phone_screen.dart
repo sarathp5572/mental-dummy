@@ -176,7 +176,7 @@ class _SendOtpPhoneScreenState extends State<SendOtpPhoneScreen> {
                                 }else{
                                   showToast(
                                     context: context,
-                                    message: editProfileProvider.sendOtpMailMessage ?? "",
+                                    message: editProfileProvider.sendOtpPhoneMessage ?? "",
                                   );
                                 }
                               }else{

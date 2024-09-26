@@ -228,6 +228,7 @@ class EditProfileProvider extends ChangeNotifier {
         required String profileimg,
         required String dob,
         required String phone,
+        required String email,
         required BuildContext context,
         required List<String> interestIds}) async {  // Modified to accept a list of interest IDs
     try {
@@ -246,6 +247,7 @@ class EditProfileProvider extends ChangeNotifier {
         'note': note,
         'dob': dob,
         'phone': phone,
+        'email':email
       };
 
       // Add profile image only if it's not an empty string or a URL
@@ -415,7 +417,7 @@ class EditProfileProvider extends ChangeNotifier {
       notifyListeners();
       String? token = await getUserTokenSharePref();
       var body = {
-        'type': sendOtpEmailController.text,
+        'type': getProfileModel!.email,
       };
 
       logger.w("body $body");
@@ -438,7 +440,7 @@ class EditProfileProvider extends ChangeNotifier {
           context: context,
           message: json.decode(response.body)["text"],
         );
-        Navigator.of(context).pop();
+       // Navigator.of(context).pop();
       } else {
         sendOtpLoading = false;
         sendOtpStatus = response.statusCode;
@@ -548,7 +550,7 @@ class EditProfileProvider extends ChangeNotifier {
       notifyListeners();
       String? token = await getUserTokenSharePref();
       var body = {
-        'type': sendOtpPhoneController.text,
+        'type': getProfileModel!.phone,
       };
 
       logger.w("body $body");
@@ -571,7 +573,7 @@ class EditProfileProvider extends ChangeNotifier {
           context: context,
           message: json.decode(response.body)["text"],
         );
-        Navigator.of(context).pop();
+       // Navigator.of(context).pop();
       } else {
         sendOtpPhoneLoading = false;
         sendOtpPhoneStatus = response.statusCode;

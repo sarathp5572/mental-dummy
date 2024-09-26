@@ -438,22 +438,16 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                     : Padding(
                                         padding: const EdgeInsets.only(left: 7),
                                         child: Text(
-                                          homeProvider.journalDetails!.journals!
-                                                          .action ==
-                                                      null ||
-                                                  homeProvider.journalDetails!
-                                                      .journals!.action!.isEmpty
+                                          homeProvider.journalDetails!.journals!.action == null ||
+                                              homeProvider.journalDetails!.journals!.action!.isEmpty
                                               ? ""
-                                              : homeProvider
-                                                  .journalDetails!
-                                                  .journals!
-                                                  .action![0]
-                                                  .actionTitle
-                                                  .toString(),
-                                          style: CustomTextStyles
-                                              .bodyMediumGray700_1,
+                                              : homeProvider.journalDetails!.journals!.action!
+                                              .map((e) => e.actionTitle)
+                                              .join(", "), // Join action titles with a comma, for example.
+                                          style: CustomTextStyles.bodyMediumGray700_1,
                                         ),
-                                      ),
+
+                                ),
                                 const SizedBox(height: 33),
                               ],
                             ),
@@ -502,12 +496,16 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                capitalText(editProfileProvider.getProfileModel == null
-                    ? ""
-                    : editProfileProvider.getProfileModel!.firstname
-                    .toString()),
-                style: CustomTextStyles.bodyLarge18,
+              SizedBox(
+                //color: Colors.red,
+                width: size.width * 0.50,
+                child: Text(
+                  capitalText(editProfileProvider.getProfileModel == null
+                      ? ""
+                      : editProfileProvider.getProfileModel!.firstname
+                      .toString()),
+                  style: CustomTextStyles.bodyLarge18,
+                ),
               ),
               Text(
                 homeProvider.journalDetails == null

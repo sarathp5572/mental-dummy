@@ -10,6 +10,7 @@ import 'package:mentalhelth/widgets/functions/popup.dart';
 import 'package:mentalhelth/widgets/widget/shimmer.dart';
 import 'package:provider/provider.dart';
 
+import '../../edit_add_profile_screen/provider/edit_provider.dart';
 import '../sign_in/screen_sign_in.dart';
 import 'widgets/subscribeplan_item_widget.dart';
 
@@ -26,6 +27,7 @@ class SubscribePlanPage extends StatefulWidget {
 }
 
 class _SubscribePlanPageState extends State<SubscribePlanPage> {
+  late EditProfileProvider editProfileProvider;
   @override
   void initState() {
     Future.microtask(() async {
@@ -34,7 +36,10 @@ class _SubscribePlanPageState extends State<SubscribePlanPage> {
         context,
         listen: false,
       );
+      editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
+      editProfileProvider.getProfileModel == [];
       await subScribePlanProvider.fetchPlans();
+
     });
     super.initState();
   }

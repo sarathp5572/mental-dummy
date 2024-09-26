@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../../utils/theme/custom_text_style.dart';
 import '../../widgets/app_bar/appbar_leading_image.dart';
+import '../edit_add_profile_screen/provider/edit_provider.dart';
 import 'provider/my_plan_provider.dart';
 
 // ignore: must_be_immutable
@@ -86,26 +87,45 @@ class ConfirmPlanScreen extends StatelessWidget {
 
   /// Section Widget
   Widget _buildNameEditText(BuildContext context) {
-    return Consumer<ConfirmPlanProvider>(
-        builder: (context, confirmPlanProvider, _) {
-      return PopScope(
-        canPop: true,
-        onPopInvoked: (value) {
-          confirmPlanProvider.clearSignupControllers();
-        },
-        child: CustomTextFormField(
+    return Consumer2<EditProfileProvider, ConfirmPlanProvider>(
+      builder: (context, editProfileProvider, confirmPlanProvider, _) {
+        // Check if `firstname` is not empty, then set it as the initial text.
+        String initialName = editProfileProvider.getProfileModel?.firstname ?? '';
+
+        // Set the controller's text based on the condition
+        confirmPlanProvider.nameEditTextController.text = initialName.isNotEmpty
+            ? initialName
+            : confirmPlanProvider.nameEditTextController.text;
+
+        return PopScope(
+          canPop: true,
+          onPopInvoked: (value) {
+            confirmPlanProvider.clearSignupControllers();
+          },
+          child: CustomTextFormField(
             controller: confirmPlanProvider.nameEditTextController,
             hintText: "Your Name",
-            hintStyle: CustomTextStyles.bodySmallGray700),
-      );
-    });
+            hintStyle: CustomTextStyles.bodySmallGray700,
+          ),
+        );
+      },
+    );
   }
+
 
   /// Section Widget
   Widget _buildPhoneEditText(BuildContext context) {
-    return Consumer<ConfirmPlanProvider>(
-        builder: (context, confirmPlanProvider, _) {
-      return CustomTextFormField(
+    return Consumer2<EditProfileProvider, ConfirmPlanProvider>(
+      builder: (context, editProfileProvider, confirmPlanProvider, _) {
+        // Determine the initial value of the phone number
+        String initialPhone = editProfileProvider.getProfileModel?.phone ?? '';
+
+        // Set the text controller value based on the condition
+        if (initialPhone.isNotEmpty) {
+          confirmPlanProvider.phoneEditTextController.text = initialPhone;
+        }
+
+        return CustomTextFormField(
           textInputType: TextInputType.number,
           controller: confirmPlanProvider.phoneEditTextController,
           hintText: "+1 00 000000",
@@ -122,21 +142,35 @@ class ConfirmPlanScreen extends StatelessWidget {
             }
             return null; // Valid input
           },
-          hintStyle: CustomTextStyles.bodySmallGray500);
-    });
+          hintStyle: CustomTextStyles.bodySmallGray500,
+        );
+      },
+    );
   }
+
 
   /// Section Widget
   Widget _buildEmailEditText(BuildContext context) {
-    return Consumer<ConfirmPlanProvider>(
-        builder: (context, confirmPlanProvider, _) {
-      return CustomTextFormField(
+    return Consumer2<EditProfileProvider, ConfirmPlanProvider>(
+      builder: (context, editProfileProvider, confirmPlanProvider, _) {
+        // Check if `email` exists and is not empty, and then set it as the initial value
+        String initialEmail = editProfileProvider.getProfileModel?.email ?? '';
+
+        // If the email is not empty, set it as the text controller's value
+        if (initialEmail.isNotEmpty) {
+          confirmPlanProvider.emailEditTextController.text = initialEmail;
+        }
+
+        return CustomTextFormField(
           controller: confirmPlanProvider.emailEditTextController,
           hintText: "Email ID",
           hintStyle: CustomTextStyles.bodySmallGray700,
-          textInputType: TextInputType.emailAddress);
-    });
+          textInputType: TextInputType.emailAddress,
+        );
+      },
+    );
   }
+
 
   /// Section Widget
   Widget _buildPriceEditText(BuildContext context, Size size) {

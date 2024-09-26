@@ -548,13 +548,21 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
             showToast(context: context, message: 'Invalid phone number');
           } else if (editProfileProvider.selectedDate.isEmpty) {
             showToast(context: context, message: 'Select your date of birth');
-          } else {
+          } else if(editProfileProvider.phoneController.text.isEmpty){
+            showToast(context: context, message: 'Select your phone number');
+          }else if(editProfileProvider.emailController.text.isEmpty){
+            showToast(context: context, message: 'Select your email');
+          }else if(editProfileProvider.aboutYouValueController.text.isEmpty){
+            showToast(context: context, message: 'Select your about');
+          }
+          else {
             await editProfileProvider.editProfileFunction(
               firstName: editProfileProvider.myProfileController.text,
               note: editProfileProvider.aboutYouValueController.text,
               profileimg: editProfileProvider.profileUrl.toString(),
               dob: editProfileProvider.date.toString(),
               phone: editProfileProvider.phoneController.text,
+              email: editProfileProvider.emailController.text,
               context: context,
               interestIds: editProfileProvider.selectedCategories.isEmpty
                   ? ["0"]  // Default if no categories are selected

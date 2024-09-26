@@ -417,17 +417,17 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
                                               ),
                                             ),
                                           ),
-                                          SizedBox(
-                                            width: size.width * 0.3,
+                                          Container(
+                                           // color: Colors.red,
+                                            width: size.width * 0.40,
                                             child: Text(
-                                              mentalStrengthEditProvider
-                                                  .goalsValue.title
-                                                  .toString(),
+                                              'mentalStrengthEditProvider.goalsValue.title.toString()',
                                               textAlign: TextAlign.center,
                                               style: const TextStyle(
                                                 color: Colors.grey,
                                               ),
                                               overflow: TextOverflow.ellipsis,
+                                              maxLines: 3, // Set the maximum number of lines to 3
                                             ),
                                           ),
                                           GestureDetector(

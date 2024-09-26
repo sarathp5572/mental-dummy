@@ -464,14 +464,18 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                                           ),
                                                         ),
                                                       ),
-                                                      Text(
-                                                        mentalStrengthEditProvider
-                                                            .goalsValue.title
-                                                            .toString(),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: const TextStyle(
-                                                          color: Colors.grey,
+                                                      SizedBox(
+                                                        width:size.width * 0.45,
+                                                       // color: Colors.brown,
+                                                        child: Text(
+                                                          mentalStrengthEditProvider
+                                                              .goalsValue.title
+                                                              .toString(),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: const TextStyle(
+                                                            color: Colors.grey,
+                                                          ),
                                                         ),
                                                       ),
                                                       GestureDetector(
@@ -605,13 +609,17 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                                   ),
                                                 ),
                                               ),
-                                              Text(
-                                                mentalStrengthEditProvider
-                                                    .actionList[index].title
-                                                    .toString(),
-                                                textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                  color: Colors.grey,
+                                              SizedBox(
+                                                width:size.width * 0.45,
+                                               // color:Colors.black,
+                                                child: Text(
+                                                  mentalStrengthEditProvider
+                                                      .actionList[index].title
+                                                      .toString(),
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                    color: Colors.grey,
+                                                  ),
                                                 ),
                                               ),
                                               GestureDetector(
@@ -721,6 +729,7 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                                     .toList(),
                                           );
                                           if (isSuccess) {
+                                            homeProvider.fetchJournals(initial: true);
                                             DashBoardProvider
                                                 dashBoardProvider =
                                                 Provider.of<DashBoardProvider>(

@@ -4,6 +4,8 @@ import 'package:mentalhelth/screens/journal_list_screen/provider/journal_list_pr
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import '../../../utils/core/image_constant.dart';
+
 class ChartViewList extends StatelessWidget {
   const ChartViewList({super.key});
 
@@ -28,11 +30,10 @@ class ChartViewList extends StatelessWidget {
 //chart widget
 class ChartCircularWidget extends StatefulWidget {
   const ChartCircularWidget({Key? key}) : super(key: key);
+
   @override
   ChartCircularWidgetState createState() => ChartCircularWidgetState();
 }
-
-
 
 class ChartCircularWidgetState extends State<ChartCircularWidget> {
   late TooltipBehavior tooltip;
@@ -55,7 +56,8 @@ class ChartCircularWidgetState extends State<ChartCircularWidget> {
   }
 
   Future<void> _fetchData() async {
-    final journalListProvider = Provider.of<JournalListProvider>(context, listen: false);
+    final journalListProvider =
+        Provider.of<JournalListProvider>(context, listen: false);
     await journalListProvider.fetchJournalChartView();
 
     if (journalListProvider.journalChartViewModel != null) {
@@ -63,21 +65,35 @@ class ChartCircularWidgetState extends State<ChartCircularWidget> {
         data = [
           ChartData(
             'Optimal',
-            journalListProvider.journalChartViewModel?.chartpercentage!.optimalPercent?.toInt() ?? 0,
+            journalListProvider
+                    .journalChartViewModel?.chartpercentage!.optimalPercent
+                    ?.toInt() ??
+                0,
           ),
           ChartData(
             'Stressful',
-            journalListProvider.journalChartViewModel?.chartpercentage!.stressfullPercent?.toInt() ?? 0,
+            journalListProvider
+                    .journalChartViewModel?.chartpercentage!.stressfullPercent
+                    ?.toInt() ??
+                0,
           ),
           ChartData(
             'Passive',
-            journalListProvider.journalChartViewModel?.chartpercentage!.passivePercent?.toInt() ?? 0,
+            journalListProvider
+                    .journalChartViewModel?.chartpercentage!.passivePercent
+                    ?.toInt() ??
+                0,
           ),
           ChartData(
             'Destructive',
-            journalListProvider.journalChartViewModel?.chartpercentage!.destructivePercent?.toInt() ?? 0,
+            journalListProvider
+                    .journalChartViewModel?.chartpercentage!.destructivePercent
+                    ?.toInt() ??
+                0,
           ),
-        ].where((dataPoint) => dataPoint.y > 0).toList(); // Filter out zero values
+        ]
+            .where((dataPoint) => dataPoint.y > 0)
+            .toList(); // Filter out zero values
       });
     }
   }
@@ -87,80 +103,124 @@ class ChartCircularWidgetState extends State<ChartCircularWidget> {
     Size size = MediaQuery.of(context).size;
     return Consumer<JournalListProvider>(
       builder: (context, journalListProvider, _) {
-        logger.w("data ${journalListProvider.journalChartViewModel?.chartpercentage!.optimalPercent?.toDouble()}");
-        if (data.isEmpty) {
-          return const Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue), // Replace with your desired color
-            ),
-          );
-        }
+        logger.w(
+            "data ${journalListProvider.journalChartViewModel?.chartpercentage!.optimalPercent?.toDouble()}");
+        // if (data.isEmpty) {
+        //   return const Center(
+        //     child: CircularProgressIndicator(
+        //       valueColor: AlwaysStoppedAnimation<Color>(Colors.blue), // Replace with your desired color
+        //     ),
+        //   );
+        // }else{
+        //   Center(
+        //     child: Image.asset(
+        //       ImageConstant.noData,
+        //     ),
+        //   );
+        // }
         return SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                child: CustomLegend(
-                  data: [
-                    ChartData('Optimal',
-                        journalListProvider.journalChartViewModel?.chartpercentage!.optimalPercent?.toInt() ?? 0),
-                    ChartData('Stressful',
-                        journalListProvider.journalChartViewModel?.chartpercentage!.stressfullPercent?.toInt() ?? 0),
-                    ChartData('Passive',
-                        journalListProvider.journalChartViewModel?.chartpercentage!.passivePercent?.toInt() ?? 0),
-                    ChartData('Destructive',
-                        journalListProvider.journalChartViewModel?.chartpercentage!.destructivePercent?.toInt() ?? 0),
-                  ],
-                  colorMap: colorMap,
-                ),
-              ),
-              Container(
-                height:  size.height * 0.37,
-             //   color: Colors.indigo,
-                child: SfCircularChart(
-                  legend: const Legend(
-                    isVisible: false, // Hide default legend
+          child: journalListProvider.journalChartViewModelLoading
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.blue), // Replace with your desired color
                   ),
-                  series: <CircularSeries>[
-                    DoughnutSeries<ChartData, String>(
-                      dataSource: data,
-                      xValueMapper: (ChartData data, _) => data.x,
-                      yValueMapper: (ChartData data, _) => data.y,
-                      pointColorMapper: (ChartData data, _) {
-                        return colorMap[data.x] ?? Colors.grey;
-                      },
-                      cornerStyle: CornerStyle.bothFlat,
-                      strokeColor: Colors.white,
-                      strokeWidth: 2.0,
-                      explode: true,
-                      legendIconType: LegendIconType.circle,
-                      explodeAll: true,
-                      dataLabelSettings: DataLabelSettings(
-                        isVisible: true,
-                        labelIntersectAction: LabelIntersectAction.shift,
-                        labelAlignment: ChartDataLabelAlignment.auto,
-                        useSeriesColor: true,
-                        labelPosition: ChartDataLabelPosition.inside,
-                        builder: (dynamic data, ChartPoint<dynamic> point, ChartSeries<dynamic, dynamic> series, int pointIndex, int seriesIndex) {
-                          final value = point.y; // Format to two decimal places
-                          return Text(
-                            '$value%',
-                            style: const TextStyle(
-                              color: Colors.white, // Change this to your desired color
-                              fontSize: 20, // Optional: Adjust font size
-                              fontWeight: FontWeight.bold, // Optional: Adjust font weight
+                )
+              : data.isNotEmpty
+                  ? Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                          child: CustomLegend(
+                            data: [
+                              ChartData(
+                                  'Optimal',
+                                  journalListProvider.journalChartViewModel
+                                          ?.chartpercentage!.optimalPercent
+                                          ?.toInt() ??
+                                      0),
+                              ChartData(
+                                  'Stressful',
+                                  journalListProvider.journalChartViewModel
+                                          ?.chartpercentage!.stressfullPercent
+                                          ?.toInt() ??
+                                      0),
+                              ChartData(
+                                  'Passive',
+                                  journalListProvider.journalChartViewModel
+                                          ?.chartpercentage!.passivePercent
+                                          ?.toInt() ??
+                                      0),
+                              ChartData(
+                                  'Destructive',
+                                  journalListProvider.journalChartViewModel
+                                          ?.chartpercentage!.destructivePercent
+                                          ?.toInt() ??
+                                      0),
+                            ],
+                            colorMap: colorMap,
+                          ),
+                        ),
+                        Container(
+                          height: size.height * 0.37,
+                          //   color: Colors.indigo,
+                          child: SfCircularChart(
+                            legend: const Legend(
+                              isVisible: false, // Hide default legend
                             ),
-                          );
-                        },
-                      ),
-                      enableTooltip: true,
-
+                            series: <CircularSeries>[
+                              DoughnutSeries<ChartData, String>(
+                                dataSource: data,
+                                xValueMapper: (ChartData data, _) => data.x,
+                                yValueMapper: (ChartData data, _) => data.y,
+                                pointColorMapper: (ChartData data, _) {
+                                  return colorMap[data.x] ?? Colors.grey;
+                                },
+                                cornerStyle: CornerStyle.bothFlat,
+                                strokeColor: Colors.white,
+                                strokeWidth: 2.0,
+                                explode: true,
+                                legendIconType: LegendIconType.circle,
+                                explodeAll: true,
+                                dataLabelSettings: DataLabelSettings(
+                                  isVisible: true,
+                                  labelIntersectAction:
+                                      LabelIntersectAction.shift,
+                                  labelAlignment: ChartDataLabelAlignment.auto,
+                                  useSeriesColor: true,
+                                  labelPosition: ChartDataLabelPosition.inside,
+                                  builder: (dynamic data,
+                                      ChartPoint<dynamic> point,
+                                      ChartSeries<dynamic, dynamic> series,
+                                      int pointIndex,
+                                      int seriesIndex) {
+                                    final value =
+                                        point.y; // Format to two decimal places
+                                    return Text(
+                                      '$value%',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        // Change this to your desired color
+                                        fontSize: 20,
+                                        // Optional: Adjust font size
+                                        fontWeight: FontWeight
+                                            .bold, // Optional: Adjust font weight
+                                      ),
+                                    );
+                                  },
+                                ),
+                                enableTooltip: true,
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
                     )
-                  ],
-                ),
-              ),
-            ],
-          ),
+                  : Center(
+                      child: Image.asset(
+                        ImageConstant.noData,
+                      ),
+                    ),
         );
       },
     );
@@ -211,14 +271,9 @@ class CustomLegend extends StatelessWidget {
   }
 }
 
-
-
-
-
 class ChartData {
   ChartData(this.x, this.y);
+
   final String x;
   final int y;
 }
-
-
