@@ -177,10 +177,19 @@ class _GoalAndDreamFullViewBottomSheetState
                 );
               }),
               Center(
-                child: Text(
-                  capitalText(
-                      widget.goalDetailModel.goals!.goalTitle.toString()),
-                  style: CustomTextStyles.blackText18000000W700(),
+                child: SizedBox(
+                  width: size.width * 0.55,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                    child: Text(
+                      capitalText(
+                          widget.goalDetailModel.goals!.goalTitle.toString()),
+                      style: CustomTextStyles.blackText18000000W700(),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1, // Set the maximum number of lines to 3
+                    ),
+                  ),
                 ),
               ),
               _buildUntitledOne(
@@ -612,9 +621,18 @@ class _GoalAndDreamFullViewBottomSheetState
               "Category : ",
               style: CustomTextStyles.blackText16000000W600(),
             ),
-            Text(
-              category,
-              style: CustomTextStyles.bodyLargeGray700,
+            SizedBox(
+              width: size.width * 0.45,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                child: Text(
+                  category,
+                  style: CustomTextStyles.bodyLargeGray700,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1, // Set the maximum number of lines to 3
+                ),
+              ),
             ),
           ],
         ),

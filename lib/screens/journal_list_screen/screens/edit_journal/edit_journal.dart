@@ -409,7 +409,8 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                           : mentalStrengthEditProvider
                                                   .goalsValue.id!.isEmpty
                                               ? const SizedBox()
-                                              : Container(
+                                              :
+                                  Container(
                                                   height: size.height * 0.04,
                                                   width: size.width * 0.7,
                                                   padding:
@@ -465,19 +466,21 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                                         ),
                                                       ),
                                                       SizedBox(
-                                                        width:size.width * 0.45,
-                                                       // color: Colors.brown,
-                                                        child: Text(
-                                                          mentalStrengthEditProvider
-                                                              .goalsValue.title
-                                                              .toString(),
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: const TextStyle(
-                                                            color: Colors.grey,
+                                                        width: size.width * 0.45,
+                                                        child: SingleChildScrollView(
+                                                          scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                                                          child: Text(
+                                                            mentalStrengthEditProvider.goalsValue.title.toString(),
+                                                            textAlign: TextAlign.center,
+                                                            style: const TextStyle(
+                                                              color: Colors.grey,
+                                                            ),
+                                                            overflow: TextOverflow.ellipsis, // Add this line if you want to truncate long text
+                                                            maxLines: 1, // Limit to 1 line for horizontal scrolling
                                                           ),
                                                         ),
                                                       ),
+
                                                       GestureDetector(
                                                         onTap: () {
                                                           mentalStrengthEditProvider
@@ -612,13 +615,16 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                               SizedBox(
                                                 width:size.width * 0.45,
                                                // color:Colors.black,
-                                                child: Text(
-                                                  mentalStrengthEditProvider
-                                                      .actionList[index].title
-                                                      .toString(),
-                                                  textAlign: TextAlign.center,
-                                                  style: const TextStyle(
-                                                    color: Colors.grey,
+                                                child: SingleChildScrollView(
+                                                  scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                                                  child: Text(
+                                                    mentalStrengthEditProvider.actionList[index].title.toString(),
+                                                    textAlign: TextAlign.center,
+                                                    style: const TextStyle(
+                                                      color: Colors.grey,
+                                                    ),
+                                                    overflow: TextOverflow.ellipsis, // Add this line if you want to truncate long text
+                                                    maxLines: 1, // Limit to 1 line for horizontal scrolling
                                                   ),
                                                 ),
                                               ),
@@ -736,7 +742,7 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                                     context,
                                                     listen: false);
                                             dashBoardProvider.changePage(
-                                                index: 0);
+                                                index: 2);
                                           }
                                         } else {
                                           showCustomSnackBar(
@@ -756,7 +762,7 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                       }
 
                                       dashBoardProvider.changePage(
-                                        index: 0,
+                                        index: 2,
                                       );
                                     },
                                     height: 65,

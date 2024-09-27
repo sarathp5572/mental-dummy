@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:mentalhelth/screens/dash_borad_screen/provider/dash_board_provider.dart';
 import 'package:mentalhelth/screens/edit_add_profile_screen/provider/edit_provider.dart';
 import 'package:mentalhelth/screens/home_screen/model/journal_details.dart';
 import 'package:mentalhelth/screens/home_screen/provider/home_provider.dart';
@@ -502,8 +503,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                 child: Text(
                   capitalText(editProfileProvider.getProfileModel == null
                       ? ""
-                      : editProfileProvider.getProfileModel!.firstname
-                      .toString()),
+                      : editProfileProvider.getProfileModel!.firstname.toString()),
                   style: CustomTextStyles.bodyLarge18,
                 ),
               ),
@@ -543,9 +543,9 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
           );
         }),
         const Spacer(),
-        Consumer4<JournalListProvider, HomeProvider, MentalStrengthEditProvider,
+        Consumer5<DashBoardProvider,JournalListProvider, HomeProvider, MentalStrengthEditProvider,
                 EditProfileProvider>(
-            builder: (contexts, journalListProvider, homeProvider,
+            builder: (contexts, dashBoardProvider,journalListProvider, homeProvider,
                 mentalStrengthEditProvider, editProfileProvider, _) {
           return PopupMenuButton<String>(
             onSelected: (value) {},
@@ -722,6 +722,9 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                 .removeAt(widget.index);
                           }
                           Navigator.of(context).pop();
+
+                          Navigator.of(context).pop();
+
                         }
                       },
                       title: 'Confirm Delete',

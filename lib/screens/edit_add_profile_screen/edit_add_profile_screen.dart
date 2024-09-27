@@ -169,7 +169,7 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
                                           padding:
                                               const EdgeInsets.only(left: 10),
                                           child: Text(
-                                            "Date Of Birth",
+                                            "Date Of Birth *",
                                             style: CustomTextStyles
                                                 .bodyMediumGray700,
                                           ),
@@ -444,7 +444,7 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
         padding: const EdgeInsets.only(left: 10, right: 1),
         child: CustomTextFormField(
           controller: editProfileProvider.myProfileController,
-          hintText: "Josh_Peter",
+          hintText: "",
           hintStyle: const TextStyle(
             color: Colors.black,
           ),
@@ -456,41 +456,63 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
   /// Section Widget
   Widget _buildPhone(BuildContext context) {
     return Consumer<EditProfileProvider>(
-        builder: (context, editProfileProvider, _) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 10, right: 1),
-        child: CustomTextFormField(
-          isValids: editProfileProvider.phoneIsValid,
-          textInputType: TextInputType.phone,
-          controller: editProfileProvider.phoneController,
-          hintText: "+00 0000000000",
-          hintStyle: const TextStyle(
-            color: Colors.black,
-          ),
-          onChanged: (value) {
-            editProfileProvider.phoneValidate(
-              editProfileProvider.validatePhoneNumber(value),
-            );
-          },
-        ),
-      );
-    });
-  }
-
-  Widget _buildEmail(BuildContext context) {
-    return Consumer<EditProfileProvider>(
-        builder: (context, editProfileProvider, _) {
-      return Padding(
+      builder: (context, editProfileProvider, _) {
+        return Padding(
           padding: const EdgeInsets.only(left: 10, right: 1),
           child: CustomTextFormField(
+            isValids: editProfileProvider.phoneIsValid,
+            textInputType: TextInputType.phone,
+            controller: editProfileProvider.phoneController,
+            hintText: "+00 0000000000",
             hintStyle: const TextStyle(
               color: Colors.black,
             ),
-            controller: editProfileProvider.emailController,
-            hintText: "Josh_Peter@gmail.com",
-            textInputType: TextInputType.emailAddress,
-          ));
-    });
+            readOnly: editProfileProvider.getProfileModel?.phoneVerify == "1", // Set readOnly based on the condition
+            onChanged: (value) {
+                editProfileProvider.phoneValidate(
+                  editProfileProvider.validatePhoneNumber(value),
+                );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+
+  Widget _buildEmail(BuildContext context) {
+    return Consumer<EditProfileProvider>(
+      builder: (context, editProfileProvider, _) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 10, right: 1),
+          child: Form(
+            child: CustomTextFormField(
+              hintStyle: const TextStyle(
+                color: Colors.black,
+              ),
+              controller: editProfileProvider.emailController,
+              hintText: "Enter your email",
+              textInputType: TextInputType.emailAddress,
+              readOnly: editProfileProvider.getProfileModel?.emailVerify == "1", // Set readOnly based on the condition
+              validator: (value) {
+                // Email validation logic
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your email';
+                }
+                // Regular expression for validating email
+                const String emailPattern =
+                    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                final RegExp regex = RegExp(emailPattern);
+                if (!regex.hasMatch(value)) {
+                  return 'Please enter a valid email address';
+                }
+                return null; // Return null if the input is valid
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 
   /// Section Widget
@@ -535,47 +557,66 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
   /// Section Widget
   Widget _buildSave(BuildContext context) {
     return Consumer2<EditProfileProvider, DashBoardProvider>(
-        builder: (contexts, editProfileProvider, dashBoardProvider, _) {
-      return CustomElevatedButton(
-        loading: editProfileProvider.editLoading,
-        buttonStyle: CustomButtonStyles.outlinePrimary,
-        width: 104,
-        text: "Save",
-        onPressed: () async {
-          if (editProfileProvider.myProfileController.text.isEmpty) {
-            showToast(context: context, message: 'Please enter your name');
-          } else if (!editProfileProvider.phoneIsValid) {
-            showToast(context: context, message: 'Invalid phone number');
-          } else if (editProfileProvider.selectedDate.isEmpty) {
-            showToast(context: context, message: 'Select your date of birth');
-          } else if(editProfileProvider.phoneController.text.isEmpty){
-            showToast(context: context, message: 'Select your phone number');
-          }else if(editProfileProvider.emailController.text.isEmpty){
-            showToast(context: context, message: 'Select your email');
-          }else if(editProfileProvider.aboutYouValueController.text.isEmpty){
-            showToast(context: context, message: 'Select your about');
-          }
-          else {
-            await editProfileProvider.editProfileFunction(
-              firstName: editProfileProvider.myProfileController.text,
-              note: editProfileProvider.aboutYouValueController.text,
-              profileimg: editProfileProvider.profileUrl.toString(),
-              dob: editProfileProvider.date.toString(),
-              phone: editProfileProvider.phoneController.text,
-              email: editProfileProvider.emailController.text,
-              context: context,
-              interestIds: editProfileProvider.selectedCategories.isEmpty
-                  ? ["0"]  // Default if no categories are selected
-                  : editProfileProvider.selectedCategories
-                  .map((category) => category.id.toString())  // Convert categories to a list of IDs
-                  .toList(),
-            );
-            dashBoardProvider.changeCommentPage(
-              index: 8,
-            );
-          }
-        },
-      );
-    });
+      builder: (contexts, editProfileProvider, dashBoardProvider, _) {
+        return CustomElevatedButton(
+          loading: editProfileProvider.editLoading,
+          buttonStyle: CustomButtonStyles.outlinePrimary,
+          width: 104,
+          text: "Save",
+          onPressed: () async {
+            // Get the email entered by the user
+            String email = editProfileProvider.emailController.text;
+
+            // Regular expression for standard email validation
+            String emailPattern =
+                r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+            RegExp regex = RegExp(emailPattern);
+
+            // Check if required fields are filled and if the email is valid
+            if (editProfileProvider.myProfileController.text.isEmpty) {
+              showToast(context: context, message: 'Please enter your name');
+            } else if (!editProfileProvider.phoneIsValid) {
+              showToast(context: context, message: 'Invalid phone number');
+            } else if (editProfileProvider.selectedDate.isEmpty) {
+              showToast(context: context, message: 'Select your date of birth');
+            } else if (editProfileProvider.phoneController.text.isEmpty) {
+              showToast(context: context, message: 'Enter your phone number');
+            } else if (editProfileProvider.emailController.text.isEmpty) {
+              showToast(context: context, message: 'Enter your email');
+            } else if (editProfileProvider.aboutYouValueController.text.isEmpty) {
+              showToast(context: context, message: 'Enter information about yourself');
+            }
+            // Custom email format validation using regex
+            else if (!regex.hasMatch(email)) {
+              showToast(
+                  context: context,
+                  message: 'Please enter a valid email address (e.g.,user@example.com)');
+            }
+            else {
+              // If all validations pass, proceed with saving the profile
+              await editProfileProvider.editProfileFunction(
+                firstName: editProfileProvider.myProfileController.text,
+                note: editProfileProvider.aboutYouValueController.text,
+                profileimg: editProfileProvider.profileUrl.toString(),
+                dob: editProfileProvider.date.toString(),
+                phone: editProfileProvider.phoneController.text,
+                email: email,  // Pass the validated email
+                context: context,
+                interestIds: editProfileProvider.selectedCategories.isEmpty
+                    ? ["0"]  // Default if no categories are selected
+                    : editProfileProvider.selectedCategories
+                    .map((category) => category.id.toString())  // Convert categories to a list of IDs
+                    .toList(),
+              );
+              // Navigate to the comment page
+              dashBoardProvider.changeCommentPage(
+                index: 8,
+              );
+            }
+          },
+        );
+      },
+    );
   }
+
 }

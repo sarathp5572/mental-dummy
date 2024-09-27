@@ -417,17 +417,20 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
                                               ),
                                             ),
                                           ),
-                                          Container(
+                                          SizedBox(
                                            // color: Colors.red,
-                                            width: size.width * 0.40,
-                                            child: Text(
-                                              'mentalStrengthEditProvider.goalsValue.title.toString()',
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                color: Colors.grey,
+                                            width: size.width * 0.45,
+                                            child:  SingleChildScrollView(
+                                              scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                                              child: Text(
+                                                mentalStrengthEditProvider.goalsValue.title.toString(),
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  color: Colors.grey,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1, // Set the maximum number of lines to 3
                                               ),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 3, // Set the maximum number of lines to 3
                                             ),
                                           ),
                                           GestureDetector(
@@ -568,13 +571,19 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
                                               ),
                                             ),
                                           ),
-                                          Text(
-                                            mentalStrengthEditProvider
-                                                .actionList[index].title
-                                                .toString(),
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                              color: Colors.grey,
+                                          SizedBox(
+                                            width:size.width * 0.45,
+                                            child: SingleChildScrollView(
+                                              scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                                              child: Text(
+                                                mentalStrengthEditProvider.actionList[index].title.toString(),
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  color: Colors.grey,
+                                                ),
+                                                overflow: TextOverflow.ellipsis, // Add this line if you want to truncate long text
+                                                maxLines: 1, // Limit to 1 line for horizontal scrolling
+                                              ),
                                             ),
                                           ),
                                           GestureDetector(
@@ -611,18 +620,25 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
                                 height: size.height * 0.03,
                               ),
                               CustomElevatedButton(
-                                loading: mentalStrengthEditProvider
-                                    .saveJournalLoading,
+                                loading: mentalStrengthEditProvider.saveJournalLoading,
                                 onPressed: () async {
-                                  await mentalStrengthEditProvider
-                                      .saveButtonFunction(context);
-                                  _isTokenExpired();
+                                  // Ensure that all required fields are filled before proceeding
+                                  if (mentalStrengthEditProvider.descriptionEditTextController.text.isNotEmpty &&
+                                      mentalStrengthEditProvider.emotionValue.id.toString().isNotEmpty &&
+                                      mentalStrengthEditProvider.emotionalValueStar != null && // Check if emotionalValueStar is not null
+                                      mentalStrengthEditProvider.driveValueStar != null) { // Check if driveValueStar is not null
+                                    await mentalStrengthEditProvider.saveButtonFunction(context);
+                                    _isTokenExpired();
+                                  }
                                 },
+                                isDisabled: !(mentalStrengthEditProvider.descriptionEditTextController.text.isNotEmpty &&
+                                    mentalStrengthEditProvider.emotionValue.id.toString().isNotEmpty &&
+                                    mentalStrengthEditProvider.emotionalValueStar != null && // Check if emotionalValueStar is not null
+                                    mentalStrengthEditProvider.driveValueStar != null), // Check if driveValueStar is not null
                                 height: 65,
                                 text: "SAVE",
                                 buttonStyle: CustomButtonStyles.fillBlueTL13,
-                                buttonTextStyle:
-                                    CustomTextStyles.titleLargeGray50,
+                                buttonTextStyle: CustomTextStyles.titleLargeGray50,
                               ),
                               SizedBox(
                                 height: size.height * 0.03,

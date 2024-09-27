@@ -87,88 +87,58 @@ class ConfirmPlanScreen extends StatelessWidget {
 
   /// Section Widget
   Widget _buildNameEditText(BuildContext context) {
-    return Consumer2<EditProfileProvider, ConfirmPlanProvider>(
-      builder: (context, editProfileProvider, confirmPlanProvider, _) {
-        // Check if `firstname` is not empty, then set it as the initial text.
-        String initialName = editProfileProvider.getProfileModel?.firstname ?? '';
-
-        // Set the controller's text based on the condition
-        confirmPlanProvider.nameEditTextController.text = initialName.isNotEmpty
-            ? initialName
-            : confirmPlanProvider.nameEditTextController.text;
-
-        return PopScope(
-          canPop: true,
-          onPopInvoked: (value) {
-            confirmPlanProvider.clearSignupControllers();
-          },
-          child: CustomTextFormField(
-            controller: confirmPlanProvider.nameEditTextController,
-            hintText: "Your Name",
-            hintStyle: CustomTextStyles.bodySmallGray700,
-          ),
-        );
-      },
-    );
+    return Consumer<ConfirmPlanProvider>(
+        builder: (context, confirmPlanProvider, _) {
+          return PopScope(
+            canPop: true,
+            onPopInvoked: (value) {
+              confirmPlanProvider.clearSignupControllers();
+            },
+            child: CustomTextFormField(
+                controller: confirmPlanProvider.nameEditTextController,
+                hintText: "Your Name",
+                hintStyle: CustomTextStyles.bodySmallGray700),
+          );
+        });
   }
 
 
   /// Section Widget
   Widget _buildPhoneEditText(BuildContext context) {
-    return Consumer2<EditProfileProvider, ConfirmPlanProvider>(
-      builder: (context, editProfileProvider, confirmPlanProvider, _) {
-        // Determine the initial value of the phone number
-        String initialPhone = editProfileProvider.getProfileModel?.phone ?? '';
-
-        // Set the text controller value based on the condition
-        if (initialPhone.isNotEmpty) {
-          confirmPlanProvider.phoneEditTextController.text = initialPhone;
-        }
-
-        return CustomTextFormField(
-          textInputType: TextInputType.number,
-          controller: confirmPlanProvider.phoneEditTextController,
-          hintText: "+1 00 000000",
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly, // Only allow digits
-            LengthLimitingTextInputFormatter(10),   // Limit to 10 digits
-          ],
-          validator: (value) {
-            // Check if the field is empty or does not have exactly 10 digits
-            if (value == null || value.isEmpty) {
-              return 'Please enter a phone number';
-            } else if (value.length != 10) {
-              return 'Phone number must be 10 digits';
-            }
-            return null; // Valid input
-          },
-          hintStyle: CustomTextStyles.bodySmallGray500,
-        );
-      },
-    );
+    return Consumer<ConfirmPlanProvider>(
+        builder: (context, confirmPlanProvider, _) {
+          return CustomTextFormField(
+              textInputType: TextInputType.number,
+              controller: confirmPlanProvider.phoneEditTextController,
+              hintText: "+1 00 000000",
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly, // Only allow digits
+                LengthLimitingTextInputFormatter(10),   // Limit to 10 digits
+              ],
+              validator: (value) {
+                // Check if the field is empty or does not have exactly 10 digits
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a phone number';
+                } else if (value.length != 10) {
+                  return 'Phone number must be 10 digits';
+                }
+                return null; // Valid input
+              },
+              hintStyle: CustomTextStyles.bodySmallGray500);
+        });
   }
 
 
   /// Section Widget
   Widget _buildEmailEditText(BuildContext context) {
-    return Consumer2<EditProfileProvider, ConfirmPlanProvider>(
-      builder: (context, editProfileProvider, confirmPlanProvider, _) {
-        // Check if `email` exists and is not empty, and then set it as the initial value
-        String initialEmail = editProfileProvider.getProfileModel?.email ?? '';
-
-        // If the email is not empty, set it as the text controller's value
-        if (initialEmail.isNotEmpty) {
-          confirmPlanProvider.emailEditTextController.text = initialEmail;
-        }
-
-        return CustomTextFormField(
-          controller: confirmPlanProvider.emailEditTextController,
-          hintText: "Email ID",
-          hintStyle: CustomTextStyles.bodySmallGray700,
-          textInputType: TextInputType.emailAddress,
-        );
-      },
-    );
+    return Consumer<ConfirmPlanProvider>(
+        builder: (context, confirmPlanProvider, _) {
+          return CustomTextFormField(
+              controller: confirmPlanProvider.emailEditTextController,
+              hintText: "Email ID",
+              hintStyle: CustomTextStyles.bodySmallGray700,
+              textInputType: TextInputType.emailAddress);
+        });
   }
 
 
@@ -207,8 +177,8 @@ class ConfirmPlanScreen extends StatelessWidget {
     BuildContext context,
     Size size,
   ) {
-    return Consumer<ConfirmPlanProvider>(
-        builder: (contexts, confirmPlanProvider, _) {
+    return Consumer2<EditProfileProvider,ConfirmPlanProvider>(
+        builder: (contexts, editProfileProvider,confirmPlanProvider, _) {
       return CustomElevatedButton(
           loading: confirmPlanProvider.subScribePlanModelLoading,
           buttonStyle: ElevatedButton.styleFrom(
@@ -236,6 +206,7 @@ class ConfirmPlanScreen extends StatelessWidget {
                 firstname: confirmPlanProvider.nameEditTextController.text,
                 email: confirmPlanProvider.emailEditTextController.text,
                 phone: confirmPlanProvider.phoneEditTextController.text,
+                isSubscription: editProfileProvider.getProfileModel?.isSubscribed ?? ""
               );
             } else {
               showToast(

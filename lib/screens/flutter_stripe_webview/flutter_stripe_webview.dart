@@ -67,7 +67,7 @@ class _StripeWebViewState extends State<StripeWebView> {
                   Provider.of<HomeProvider>(context, listen: false);
               EditProfileProvider editProfileProvider =
                   Provider.of<EditProfileProvider>(context, listen: false);
-              Future.delayed(const Duration(seconds: 5), () async {
+              Future.delayed(const Duration(seconds: 10), () async {
                 Navigator.push(
                   context,
                   MaterialPageRoute(

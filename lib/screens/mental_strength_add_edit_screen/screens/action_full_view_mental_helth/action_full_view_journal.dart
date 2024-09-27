@@ -214,11 +214,18 @@ class _ActionFullViewJournalCreateBottomSheetState
                     mentalStrengthEditProvider.actionsDetailsModel == null
                         ? const SizedBox()
                         : Center(
-                            child: Text(
-                              capitalText(mentalStrengthEditProvider
-                                  .actionsDetailsModel!.actions!.actionTitle
-                                  .toString()),
-                              style: CustomTextStyles.blackText18000000W700(),
+                            child: SizedBox(
+                              width: size.width * 0.55,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                                child: Text(
+                                  capitalText(mentalStrengthEditProvider.actionsDetailsModel!.actions!.actionTitle.toString(),),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1, // Set the maximum number of lines to 3
+                                  style: CustomTextStyles.blackText18000000W700(),
+                                ),
+                              ),
                             ),
                           ),
                     SizedBox(
@@ -649,9 +656,19 @@ class _ActionFullViewJournalCreateBottomSheetState
               "Goal : ",
               style: CustomTextStyles.blackText16000000W600(),
             ),
-            Text(
-              category,
-              style: CustomTextStyles.bodyLargeGray700,
+            SizedBox(
+              width: size.width * 0.60,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                child: Text(
+                  category,
+                  style: CustomTextStyles.bodyLargeGray700,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1, // Set the maximum number of lines to 3
+                ),
+
+              ),
             ),
           ],
         ),

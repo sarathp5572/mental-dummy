@@ -129,6 +129,53 @@ class SignInProvider extends ChangeNotifier {
     }
   }
 
+  bool logOutLoading = false;
+  Future<void> logOutUser(BuildContext context) async {
+    try {
+      logOutLoading = true;
+      notifyListeners();
+
+      // Retrieve and print the token for debugging
+      String? token = await getUserTokenSharePref();
+      print('Token: $token');
+
+      // Check if token is valid before making API call
+      if (token == null || token.isEmpty) {
+        throw Exception("Token is null or empty");
+      }
+
+      // Log the request details
+      print("Logging out with URL: ${UrlConstant.logOutUrl}");
+
+      final response = await http.post(
+        Uri.parse(UrlConstant.logOutUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'authorization': token, // Corrected token usage
+        },
+      );
+
+      // Print response status and body for debugging
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 401 || response.statusCode == 403 || response.statusCode == 400) {
+        //TokenManager.setTokenStatus(true);
+        print('Authorization error: Token may be invalid or expired');
+        // Optionally, handle the token refresh or invalidation
+      }
+
+      logOutLoading = false;
+      notifyListeners();
+    } catch (error) {
+      print('Logout error: $error');
+      logOutLoading = false;
+      notifyListeners();
+    }
+  }
+
+
+
   bool forgetLoading = false;
 
   Future<void> forgetPassword(

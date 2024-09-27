@@ -205,7 +205,15 @@ class _ChooseActionMentalHelthState extends State<ChooseActionMentalHelth> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Text(widget.goal.title.toString()),
+                                SizedBox(
+                                    width:size.width * 0.40,
+                                    child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                                        child: Text(widget.goal.title.toString(),
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis, // Add this line if you want to truncate long text
+                                          maxLines: 1, // Limit to 1 line for ho
+                                        ),)),
                               ],
                             ),
                           ],
@@ -395,10 +403,20 @@ class _ChooseActionMentalHelthState extends State<ChooseActionMentalHelth> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  action[index].title.toString(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                Container(
+                  width:size.width * 0.55,
+                 // color: Colors.lightGreenAccent,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                    child: Text(
+                      action[index].title.toString(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis, // Add this line if you want to truncate long text
+                      maxLines: 1, // Limit to 1 line for horizontal scrolling
+                    ),
                   ),
                 ),
                 SizedBox(

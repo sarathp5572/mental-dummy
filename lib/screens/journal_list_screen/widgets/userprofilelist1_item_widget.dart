@@ -263,6 +263,8 @@ class UserProfileList1ItemWidget extends StatelessWidget {
                               )
                                   .then((value) async {
                                 Navigator.of(context).pop();
+                                await homeProvider.fetchJournals(initial: true);
+
                                 List<int> indicesToRemove = [];
                                 for (int i = 0;
                                     i < homeProvider.journalsModelList.length;
@@ -277,7 +279,7 @@ class UserProfileList1ItemWidget extends StatelessWidget {
                                 for (int index in indicesToRemove) {
                                   homeProvider.journalsModelList.removeAt(index);
                                 }
-                                await homeProvider.fetchJournals(initial: true);
+
                               });
                             },
                             title: 'Confirm Delete',

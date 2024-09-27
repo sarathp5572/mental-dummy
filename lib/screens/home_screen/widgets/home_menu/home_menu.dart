@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mentalhelth/screens/auth/sign_in/provider/sign_in_provider.dart';
 import 'package:mentalhelth/screens/auth/subscribe_plan_page/subscribe_plan_page.dart';
 import 'package:mentalhelth/screens/dash_borad_screen/provider/dash_board_provider.dart';
 import 'package:mentalhelth/screens/edit_add_profile_screen/provider/edit_provider.dart';
@@ -354,31 +355,35 @@ Widget buildPopupDialog(BuildContext context, Size size) {
             SizedBox(
               height: size.height * 0.03,
             ),
-            GestureDetector(
-              onTap: () async {
-                customPopup(
-                  context: context,
-                  onPressedDelete: () async {
-                    await removeUserDetailsSharePref(context: context);
-                    removeAllValuesLogout(context: context);
+            Consumer<SignInProvider>(
+              builder: (context, signInProvider, _) {
+                return GestureDetector(
+                  onTap: () async {
+                    customPopup(
+                      context: context,
+                      onPressedDelete: () async {
+                        await signInProvider.logOutUser(context);
+                        await removeUserDetailsSharePref(context: context);
+                        removeAllValuesLogout(context: context);
+                      },
+                      title: 'Confirm Logout',
+                      content: 'Are you sure You want to logout?',
+                      yes: "Logout",
+                    );
                   },
-                  title: 'Confirm Logout',
-                  content: 'Are you sure You want to logout?',
-                  yes: "Logout",
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Logout",
+                      maxLines: 13,
+                      overflow: TextOverflow.ellipsis,
+                      style: CustomTextStyles.titleMediumOnSecondaryContainerMedium.copyWith(
+                        height: 2.19,
+                      ),
+                    ),
+                  ),
                 );
               },
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  "Logout",
-                  maxLines: 13,
-                  overflow: TextOverflow.ellipsis,
-                  style: CustomTextStyles.titleMediumOnSecondaryContainerMedium
-                      .copyWith(
-                    height: 2.19,
-                  ),
-                ),
-              ),
             ),
             SizedBox(
               height: size.height * 0.005,

@@ -2,6 +2,7 @@ class UrlConstant {
   static const String baseUrl = "https://mh.featureme.live/v1/";
 
   static const String loginUrl = "${baseUrl}login";
+  static const String logOutUrl = "${baseUrl}logout";
   static const String forgotPassword = "${baseUrl}forgotpassword";
   static const String signupUrl = "${baseUrl}signup";
   static const String plansUrl = "${baseUrl}plans";

@@ -32,6 +32,7 @@ class CustomTextFormField extends StatelessWidget {
     this.textAlign,
     this.isValids,
     this.inputFormatters, // Added inputFormatters here
+    this.readOnly = false, // Add readOnly parameter with a default value
   }) : super(
           key: key,
         );
@@ -62,6 +63,7 @@ class CustomTextFormField extends StatelessWidget {
   final TextAlign? textAlign;
   final bool? isValids;
   final List<TextInputFormatter>? inputFormatters; // Make inputFormatters nullable
+  final bool readOnly; // Declare readOnly as a parameter
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +94,7 @@ class CustomTextFormField extends StatelessWidget {
           decoration: decoration,
           validator: validator,
           inputFormatters: inputFormatters, // Apply inputFormatters here
+          readOnly: readOnly, // Pass readOnly to the TextFormField
         ),
       );
 

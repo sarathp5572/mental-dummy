@@ -25,6 +25,7 @@ class ConfirmPlanProvider extends ChangeNotifier {
     required String firstname,
     required String email,
     required String phone,
+    required String isSubscription,
   }) async {
     try {
       String? userId = await getUserIdSharePref();
@@ -35,7 +36,7 @@ class ConfirmPlanProvider extends ChangeNotifier {
 
       var body = {
         'plan_id': planId,
-        // 'is_subscribed': subscribeId,
+        'is_subscribed': isSubscription,
         'user_id': userId,
         'firstname': firstname,
         'email': email,
@@ -69,14 +70,14 @@ class ConfirmPlanProvider extends ChangeNotifier {
           );
         }
       } else {
-       // showCustomSnackBar(context: context, message: 'subscribing failed.');
+        // showCustomSnackBar(context: context, message: 'subscribing failed.');
         showCustomSnackBar(context: context, message: 'Already subscribed!');
       }
-      if(response.statusCode == 401){
+      if (response.statusCode == 401) {
         TokenManager.setTokenStatus(true);
         //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
-      if(response.statusCode == 403){
+      if (response.statusCode == 403) {
         TokenManager.setTokenStatus(true);
         //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }
