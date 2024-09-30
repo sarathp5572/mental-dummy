@@ -296,7 +296,7 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
                               );
                             }),
                             const SizedBox(height: 11),
-                            _buildContinueWithFacebookRow(context),
+                            _buildAchievmentDateGoals(context),
                             const SizedBox(height: 25),
                             _buildAddMediaColumn(
                               context,
@@ -580,7 +580,7 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
   }
 
   /// Section Widget
-  Widget _buildContinueWithFacebookRow(BuildContext context) {
+  Widget _buildAchievmentDateGoals(BuildContext context) {
     return Consumer<AdDreamsGoalsProvider>(
         builder: (context, adDreamsGoalsProvider, _) {
       return GestureDetector(

@@ -61,7 +61,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                 child: Consumer<PrivacyPolicyProvider>(
                   builder: (context, policyProvider, _) {
                     return SizedBox(
-                      height: size.height * 0.7,
+                      height: size.height * 0.75,
                       child: policyProvider.policyModel == null
                           ? const Center(
                               child: Text("No Data"),
@@ -74,12 +74,28 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                                   controller: WebViewController()
                                     ..setJavaScriptMode(
                                         JavaScriptMode.unrestricted)
-                                    ..setBackgroundColor(
-                                      Colors.transparent,
-                                    )
+                                    ..setBackgroundColor(Colors.transparent)
                                     ..loadHtmlString(
-                                      policyProvider.policyModel!.description
-                                          .toString(),
+                                      '''
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            text-align: justify; /* Aligns text to justify */
+            padding: 15px;
+            line-height: 1.6; /* Adjust line spacing */
+            font-size: 16px; /* Standard font size */
+            color: #333; /* Standard font color */
+          }
+        </style>
+      </head>
+      <body>
+        ${policyProvider.policyModel!.description.toString()}
+      </body>
+      </html>
+      ''',
                                     ),
                                 ),
                     );

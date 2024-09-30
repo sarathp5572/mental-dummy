@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/addgoals_dreams_screen/provider/ad_goals_dreams_provider.dart';
@@ -302,7 +303,8 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                   mentalStrengthEditProvider.getEmotionsModel ==
                                           null
                                       ? const SizedBox()
-                                      : Container(
+                                      :
+                                  Container(
                                     width: size.width * 0.60, // This controls the button width
                                     decoration: BoxDecoration(
                                       border: Border.all(
@@ -312,34 +314,60 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                       borderRadius: BorderRadius.circular(15.0), // Border radius for rounded corners
                                       color: Colors.white, // Background color (optional)
                                     ),
-                                        child: DropdownButton(
-                                            underline: const SizedBox(),
-                                            elevation: 0,
-                                            value: mentalStrengthEditProvider
-                                                .emotionValue,
-                                            icon: const Icon(
-                                                Icons.keyboard_arrow_down),
-                                            items: mentalStrengthEditProvider
-                                                .getEmotionsModel!.emotions!
-                                                .map((Emotion items) {
-                                              return DropdownMenuItem(
-                                                value: items,
-                                                child:
-                                                    SizedBox(
-                                                        width: 190, // Set the desired width for the dropdown list items here
-                                                        child:
-                                                    Text(items.title.toString())),
-                                              );
-                                            }).toList(),
-                                            onChanged: (Emotion? newValue) {
-                                              setState(() {
-                                                mentalStrengthEditProvider
-                                                    .emotionValue = newValue!;
-                                              });
-                                              _isTokenExpired();
-                                            },
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton2(
+                                        isExpanded: true,
+                                        // buttonWidth: size.width * 0.60, // Adjust the width of the button
+                                        // buttonDecoration: BoxDecoration(
+                                        //   borderRadius: BorderRadius.circular(15.0),
+                                        //   border: Border.all(color: Colors.grey, width: 1.0),
+                                        //   color: Colors.white,
+                                        // ),
+                                        // dropdownWidth: 190, // Set the desired width for the dropdown menu
+                                        // dropdownDecoration: BoxDecoration(
+                                        //   borderRadius: BorderRadius.circular(15.0),
+                                        //   color: Colors.white,
+                                        // ),
+                                        value: mentalStrengthEditProvider.emotionValue,
+                                        //icon: const Icon(Icons.keyboard_arrow_down),
+                                        dropdownStyleData: DropdownStyleData(
+                                          maxHeight: 300,
+                                          width: 250,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(14),
+                                            color: Colors.white,
                                           ),
+                                          offset: const Offset(0, 0),
+                                          scrollbarTheme: ScrollbarThemeData(
+                                            radius: const Radius.circular(40),
+                                            thickness: MaterialStateProperty.all(6),
+                                            thumbVisibility:
+                                            MaterialStateProperty.all(true),
+                                          ),
+                                        ),
+                                        items: mentalStrengthEditProvider.getEmotionsModel!.emotions!.map((Emotion items) {
+                                          return DropdownMenuItem(
+                                            value: items,
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                              child: Text(
+                                                items.title.toString(),
+                                                style: const TextStyle(
+                                                  color: Colors.black, // Change to your desired color
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (Emotion? newValue) {
+                                          setState(() {
+                                            mentalStrengthEditProvider.emotionValue = newValue!;
+                                          });
+                                          _isTokenExpired();
+                                        },
                                       ),
+                                    ),
+                                  ),
                                   SizedBox(height: size.height * 0.03),
                                   CustomImageView(
                                     imagePath: ImageConstant.imgGroup29,

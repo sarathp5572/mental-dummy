@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
@@ -259,47 +259,63 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
                               mentalStrengthEditProvider.getEmotionsModel ==
                                       null
                                   ? const SizedBox()
-                                  :Container(
+                                  :
+                              Container(
                                 width: size.width * 0.60, // This controls the button width
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     color: Colors.grey, // Border color
                                     width: 1.0,         // Border width
                                   ),
-                                  borderRadius: BorderRadius.circular(15.0), // Border radius for rounded corners
+                                  borderRadius: BorderRadius.circular(10.0), // Border radius for rounded corners
                                   color: Colors.white, // Background color (optional)
                                 ),
                                 child: Center(
-                                  child: DropdownButton(
-                                    underline: const SizedBox(),
-                                    elevation: 0,
-                                    value: mentalStrengthEditProvider.emotionValue,
-                                    icon: const Icon(Icons.keyboard_arrow_down),
-                                    items: mentalStrengthEditProvider
-                                        .getEmotionsModel!.emotions!
-                                        .map((Emotion items) {
-                                      return DropdownMenuItem(
-                                        value: items,
-                                        child: SizedBox(
-                                          width: 190, // Set the desired width for the dropdown list items here
-                                          child: Text(
-                                            items.title.toString(),
-                                            style: TextStyle(
-                                              color: ColorsContent.primaryColor, // Change to your desired color
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton2(
+                                      isExpanded: true,
+                                      dropdownStyleData: DropdownStyleData(
+                                        maxHeight: 300,
+                                        width: 250,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(14),
+                                          color: Colors.white,
+                                        ),
+                                        offset: const Offset(0, 0),
+                                        scrollbarTheme: ScrollbarThemeData(
+                                          radius: const Radius.circular(40),
+                                          thickness: MaterialStateProperty.all(6),
+                                          thumbVisibility:
+                                          MaterialStateProperty.all(true),
+                                        ),
+                                      ),
+                                      menuItemStyleData: const MenuItemStyleData(
+                                        height: 40,
+                                        padding:
+                                        EdgeInsets.only(left: 14, right: 14),
+                                      ),
+                                      value: mentalStrengthEditProvider.emotionValue,
+                                    //  icon: const Icon(Icons.keyboard_arrow_down),
+                                      items: mentalStrengthEditProvider.getEmotionsModel!.emotions!.map((Emotion items) {
+                                        return DropdownMenuItem(
+                                          value: items,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                            child: Text(
+                                              items.title.toString(),
+                                              style: TextStyle(
+                                                color: ColorsContent.blackText, // Change to your desired color
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                    onChanged: (Emotion? newValue) {
-                                      mentalStrengthEditProvider
-                                          .addEmotionValue(newValue ?? Emotion());
+                                        );
+                                      }).toList(),
+                                      onChanged: (Emotion? newValue) {
+                                        mentalStrengthEditProvider.addEmotionValue(newValue ?? Emotion());
 
-                                      _isTokenExpired();
-                                      // setState(() {
-                                      //   mentalStrengthEditProvider.emotionValue = newValue!;
-                                      // });
-                                    },
+                                        _isTokenExpired();
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),
