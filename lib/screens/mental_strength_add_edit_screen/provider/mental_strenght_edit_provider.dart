@@ -257,66 +257,78 @@ class MentalStrengthEditProvider extends ChangeNotifier {
   }
 
   Future<void> pickVideoFunction(BuildContext context) async {
-    final pickedVideoPath = await ImagePicker().pickVideo(
-      source: ImageSource.gallery,
-    );
+    try {
+      // Pick video from gallery
+      final pickedVideoPath = await ImagePicker().pickVideo(
+        source: ImageSource.gallery,
+      );
 
-    if (!isVideoUploading) {
-      if (pickedVideoPath != null) {
-        try {
-          isVideoUploading = true;
-          notifyListeners();
+      if (pickedVideoPath == null) {
+        showCustomSnackBar(
+          context: context,
+          message: "No video selected.",
+        );
+        return;
+      }
 
-          String fileExtension = pickedVideoPath.path.split('.').last;
-          String lastThreeChars = fileExtension.substring(fileExtension.length - 3);
+      // Check if a video is currently being uploaded
+      if (!isVideoUploading) {
+        isVideoUploading = true;
+        notifyListeners();
 
-          List<String> videoPaths = [];
-          videoPaths.add(pickedVideoPath.path);
-          pickedImagesAddFunction(videoPaths);
+        String fileExtension = pickedVideoPath.path.split('.').last.toLowerCase();
+        String lastThreeChars = fileExtension.substring(fileExtension.length - 3);
 
-          // Path for compressed video output
-          final String outputPath = '${pickedVideoPath.path}_compressed.mp4';
+        List<String> videoPaths = [pickedVideoPath.path];
+        pickedImagesAddFunction(videoPaths);
 
-          // Compress video using optimized settings
-          await FFmpegKit.execute(
-              '-y -i ${pickedVideoPath.path} -vcodec libx264 -preset veryfast -crf 30 -movflags +faststart -vf "scale=320:240" -r 12 -b:v 200k -acodec aac -b:a 32k -ac 1 $outputPath'
-          ).then((session) async {
-            final returnCode = await session.getReturnCode();
+        final String outputPath = '${pickedVideoPath.path}_compressed.mp4';
 
-            if (returnCode!.isValueSuccess()) {
-              // Video compression successful
-              File thumbNailFile = await generateThumbnail(File(outputPath));
+        // Compress video using FFmpegKit with logging enabled
+        final session = await FFmpegKit.execute(
+            '-y -i ${pickedVideoPath.path} -vcodec libx264 -preset veryfast -crf 30 -movflags +faststart -vf "scale=320:240" -r 12 -b:v 200k -acodec aac -b:a 32k -ac 1 $outputPath'
+        );
 
-              await saveMediaUploadMental(
-                file: outputPath,
-                type: "journal",
-                fileType: lastThreeChars,
-                thumbNail: thumbNailFile.path,
-              );
-            } else {
-              showCustomSnackBar(
-                context: context,
-                message: "Video compression failed.",
-              );
-            }
-          });
-        } catch (e) {
-          // Handle any errors that occur during the process
+        final returnCode = await session.getReturnCode();
+
+        if (returnCode != null && returnCode.isValueSuccess()) {
+          // Video compression successful, generate thumbnail and upload
+          File thumbNailFile = await generateThumbnail(File(outputPath));
+
+          await saveMediaUploadMental(
+            file: outputPath,
+            type: "journal",
+            fileType: lastThreeChars,
+            thumbNail: thumbNailFile.path,
+          );
+        } else {
+          // Log and show error message if compression fails
+          final logs = await session.getAllLogs();
+          for (final log in logs) {
+            debugPrint("FFmpeg Log: ${log.getMessage()}");
+          }
+          final sessionError = await session.getFailStackTrace();
+          debugPrint("FFmpeg Error: $sessionError");
+
           showCustomSnackBar(
             context: context,
-            message: "An error occurred: $e",
+            message: "Video compression failed. Please try again.",
           );
-        } finally {
-          // Ensure this is always executed, regardless of success or failure
-          isVideoUploading = false;
-          notifyListeners();
         }
+      } else {
+        showCustomSnackBar(
+          context: context,
+          message: "Please Wait, Video is Uploading",
+        );
       }
-    } else {
+    } catch (e) {
       showCustomSnackBar(
         context: context,
-        message: "Please Wait, Video is Uploading",
+        message: "An error occurred: $e",
       );
+    } finally {
+      isVideoUploading = false;
+      notifyListeners();
     }
   }
 

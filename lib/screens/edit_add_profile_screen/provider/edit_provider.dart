@@ -271,7 +271,7 @@ class EditProfileProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         showCustomSnackBar(
           context: context,
-          message: 'Successful.',
+          message: 'Profile Updated Successfully.',
         );
         fetchUserProfile();
       } else if (response.statusCode == 401 || response.statusCode == 403) {

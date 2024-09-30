@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/utils/core/image_constant.dart';
 import 'package:mentalhelth/utils/logic/logic.dart';
 import 'package:mentalhelth/utils/theme/theme_helper.dart';
@@ -24,7 +25,7 @@ class AudioRecorderMentalStrengthBuild extends StatefulWidget {
 class _AudioRecorderMentalStrengthBuildState
     extends State<AudioRecorderMentalStrengthBuild> {
   AudioPlayer audioPlayer = AudioPlayer();
-
+var logger = Logger();
   final recorder = FlutterSoundRecorder();
   bool isRecorderReady = false;
 

@@ -37,10 +37,10 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(AlarmInfoAdapter());
   await Hive.openBox<AlarmInfo>("alarm");
-  //await Firebase.initializeApp(); // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(); // Initialize Firebase
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
   // await LocalNotifications.init();
 
   // SystemChrome.setPreferredOrientations([

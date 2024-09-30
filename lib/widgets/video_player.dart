@@ -1,6 +1,7 @@
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'dart:io';
 
 class VideoScreen extends StatefulWidget {
   const VideoScreen({super.key, required this.videoUrl});
@@ -64,14 +65,15 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   late VideoPlayerController _controller;
 
   @override
+
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.networkUrl(Uri.parse(
-      widget.videoUrl,
-    ))
+    print("Video URL: ${widget.videoUrl}"); // Debug log
+    _controller = VideoPlayerController.file(File(widget.videoUrl))
       ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
+      }).catchError((error) {
+        print("Error initializing video: $error"); // Debug log for errors
       });
   }
 

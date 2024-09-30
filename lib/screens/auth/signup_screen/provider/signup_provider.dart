@@ -109,17 +109,17 @@ class SignUpProvider extends ChangeNotifier {
 
   void callSignInButton(BuildContext context) async {
     if (nameEditTextController.text.isEmpty) {
-      showToast(context: context, message: 'Enter your name');
+      showToastTop(context: context, message: 'Enter your name');
       // showCustomSnackBar(context: context, message: 'Enter your name');
     } else if (emailEditTextController.text.isEmpty) {
-      showToast(context: context, message: 'Enter your email');
+      showToastTop(context: context, message: 'Enter your email');
     } else if (!isEmailValid(emailEditTextController.text)) {
-      showToast(context: context, message: 'Enter a valid email address');
+      showToastTop(context: context, message: 'Enter a valid email address');
     } else if (passwordEditTextController.text.isEmpty) {
-      showToast(context: context, message: 'Enter your password');
+      showToastTop(context: context, message: 'Enter your password');
     } else if (passwordEditTextController.text !=
         confirmPasswordEditTextController.text) {
-      showToast(context: context, message: 'Entered password not match');
+      showToastTop(context: context, message: 'Entered password not match');
     } else {
       signUpFunction(
         context,
