@@ -11,6 +11,7 @@ import 'package:mentalhelth/widgets/custom_image_view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../widgets/functions/popup.dart';
+import '../../../../widgets/functions/snack_bar.dart';
 
 class MentalStrengthAudioPlayer extends StatefulWidget {
   const MentalStrengthAudioPlayer({
@@ -105,21 +106,40 @@ class _MentalStrengthAudioPlayerState extends State<MentalStrengthAudioPlayer> {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          if (isPlaying) {
-                            await audioPlayer.pause();
-                          } else {
-
-                            final path = "${widget.url}.mp3";
-
-                            await audioPlayer.setSourceUrl(path);
-                            await audioPlayer.play(
-
-                              UrlSource(
-                                path,
-                              ),
+                          try {
+                            if (isPlaying) {
+                              // Pause if currently playing
+                              await audioPlayer.pause();
+                            } else {
+                              // Determine if the URL is a local path or a network URL
+                              if (widget.url.startsWith("http") || widget.url.startsWith("https")) {
+                                // It's a network URL, play using UrlSource
+                                await audioPlayer.setSourceUrl(widget.url);
+                                await audioPlayer.play(UrlSource(widget.url));
+                              } else {
+                                // It's a local file path, verify if file exists before playing
+                                final file = File(widget.url);
+                                if (await file.exists()) {
+                                  // Use DeviceFileSource for local file paths
+                                  await audioPlayer.setSourceDeviceFile(widget.url);
+                                  await audioPlayer.play(DeviceFileSource(widget.url));
+                                } else {
+                                  showCustomSnackBar(
+                                    context: context,
+                                    message: "Audio file not found at the given path.",
+                                  );
+                                }
+                              }
+                            }
+                          } catch (e) {
+                            // Handle the exception and show an error message
+                            showCustomSnackBar(
+                              context: context,
+                              message: "Failed to play audio: $e",
                             );
                           }
                         },
+
                         child: Container(
                           height: 35,
                           width: 35,

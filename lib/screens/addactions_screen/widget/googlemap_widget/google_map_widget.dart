@@ -38,6 +38,7 @@ class _AddActionGoogleMapState extends State<AddActionGoogleMap> {
   late MentalStrengthEditProvider mentalStrengthEditProvider;
   late  double? savedLatitude = 0.0;
   late  double? savedLongitude = 0.0;
+  late  String? savedLocationAddress ='';
   var logger = Logger();
 
   @override
@@ -46,6 +47,7 @@ class _AddActionGoogleMapState extends State<AddActionGoogleMap> {
     mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
     savedLatitude = double.parse(mentalStrengthEditProvider.actionsDetailsModel?.actions?.location?.locationLatitude ?? "0.0");
     savedLongitude = double.parse(mentalStrengthEditProvider.actionsDetailsModel?.actions?.location?.locationLongitude ?? "0.0");
+    savedLocationAddress = mentalStrengthEditProvider.actionsDetailsModel?.actions?.location?.locationAddress ?? "";
     logger.w("savedLatitude ${savedLatitude}");
     logger.w("savedLatitude ${savedLongitude}");
     if (savedLatitude != null && savedLongitude != null) {
@@ -194,10 +196,17 @@ class _AddActionGoogleMapState extends State<AddActionGoogleMap> {
             ),
 
           ),
+          _selectedAddress.isNotEmpty ?
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
               'Selected Address: $_selectedAddress',
+            ),
+          ):
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Selected Address: $savedLocationAddress,',
             ),
           ),
         ],

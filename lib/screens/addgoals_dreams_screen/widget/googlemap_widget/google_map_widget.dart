@@ -28,6 +28,7 @@ class _AddGoalsGoogleMapState extends State<AddGoalsGoogleMap> {
   late AdDreamsGoalsProvider adDreamsGoalsProvider;
   late double? savedLatitude = 0.0;
   late double? savedLongitude = 0.0;
+  late  String? savedLocationAddress ='';
   var logger = Logger();
 
   @override
@@ -38,6 +39,7 @@ class _AddGoalsGoogleMapState extends State<AddGoalsGoogleMap> {
     // Check if there are saved coordinates, otherwise get current location
     savedLatitude = double.parse(widget.goalsanddream?.location?.locationLatitude ?? "0.0");
     savedLongitude = double.parse(widget.goalsanddream?.location?.locationLongitude ?? "0.0");
+    savedLocationAddress = widget.goalsanddream?.location?.locationAddress ?? "";
 
     logger.w("savedLatitude $savedLatitude");
     logger.w("savedLongitude $savedLongitude");
@@ -151,10 +153,17 @@ class _AddGoalsGoogleMapState extends State<AddGoalsGoogleMap> {
               },
             ),
           ),
+          _selectedAddress.isNotEmpty ?
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
               'Selected Address: $_selectedAddress',
+            ),
+          ):
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Selected Address: $savedLocationAddress,',
             ),
           ),
         ],

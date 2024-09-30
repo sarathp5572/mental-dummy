@@ -28,6 +28,7 @@ class _MentalGoogleMapState extends State<MentalGoogleMap> {
   late HomeProvider homeProvider;
   late  double? savedLatitude = 0.0;
   late  double? savedLongitude = 0.0;
+  late  String? savedLocationAddress ='';
   var logger = Logger();
 
   @override
@@ -36,8 +37,9 @@ class _MentalGoogleMapState extends State<MentalGoogleMap> {
     homeProvider = Provider.of<HomeProvider>(context, listen: false);
      savedLatitude = double.parse(homeProvider.journalDetails?.journals?.location?.locationLatitude ?? "0.0");
      savedLongitude = double.parse(homeProvider.journalDetails?.journals?.location?.locationLongitude ?? "0.0");
+    savedLocationAddress = homeProvider.journalDetails?.journals?.location?.locationAddress ?? "";
     logger.w("savedLatitude ${savedLatitude}");
-    logger.w("savedLatitude ${savedLongitude}");
+    logger.w("savedLongitude ${savedLongitude}");
     if (savedLatitude != null && savedLongitude != null) {
       // If saved location exists, set the selected location and update the map
       _selectedLocation = LatLng(savedLatitude ?? 0.0, savedLongitude ?? 0.0);
@@ -173,10 +175,17 @@ class _MentalGoogleMapState extends State<MentalGoogleMap> {
                   ),
 
           ),
+          _selectedAddress.isNotEmpty ?
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
               'Selected Address: $_selectedAddress',
+            ),
+          ):
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+                'Selected Address: $savedLocationAddress,',
             ),
           ),
         ],
