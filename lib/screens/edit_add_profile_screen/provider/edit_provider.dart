@@ -91,6 +91,24 @@ class EditProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  void removeInterest(String interest) {
+    // Check if interests are not null
+    if (getProfileModel?.interests != null) {
+      // Safely unwrap the nullable list and split into a non-nullable list
+      List<String> currentInterests = getProfileModel!.interests!.split(',').map((e) => e.trim()).toList();
+
+      // Remove the specified interest
+      currentInterests.remove(interest);
+
+      // Update the interests in the profile model
+      getProfileModel!.interests = currentInterests.join(', ');
+
+      // Notify listeners about the change
+      notifyListeners();
+    }
+  }
+
   void editProfileAddValue() {
     myProfileController.text = getProfileModel!.firstname.toString();
 
@@ -448,7 +466,7 @@ class EditProfileProvider extends ChangeNotifier {
         // Handle errors based on the status code
         showCustomSnackBar(
           context: context,
-          message: json.decode(response.body)["text"],
+          message:'An OTP has been sent to your email. Please enter it to verify your account.',
         );
       }
       if(response.statusCode == 401){
@@ -581,7 +599,7 @@ class EditProfileProvider extends ChangeNotifier {
         // Handle errors based on the status code
         showCustomSnackBar(
           context: context,
-          message: json.decode(response.body)["text"],
+          message: 'An OTP has been sent to your email. Please enter it to verify your account.',
         );
       }
       if(response.statusCode == 401){

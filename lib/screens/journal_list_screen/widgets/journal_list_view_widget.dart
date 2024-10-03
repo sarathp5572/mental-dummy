@@ -69,15 +69,14 @@ class _JournalListViewWidgetState extends State<JournalListViewWidget> {
               ? Colors.white
               : null,
           padding: const EdgeInsets.symmetric(horizontal: 28),
-          child:
-          isLoading
+          child: isLoading
               ? const Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue), // Loading spinner with custom color
-            ),
-          )
-              :
-              homeProvider.journalsModelList == null &&
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.blue), // Loading spinner with custom color
+                  ),
+                )
+              : homeProvider.journalsModelList == null &&
                       !homeProvider.journalsModelLoading
                   ? Center(
                       child: Image.asset(
@@ -91,67 +90,68 @@ class _JournalListViewWidgetState extends State<JournalListViewWidget> {
                             ImageConstant.noData,
                           ),
                         )
-                      :
-              ListView.separated(
-            controller: _scrollController,
-            separatorBuilder: (
-              context,
-              index,
-            ) {
-              return const SizedBox(
-                height: 3,
-              );
-            },
-            itemCount: homeProvider.journalsModelList.length +
-                (homeProvider.journalsModelLoading ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index < homeProvider.journalsModelList.length) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => JournalViewScreen(
-                          journalId: homeProvider
-                              .journalsModelList[index].journalId
-                              .toString(),
-                          index: index,
+                      : ListView.separated(
+                          //  controller: _scrollController,
+                          separatorBuilder: (
+                            context,
+                            index,
+                          ) {
+                            return const SizedBox(
+                              height: 3,
+                            );
+                          },
+                          itemCount: homeProvider.journalsModelList.length +
+                              (homeProvider.journalsModelLoading ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index < homeProvider.journalsModelList.length) {
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => JournalViewScreen(
+                                        journalId: homeProvider
+                                            .journalsModelList[index].journalId
+                                            .toString(),
+                                        index: index,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: UserProfileList1ItemWidget(
+                                  journalsModelList:
+                                      homeProvider.journalsModelList[index],
+                                  index: index,
+                                ),
+                              );
+                            } else if (homeProvider.journalsModelList.length ==
+                                index) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (homeProvider.journalsModelLoading) {
+                              return Center(
+                                child: shimmerList(
+                                  width: double.infinity,
+                                  height: size.height,
+                                  list: 10,
+                                  shimmerHeight: size.height * 0.07,
+                                ),
+                              );
+                            } else if (homeProvider.journalsModelList.isEmpty) {
+                              return Center(
+                                child: Image.asset(
+                                  ImageConstant.noData,
+                                ),
+                              );
+                            } else {
+                              return Center(
+                                child: Image.asset(
+                                  ImageConstant.noData,
+                                ),
+                              );
+                            }
+                          },
                         ),
-                      ),
-                    );
-                  },
-                  child: UserProfileList1ItemWidget(
-                    journalsModelList: homeProvider.journalsModelList[index],
-                    index: index,
-                  ),
-                );
-              } else if (homeProvider.journalsModelList.length == index) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (homeProvider.journalsModelLoading) {
-                return Center(
-                  child: shimmerList(
-                    width: double.infinity,
-                    height: size.height,
-                    list: 10,
-                    shimmerHeight: size.height * 0.07,
-                  ),
-                );
-              } else if (homeProvider.journalsModelList.isEmpty) {
-                return Center(
-                  child: Image.asset(
-                    ImageConstant.noData,
-                  ),
-                );
-              } else {
-                return Center(
-                  child: Image.asset(
-                    ImageConstant.noData,
-                  ),
-                );
-              }
-            },
-          ),
         ),
       );
     });

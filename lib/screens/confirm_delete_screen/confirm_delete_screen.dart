@@ -64,7 +64,7 @@ class ConfirmDeleteScreen extends StatelessWidget {
                       ),
                       TextSpan(
                         text:
-                            "delete your account and data forever, you cant undo this action",
+                            "delete your account and data forever, you cannot undo this action",
                         style:
                             CustomTextStyles.titleSmallRobotoff333333ExtraBold,
                       ),

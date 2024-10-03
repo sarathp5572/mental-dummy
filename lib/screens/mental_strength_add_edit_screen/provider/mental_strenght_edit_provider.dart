@@ -161,14 +161,15 @@ class MentalStrengthEditProvider extends ChangeNotifier {
   }
 
   TextEditingController descriptionEditTextController = TextEditingController();
-  double emotionalValueStar = 0;
+  double? emotionalValueStar; // Use nullable type
+
 
   void changeEmotionalValueStar(double value) {
     emotionalValueStar = value;
     notifyListeners();
   }
 
-  double driveValueStar = 0;
+  double? driveValueStar;
 
   void changeDriveValueStar(double value) {
     driveValueStar = value;
@@ -1194,13 +1195,14 @@ class MentalStrengthEditProvider extends ChangeNotifier {
           locationAddress: selectedLocationAddress,
           actionIdList: actionList.map((e) => e.id ?? "").toList(),
         );
-        if (isSuccess) {
+        if (isSuccess || !isSuccess ) {
           DashBoardProvider dashBoardProvider =
               Provider.of<DashBoardProvider>(context, listen: false);
           HomeProvider homeProvider =
               Provider.of<HomeProvider>(context, listen: false);
-          dashBoardProvider.changePage(index: 0);
           await homeProvider.fetchJournals(initial: true);
+          dashBoardProvider.changePage(index: 0);
+
         }
       } else {
         showCustomSnackBar(

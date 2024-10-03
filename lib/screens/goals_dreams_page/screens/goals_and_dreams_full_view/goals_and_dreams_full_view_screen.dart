@@ -415,13 +415,21 @@ class _GoalAndDreamFullViewScreenState
                                           ),
                                         ):
                                             const SizedBox(),
-                                        Text(
-                                          widget.goalsanddream.action![index]
-                                              .actionTitle
-                                              .toString(),
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            color: Colors.grey,
+                                        SizedBox(
+                                          width: size.width * 0.45,
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                                            child: Text(
+                                              widget.goalsanddream.action![index]
+                                                  .actionTitle
+                                                  .toString(),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1, // Set the maximum number of lines to 3
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                color: Colors.grey,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         CircleAvatar(
@@ -627,10 +635,14 @@ class _GoalAndDreamFullViewScreenState
             ),
             SizedBox(
               width: size.width * 0.6,
-              child: Text(
-                category,
-                style: CustomTextStyles.bodyLargeGray700,
-                maxLines: 1,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                child: Text(
+                  category,
+                  style: CustomTextStyles.bodyLargeGray700,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1, // Set the maximum number of lines to 3
+                ),
               ),
             ),
           ],

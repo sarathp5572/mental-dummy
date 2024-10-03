@@ -152,7 +152,7 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
                     ),
                   )
                       : ListView.builder(
-                    controller: _scrollController,
+                 //   controller: _scrollController,
                     itemCount: goalsDreamsProvider.goalsanddreams.length +
                         (goalsDreamsProvider.goalsAndDreamsModelLoading ? 1 : 0),
                     itemBuilder: (context, index) {

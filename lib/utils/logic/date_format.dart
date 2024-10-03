@@ -48,3 +48,25 @@ String formatTimestampToDate(String timestamp) {
   return DateFormat('dd MMM yyyy').format(date);
 }
 
+
+
+
+String formatAchievementDate(String dateStr) {
+  // Split the date string and handle the case where the year might be incorrect
+  if (dateStr.isEmpty) return "Achievement Date"; // Return placeholder if the string is empty
+
+  // Handle different formats, including invalid or unexpected ones
+  try {
+    // Try to parse the date directly if it follows "yyyy-MMM-dd" format
+    DateTime parsedDate = DateFormat('yyyy-MMM-dd').parse(dateStr);
+
+    // Return the formatted date as "dd MMM yyyy"
+    return DateFormat('dd MMM yyyy').format(parsedDate);
+  } catch (e) {
+    // Handle parsing exceptions
+    print("Error parsing date: $e");
+    return dateStr; // Return original string if parsing fails
+  }
+}
+
+

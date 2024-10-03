@@ -383,12 +383,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                               height: 0,
                                             ),
                                             SizedBox(
+                                              height: 80,
                                               width: 291,
                                               child: SingleChildScrollView(
                                                 scrollDirection: Axis.vertical, // Enable horizontal scrolling
                                                 child: Text(
                                                   "${editProfileProvider.getProfileModel!.note}",
-                                                  maxLines: 5,
+                                                  maxLines: 20,
                                                   overflow: TextOverflow.ellipsis,
                                                   textAlign: TextAlign.center,
                                                   style: CustomTextStyles

@@ -315,7 +315,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 6),
-                                homeProvider.journalDetails == null
+                                homeProvider.journalDetails!.journals!.location == null
                                     ? const SizedBox()
                                     : SizedBox(
                                         height: size.height * 0.35,
@@ -517,6 +517,8 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                       ),
                 style: CustomTextStyles.bodyMediumGray700,
               ),
+              homeProvider.journalDetails!.journals!.location == null ?
+                  const SizedBox():
               Row(
                 children: [
                   CustomImageView(

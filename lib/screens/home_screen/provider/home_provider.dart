@@ -102,7 +102,7 @@ class HomeProvider extends ChangeNotifier {
       notifyListeners();
 
       Map<String, String> headers = {
-        'authorization': token!, // Assuming token is not null
+        'authorization': token ?? "", // Assuming token is not null
       };
 
       if (initial) {

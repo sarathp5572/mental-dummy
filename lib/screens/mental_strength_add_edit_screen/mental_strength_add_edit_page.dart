@@ -77,6 +77,8 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
     mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
     editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
+    logger.w("mentalStrengthEditProvider.emotionalValueStar${mentalStrengthEditProvider.emotionalValueStar}");
+    logger.w("mentalStrengthEditProvider.driveValueStar${mentalStrengthEditProvider.driveValueStar}");
     scheduleMicrotask(() {
       mentalStrengthEditProvider.mediaSelected = -1;
       _isTokenExpired();
@@ -233,17 +235,17 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
                               ),
                               SizedBox(height: size.height * 0.01),
                               CustomRatingBar(
-                                initialRating: mentalStrengthEditProvider
-                                    .emotionalValueStar,
+                                initialRating: mentalStrengthEditProvider.emotionalValueStar,
                                 itemSize: 34,
                                 color: Colors.blue,
+                                unselectedColor: Colors.grey,
                                 onRatingUpdate: (value) {
-                                  logger.w("mentalStrengthEditProvider.emotionalValueStar");
-                                  mentalStrengthEditProvider
-                                      .changeEmotionalValueStar(value);
-                                  _isTokenExpired();
+                                  logger.w("Updated emotional value star: $value");
+                                  mentalStrengthEditProvider.changeEmotionalValueStar(value);
+                                  _isTokenExpired(); // Call your method after rating update.
                                 },
                               ),
+
                               SizedBox(height: size.height * 0.01),
                               CustomImageView(
                                 imagePath: ImageConstant.imgGroup29,

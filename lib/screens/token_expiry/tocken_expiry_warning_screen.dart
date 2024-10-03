@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:mentalhelth/screens/token_expiry/token_expiry.dart';
+import 'package:provider/provider.dart';
 import '../../utils/logic/shared_prefrence.dart';
 import '../../utils/theme/custom_text_style.dart';
+import '../auth/sign_in/provider/sign_in_provider.dart';
 import '../auth/sign_in/screen_sign_in.dart';
 
 
@@ -17,8 +19,18 @@ class TokenExpireScreen extends StatefulWidget {
 }
 
 class _TokenExpireScreenState extends State<TokenExpireScreen> {
+  late SignInProvider signInProvider;
+
+
+  @override
+  void initState() {
+    super.initState();
+    signInProvider = Provider.of<SignInProvider>(context, listen: false);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final signInProvider = Provider.of<SignInProvider>(context, listen: false);
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return WillPopScope(
@@ -127,6 +139,9 @@ class _TokenExpireScreenState extends State<TokenExpireScreen> {
                                   GestureDetector(
                                     onTap: () async {
                                       TokenManager.setTokenStatus(false);
+                                      await signInProvider.logOutUser(context);
+                                      await removeUserDetailsSharePref(context: context);
+                                      removeAllValuesLogout(context: context);
                                       addUserEmailSharePref(
                                         email: "",
                                       );

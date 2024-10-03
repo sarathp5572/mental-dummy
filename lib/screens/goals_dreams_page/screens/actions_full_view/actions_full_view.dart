@@ -655,9 +655,14 @@ class _ActionsFullViewState extends State<ActionsFullView> {
             SizedBox(
              // color: Colors.blue,
               width: size.width * 0.60,
-              child: Text(
-                category,
-                style: CustomTextStyles.bodyLargeGray700,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                child: Text(
+                  category,
+                  style: CustomTextStyles.bodyLargeGray700,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1, // Set the maximum number of lines to 3
+                ),
               ),
             ),
           ],
