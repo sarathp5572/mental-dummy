@@ -5,6 +5,7 @@ import 'package:mentalhelth/screens/dash_borad_screen/provider/dash_board_provid
 import 'package:mentalhelth/screens/edit_add_profile_screen/provider/edit_provider.dart';
 import 'package:mentalhelth/screens/feedback_screen/feedback_screen.dart';
 import 'package:mentalhelth/screens/help_screen/help_screen.dart';
+import 'package:mentalhelth/screens/home_screen/provider/home_provider.dart';
 import 'package:mentalhelth/utils/core/constent.dart';
 import 'package:mentalhelth/utils/logic/logic.dart';
 import 'package:mentalhelth/utils/logic/shared_prefrence.dart';
@@ -125,7 +126,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
               height: size.height * 0.01,
             ),
             Consumer<DashBoardProvider>(
-                builder: (context, dashBoardProvider, _) {
+                builder: (context,dashBoardProvider, _) {
               return GestureDetector(
                 onTap: () {
                   dashBoardProvider.changePage(index: 1);
@@ -199,28 +200,33 @@ Widget buildPopupDialog(BuildContext context, Size size) {
             SizedBox(
               height: size.height * 0.005,
             ),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                    const ViewReminderScreen(),
-                  ),
-                );
-              },
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  "Reminders",
-                  maxLines: 13,
-                  overflow: TextOverflow.ellipsis,
-                  style: CustomTextStyles.titleMediumOnSecondaryContainerMedium
-                      .copyWith(
-                    height: 2.19,
-                  ),
-                ),
-              ),
-            ),
+            Consumer<HomeProvider>(
+                builder: (context, homeProvider, _) {
+                  return   GestureDetector(
+                    onTap: () async {
+                      await homeProvider.fetchRemindersDetails();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                          const ViewReminderScreen(),
+                        ),
+                      );
+                    },
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Reminders",
+                        maxLines: 13,
+                        overflow: TextOverflow.ellipsis,
+                        style: CustomTextStyles.titleMediumOnSecondaryContainerMedium
+                            .copyWith(
+                          height: 2.19,
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+
             SizedBox(
               height: size.height * 0.005,
             ),

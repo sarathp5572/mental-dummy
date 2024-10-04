@@ -990,77 +990,100 @@ class _AddactionsScreenState extends State<AddactionsScreen> {
   /// Section Widget
   Widget _buildSaveButton(BuildContext context) {
     return Consumer2<AddActionsProvider, AdDreamsGoalsProvider>(
-        builder: (context, addActionsProvider, adDreamsGoalsProvider, _) {
-      return CustomElevatedButton(
-        loading: addActionsProvider.saveAddActionsLoading,
-        onPressed: () async {
-          if (addActionsProvider.titleEditTextController.text.isNotEmpty &&
-              addActionsProvider
-                  .descriptionEditTextController.text.isNotEmpty) {
-            if (addActionsProvider.setRemainder) {
-              if (addActionsProvider.reminderStartDate.isNotEmpty &&
-                  addActionsProvider.reminderEndDate.isNotEmpty &&
-                  addActionsProvider.reminderStartTime != null &&
-                  addActionsProvider.reminderEndTime != null &&
-                  addActionsProvider.remindTime != null) {
-                print(" reminderStartDate");
+      builder: (context, addActionsProvider, adDreamsGoalsProvider, _) {
+        return CustomElevatedButton(
+          loading: addActionsProvider.saveAddActionsLoading,
+          onPressed: () async {
+            // Individual field validations
+            if (addActionsProvider.titleEditTextController.text.isEmpty) {
+              showCustomSnackBar(
+                context: context,
+                message: "Please fill in the title",
+              );
+            } else if (addActionsProvider.descriptionEditTextController.text.isEmpty) {
+              showCustomSnackBar(
+                context: context,
+                message: "Please fill in the description",
+              );
+            } else {
+              // Check if a reminder is set and validate date/time fields accordingly
+              if (addActionsProvider.setRemainder) {
+                if (addActionsProvider.reminderStartDate.isEmpty) {
+                  showCustomSnackBar(
+                    context: context,
+                    message: "Please select a start date for the reminder",
+                  );
+                } else if (addActionsProvider.reminderEndDate.isEmpty) {
+                  showCustomSnackBar(
+                    context: context,
+                    message: "Please select an end date for the reminder",
+                  );
+                } else if (addActionsProvider.reminderStartTime == null) {
+                  showCustomSnackBar(
+                    context: context,
+                    message: "Please select a start time for the reminder",
+                  );
+                } else if (addActionsProvider.reminderEndTime == null) {
+                  showCustomSnackBar(
+                    context: context,
+                    message: "Please select an end time for the reminder",
+                  );
+                } else if (addActionsProvider.remindTime == null) {
+                  showCustomSnackBar(
+                    context: context,
+                    message: "Please select a reminder time",
+                  );
+                } else {
+                  // All fields are validated, proceed to save
+                  await addActionsProvider.saveGemFunction(
+                    context,
+                    title: addActionsProvider.titleEditTextController.text,
+                    details: addActionsProvider.descriptionEditTextController.text,
+                    mediaName: addActionsProvider.addMediaUploadResponseList,
+                    locationName: addActionsProvider.selectedLocationName,
+                    locationLatitude: addActionsProvider.selectedLatitude,
+                    locationLongitude: addActionsProvider.locationLongitude,
+                    locationAddress: addActionsProvider.selectedLocationAddress,
+                    goalId: widget.goalId,
+                    isReminder: "1",
+                  );
+                  adDreamsGoalsProvider.getAddActionIdAndName(
+                    value: addActionsProvider.goalModelIdName!,
+                  );
+                  // You can uncomment the line below if you want to close the screen after saving.
+                  // Navigator.of(context).pop();
+                }
+              } else {
+                // Reminder is not set, proceed with save without reminder-related fields
                 await addActionsProvider.saveGemFunction(
                   context,
                   title: addActionsProvider.titleEditTextController.text,
-                  details:
-                      addActionsProvider.descriptionEditTextController.text,
+                  details: addActionsProvider.descriptionEditTextController.text,
                   mediaName: addActionsProvider.addMediaUploadResponseList,
                   locationName: addActionsProvider.selectedLocationName,
                   locationLatitude: addActionsProvider.selectedLatitude,
                   locationLongitude: addActionsProvider.locationLongitude,
                   locationAddress: addActionsProvider.selectedLocationAddress,
                   goalId: widget.goalId,
-                  isReminder: "1"
+                  isReminder: "0",
                 );
                 adDreamsGoalsProvider.getAddActionIdAndName(
                   value: addActionsProvider.goalModelIdName!,
                 );
-              //  Navigator.of(context).pop();
-              } else {
-                showCustomSnackBar(
-                  context: context,
-                  message: "Please Select Date and Time",
-                );
+                // You can uncomment the line below if you want to close the screen after saving.
+                // Navigator.of(context).pop();
               }
-            } else {
-              print(" reminderStartDate1");
-              await addActionsProvider.saveGemFunction(
-                context,
-                title: addActionsProvider.titleEditTextController.text,
-                details: addActionsProvider.descriptionEditTextController.text,
-                mediaName: addActionsProvider.addMediaUploadResponseList,
-                locationName: addActionsProvider.selectedLocationName,
-                locationLatitude: addActionsProvider.selectedLatitude,
-                locationLongitude: addActionsProvider.locationLongitude,
-                locationAddress: addActionsProvider.selectedLocationAddress,
-                goalId:  widget.goalId,
-                  isReminder: "0"
-              );
-              adDreamsGoalsProvider.getAddActionIdAndName(
-                value: addActionsProvider.goalModelIdName!,
-              );
-             // Navigator.of(context).pop();
             }
-          } else {
-            showCustomSnackBar(
-              context: context,
-              message: "Please fill in all the fields",
-            );
-          }
-        },
-        height: 40,
-        text: "Save",
-        buttonStyle: CustomButtonStyles.outlinePrimaryTL5,
-        buttonTextStyle:
-            CustomTextStyles.titleSmallHelveticaOnSecondaryContainer,
-      );
-    });
+          },
+          height: 40,
+          text: "Save",
+          buttonStyle: CustomButtonStyles.outlinePrimaryTL5,
+          buttonTextStyle: CustomTextStyles.titleSmallHelveticaOnSecondaryContainer,
+        );
+      },
+    );
   }
+
 
   Widget _buildAddMediaColumn(BuildContext context, Size size) {
     return Consumer<AddActionsProvider>(

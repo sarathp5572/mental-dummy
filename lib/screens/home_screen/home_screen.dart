@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
       await homeProvider.fetchChartView(context);
       await homeProvider.fetchJournals(initial: true);
       await editProfileProvider.fetchUserProfile();
-      await homeProvider.fetchRemindersDetails();
+      // await homeProvider.fetchRemindersDetails();
       tokenStatus = TokenManager.checkTokenExpiry();
       if (tokenStatus) {
         setState(() {
@@ -368,7 +368,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: homeProvider.noDataImageList.length,
                         itemBuilder: (context, index) {
                           // return Image.asset(homeProvider.noDataImageList[index]);
-                          return CustomImageView(
+                          return
+                            CustomImageView(
                             fit: BoxFit.cover,
                             imagePath: homeProvider.noDataImageList[index],
                             height: size.height * 0.27,

@@ -66,16 +66,18 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
 
+  @override
   void initState() {
     super.initState();
     print("Video URL: ${widget.videoUrl}"); // Debug log
-    _controller = VideoPlayerController.file(File(widget.videoUrl))
+    _controller = VideoPlayerController.network(widget.videoUrl) // Use network instead of file
       ..initialize().then((_) {
-        setState(() {});
+        setState(() {}); // Update the UI when the video is initialized
       }).catchError((error) {
         print("Error initializing video: $error"); // Debug log for errors
       });
   }
+
 
   @override
   Widget build(BuildContext context) {

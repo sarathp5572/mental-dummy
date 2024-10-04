@@ -532,59 +532,77 @@ class _AddGoalsDreamsScreenState extends State<AddGoalsDreamsScreen> {
   /// Section Widget
   Widget _buildSaveButton(BuildContext context) {
     return Consumer2<AdDreamsGoalsProvider, EditProfileProvider>(
-        builder: (context, adDreamsGoalsProvider, editProfileProvider, _) {
-      return CustomElevatedButton(
-        loading: adDreamsGoalsProvider.saveAddActionsLoading,
-        onPressed: () async {
-          _isTokenExpired();
-          if (!adDreamsGoalsProvider.isVideoUploading) {
-            if (adDreamsGoalsProvider.nameEditTextController.text.isNotEmpty &&
-                adDreamsGoalsProvider
-                    .commentEditTextController.text.isNotEmpty &&
-                adDreamsGoalsProvider.selectedDate.isNotEmpty &&
-                editProfileProvider.categorys != null &&
-                adDreamsGoalsProvider.formattedDate != null) {
-              await adDreamsGoalsProvider.saveGemFunction(
-                context,
-                title: adDreamsGoalsProvider.nameEditTextController.text,
-                details: adDreamsGoalsProvider.commentEditTextController.text,
-                mediaName: adDreamsGoalsProvider.addMediaUploadResponseList,
-                locationName: adDreamsGoalsProvider.selectedLocationName,
-                locationLatitude: adDreamsGoalsProvider.selectedLatitude,
-                locationLongitude: adDreamsGoalsProvider.locationLongitude,
-                locationAddress: adDreamsGoalsProvider.selectedLocationAddress,
-                categoryId: editProfileProvider.categorys!.id.toString(),
-                gemEndDate: adDreamsGoalsProvider.formattedDate,
-                actionId: adDreamsGoalsProvider.goalModelIdName,
-              );
-              GoalsDreamsProvider goalsDreamsProvider =
-                  Provider.of<GoalsDreamsProvider>(
-                context,
-                listen: false,
-              );
-              goalsDreamsProvider.fetchGoalsAndDreams(initial: true);
+      builder: (context, adDreamsGoalsProvider, editProfileProvider, _) {
+        return CustomElevatedButton(
+          loading: adDreamsGoalsProvider.saveAddActionsLoading,
+          onPressed: () async {
+            _isTokenExpired();
+            if (!adDreamsGoalsProvider.isVideoUploading) {
+              // Validate individual fields and show appropriate messages
+              if (adDreamsGoalsProvider.nameEditTextController.text.isEmpty) {
+                showCustomSnackBar(
+                  context: context,
+                  message: "Please fill Goal name",
+                );
+              } else if (editProfileProvider.categorys == null) {
+                showCustomSnackBar(
+                  context: context,
+                  message: "Please fill Categories",
+                );
+              } else if (adDreamsGoalsProvider.selectedDate.isEmpty) {
+                showCustomSnackBar(
+                  context: context,
+                  message: "Please fill Achievement date",
+                );
+              } else if (adDreamsGoalsProvider.commentEditTextController.text.isEmpty) {
+                showCustomSnackBar(
+                  context: context,
+                  message: "Please fill Comments",
+                );
+              } else if (adDreamsGoalsProvider.formattedDate == null) {
+                showCustomSnackBar(
+                  context: context,
+                  message: "Please select a valid date",
+                );
+              } else {
+                // All fields are validated, proceed with saving the data
+                await adDreamsGoalsProvider.saveGemFunction(
+                  context,
+                  title: adDreamsGoalsProvider.nameEditTextController.text,
+                  details: adDreamsGoalsProvider.commentEditTextController.text,
+                  mediaName: adDreamsGoalsProvider.addMediaUploadResponseList,
+                  locationName: adDreamsGoalsProvider.selectedLocationName,
+                  locationLatitude: adDreamsGoalsProvider.selectedLatitude,
+                  locationLongitude: adDreamsGoalsProvider.locationLongitude,
+                  locationAddress: adDreamsGoalsProvider.selectedLocationAddress,
+                  categoryId: editProfileProvider.categorys!.id.toString(),
+                  gemEndDate: adDreamsGoalsProvider.formattedDate,
+                  actionId: adDreamsGoalsProvider.goalModelIdName,
+                );
+                GoalsDreamsProvider goalsDreamsProvider =
+                Provider.of<GoalsDreamsProvider>(
+                  context,
+                  listen: false,
+                );
+                goalsDreamsProvider.fetchGoalsAndDreams(initial: true);
+              }
             } else {
               showCustomSnackBar(
                 context: context,
-                message: "Please fill in all the fields",
+                message: "Please wait, video is uploading",
               );
             }
-          } else {
-            showCustomSnackBar(
-              context: context,
-              message: "Please Wait Video Uploading",
-            );
-          }
-        },
-        height: 40,
-        text: "Save",
-        margin: const EdgeInsets.only(left: 2),
-        buttonStyle: CustomButtonStyles.outlinePrimaryTL5,
-        buttonTextStyle:
-            CustomTextStyles.titleSmallHelveticaOnSecondaryContainer,
-      );
-    });
+          },
+          height: 40,
+          text: "Save",
+          margin: const EdgeInsets.only(left: 2),
+          buttonStyle: CustomButtonStyles.outlinePrimaryTL5,
+          buttonTextStyle: CustomTextStyles.titleSmallHelveticaOnSecondaryContainer,
+        );
+      },
+    );
   }
+
 
   Widget _buildAddMediaColumn(BuildContext context, Size size) {
     return Consumer<AdDreamsGoalsProvider>(

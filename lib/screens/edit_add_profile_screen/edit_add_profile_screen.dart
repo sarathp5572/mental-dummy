@@ -542,7 +542,7 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
           child: CustomTextFormField(
               controller: editProfileProvider.aboutYouValueController,
               hintText:
-                  "I am working as a designer, I love to make User interfaces with a better UX and flexibility",
+                  "",
               hintStyle: CustomTextStyles.bodyMediumGray70013,
               textInputAction: TextInputAction.done,
               maxLines: 4,

@@ -88,7 +88,7 @@ class VerifyOtpPhoneScreen extends StatelessWidget {
                             HomeProvider homeProvider = Provider.of<HomeProvider>(context, listen: false);
                             // You don't need to re-declare editProfileProvider
                             homeProvider.fetchChartView(context);
-                            homeProvider.fetchJournals(initial: true);
+                           // homeProvider.fetchJournals(initial: true);
                             editProfileProvider.fetchUserProfile();
                             if(editProfileProvider.verifyOtpPhoneStatus == 200){
                               Navigator.of(context)

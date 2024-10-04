@@ -779,7 +779,7 @@ class _GoalAndDreamFullViewScreenState
                           Navigator.of(context).pop();
                         },
                         title: 'Confirm Delete',
-                        content: 'Are you sure You want to Delete this Goal ?',
+                        content: 'Are you sure You want to Delete this Goal?',
                       );
                     },
                     value: 'Delete',

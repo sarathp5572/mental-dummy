@@ -279,6 +279,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                               controller: videoController,
                                               itemCount: videoList.length,
                                               itemBuilder: (context, index) {
+                                                logger.w("videoList${videoList}");
                                                 return VideoPlayerWidget(
                                                   videoUrl: videoList[index],
                                                 );
@@ -396,7 +397,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                     : CustomRatingBar(
                                         color: Colors.blue,
                                         initialRating: double.parse(
-                                          (homeProvider.journalDetails!.journals!.emotionValue ?? 0).toString(),
+                                          (homeProvider.journalDetails!.journals!.driveValue ?? 0).toString(),
                                         ),
                                         itemSize: 30,
                                       ),

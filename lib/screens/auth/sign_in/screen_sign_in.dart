@@ -92,7 +92,7 @@ class ScreenSignIn extends StatelessWidget {
                           FocusScope.of(context).unfocus();
                           await signInProvider.callSignInButton(context);
                           homeProvider.fetchChartView(context);
-                          homeProvider.fetchJournals(initial: true);
+                        //  homeProvider.fetchJournals(initial: true);
                           editProfileProvider.fetchUserProfile();
                         },
                       );

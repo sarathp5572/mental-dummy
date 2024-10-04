@@ -597,7 +597,8 @@ class HomeProvider extends ChangeNotifier {
         headers: headers,
       );
       print(response.body.toString());
-      notifyListeners();      if(response.statusCode == 401){
+      notifyListeners();
+      if(response.statusCode == 401){
         TokenManager.setTokenStatus(true);
         //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
       }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/addactions_screen/provider/add_actions_provider.dart';
 import 'package:mentalhelth/screens/addgoals_dreams_screen/model/id_model.dart';
@@ -59,6 +60,7 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
   late AdDreamsGoalsProvider adDreamsGoalsProvider;
   bool tokenStatus = false;
   var logger = Logger();
+  int? unixTimestamp;
 
   @override
   void initState() {
@@ -69,6 +71,9 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
     adDreamsGoalsProvider = Provider.of<AdDreamsGoalsProvider>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      logger.w(" adDreamsGoalsProvider.formattedDate${ adDreamsGoalsProvider.formattedDate}");
+      logger.w(" adDreamsGoalsProvider.selectedDate${ adDreamsGoalsProvider.selectedDate}");
+      unixTimestamp = convertToUnixTimestamp(adDreamsGoalsProvider.selectedDate);
       editProfileProvider.fetchCategory();
       _isTokenExpired();
     });
@@ -77,6 +82,20 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
 
     init();
     super.initState();
+  }
+
+
+  int convertToUnixTimestamp(String dateString) {
+    // Define the date format to match the external date string.
+    DateFormat dateFormat = DateFormat("d MMM yyyy");
+
+    // Parse the date string into a DateTime object.
+    DateTime parsedDate = dateFormat.parse(dateString);
+
+    // Convert to Unix timestamp (seconds since epoch).
+    int timestamp = parsedDate.millisecondsSinceEpoch ~/ 1000;
+
+    return timestamp;
   }
 
   Future<void> _isTokenExpired() async {
@@ -706,26 +725,54 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
                     .commentEditTextController.text.isNotEmpty &&
                 editProfileProvider.categorys != null &&
                 adDreamsGoalsProvider.formattedDate != null) {
-              await adDreamsGoalsProvider.updateGoalFunction(
-                context,
-                title: adDreamsGoalsProvider.nameEditTextController.text,
-                details: adDreamsGoalsProvider.commentEditTextController.text,
-                mediaName: adDreamsGoalsProvider.addMediaUploadResponseList,
-                locationName: adDreamsGoalsProvider.selectedLocationName,
-                locationLatitude: adDreamsGoalsProvider.selectedLatitude,
-                locationLongitude: adDreamsGoalsProvider.locationLongitude,
-                locationAddress: adDreamsGoalsProvider.selectedLocationAddress,
-                categoryId: editProfileProvider.categorys!.id.toString(),
-                gemEndDate: adDreamsGoalsProvider.formattedDate,
-                actionId: adDreamsGoalsProvider.goalModelIdName,
-                gemId: widget.goalsanddream.goalId.toString(),
-              );
-              GoalsDreamsProvider goalsDreamsProvider =
-                  Provider.of<GoalsDreamsProvider>(
-                context,
-                listen: false,
-              );
-              goalsDreamsProvider.fetchGoalsAndDreams(initial: true);
+              if(adDreamsGoalsProvider.formattedDate.isNotEmpty){
+                logger.w("formattedDate${adDreamsGoalsProvider.formattedDate}");
+                logger.w("selectedDate${adDreamsGoalsProvider.selectedDate}");
+                await adDreamsGoalsProvider.updateGoalFunction(
+                  context,
+                  title: adDreamsGoalsProvider.nameEditTextController.text,
+                  details: adDreamsGoalsProvider.commentEditTextController.text,
+                  mediaName: adDreamsGoalsProvider.addMediaUploadResponseList,
+                  locationName: adDreamsGoalsProvider.selectedLocationName,
+                  locationLatitude: adDreamsGoalsProvider.selectedLatitude,
+                  locationLongitude: adDreamsGoalsProvider.locationLongitude,
+                  locationAddress: adDreamsGoalsProvider.selectedLocationAddress,
+                  categoryId: editProfileProvider.categorys!.id.toString(),
+                  gemEndDate: adDreamsGoalsProvider.formattedDate,
+                  actionId: adDreamsGoalsProvider.goalModelIdName,
+                  gemId: widget.goalsanddream.goalId.toString(),
+                );
+                GoalsDreamsProvider goalsDreamsProvider =
+                Provider.of<GoalsDreamsProvider>(
+                  context,
+                  listen: false,
+                );
+                goalsDreamsProvider.fetchGoalsAndDreams(initial: true);
+              }else{
+                logger.w("formattedDate${adDreamsGoalsProvider.formattedDate}");
+                logger.w("selectedDate${adDreamsGoalsProvider.selectedDate}");
+                await adDreamsGoalsProvider.updateGoalFunction(
+                  context,
+                  title: adDreamsGoalsProvider.nameEditTextController.text,
+                  details: adDreamsGoalsProvider.commentEditTextController.text,
+                  mediaName: adDreamsGoalsProvider.addMediaUploadResponseList,
+                  locationName: adDreamsGoalsProvider.selectedLocationName,
+                  locationLatitude: adDreamsGoalsProvider.selectedLatitude,
+                  locationLongitude: adDreamsGoalsProvider.locationLongitude,
+                  locationAddress: adDreamsGoalsProvider.selectedLocationAddress,
+                  categoryId: editProfileProvider.categorys!.id.toString(),
+                  gemEndDate: unixTimestamp.toString(),
+                  actionId: adDreamsGoalsProvider.goalModelIdName,
+                  gemId: widget.goalsanddream.goalId.toString(),
+                );
+                GoalsDreamsProvider goalsDreamsProvider =
+                Provider.of<GoalsDreamsProvider>(
+                  context,
+                  listen: false,
+                );
+                goalsDreamsProvider.fetchGoalsAndDreams(initial: true);
+              }
+
             } else {
               showCustomSnackBar(
                 context: context,
