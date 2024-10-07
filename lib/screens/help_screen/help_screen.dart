@@ -15,24 +15,30 @@ class HelpScreen extends StatefulWidget {
 }
 
 class _HelpScreenState extends State<HelpScreen> {
-  final WebViewController _controller = WebViewController();
+  late WebViewController _controller;
 
   @override
   void initState() {
-    _controller
+    super.initState();
+    _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onPageFinished: (url) {},
+          onPageFinished: (url) async {
+            // Inject CSS to justify text and add padding
+            await _controller.runJavaScript('''
+              document.body.style.textAlign = "justify";
+              document.body.style.padding = "0 16px"; // Adjust the padding as needed
+            ''');
+          },
           onNavigationRequest: (NavigationRequest request) {
             return NavigationDecision.navigate;
           },
         ),
       )
       ..loadRequest(
-        Uri.parse(widget.url),
+        Uri.parse(widget.url), // Loading the Terms of Service URL
       );
-    super.initState();
   }
 
   @override
@@ -59,7 +65,7 @@ class _HelpScreenState extends State<HelpScreen> {
                 buildAppBar(
                   context,
                   size,
-                  heading: "Terms of services",
+                  heading: "Terms of Services",
                 ),
                 // Use Expanded to allow WebView to take remaining space in the Column
                 Expanded(

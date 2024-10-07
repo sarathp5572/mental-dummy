@@ -416,6 +416,22 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                 ),
               );
             }),
+            SizedBox(
+              height: size.height * 0.005,
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                "App Version 1.0.1",
+                maxLines: 13,
+                overflow: TextOverflow.ellipsis,
+                style: CustomTextStyles
+                    .titleMediumOnSecondaryContainerMedium
+                    .copyWith(
+                  height: 2.19,
+                ),
+              ),
+            ),
           ],
         );
       }),

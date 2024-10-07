@@ -74,6 +74,7 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
       logger.w(" adDreamsGoalsProvider.formattedDate${ adDreamsGoalsProvider.formattedDate}");
       logger.w(" adDreamsGoalsProvider.selectedDate${ adDreamsGoalsProvider.selectedDate}");
       unixTimestamp = convertToUnixTimestamp(adDreamsGoalsProvider.selectedDate);
+      logger.w(" unixTimestamp--${unixTimestamp}");
       editProfileProvider.fetchCategory();
       _isTokenExpired();
     });
@@ -92,10 +93,10 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
     // Parse the date string into a DateTime object.
     DateTime parsedDate = dateFormat.parse(dateString);
 
-    // Convert to Unix timestamp (seconds since epoch).
-    int timestamp = parsedDate.millisecondsSinceEpoch ~/ 1000;
+    // Convert to Unix timestamp in milliseconds (milliseconds since epoch).
+    int timestamp = parsedDate.millisecondsSinceEpoch;
 
-    return timestamp;
+    return timestamp; // This will return the value in milliseconds.
   }
 
   Future<void> _isTokenExpired() async {
@@ -462,11 +463,19 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
                                                       ),
                                                     ),
                                                   ),
-                                                  Text(
-                                                    data.name,
-                                                    textAlign: TextAlign.center,
-                                                    style: const TextStyle(
-                                                      color: Colors.grey,
+                                                  SizedBox(
+                                                    width: size.width * 0.45,
+                                                    child: SingleChildScrollView(
+                                                      scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                                                      child: Text(
+                                                        data.name,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 1, // Set the maximum number of lines to 3
+                                                        textAlign: TextAlign.center,
+                                                        style: const TextStyle(
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                   GestureDetector(

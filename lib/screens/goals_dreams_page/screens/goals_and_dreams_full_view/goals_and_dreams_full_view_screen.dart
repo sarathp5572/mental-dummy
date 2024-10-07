@@ -263,14 +263,17 @@ class _GoalAndDreamFullViewScreenState
                 //   size,
                 // ),
                 const SizedBox(height: 28),
+                widget.goalsanddream.location!.locationAddress!.isNotEmpty ?
                 Padding(
                   padding: const EdgeInsets.only(left: 2),
                   child: Text(
                     "Your Location",
                     style: CustomTextStyles.blackText16000000W700(),
                   ),
-                ),
+                ):
+                    const SizedBox(),
                 const SizedBox(height: 6),
+                widget.goalsanddream.location!.locationAddress!.isNotEmpty ?
                 SizedBox(
                   height: size.height * 0.35,
                   child: Center(
@@ -295,23 +298,9 @@ class _GoalAndDreamFullViewScreenState
                                   .goalsanddream.location!.locationLongitude!),
                     ),
                   ),
-                ),
-                // const SizedBox(height: 20),
-                // Padding(
-                //   padding: const EdgeInsets.only(
-                //     left: 2,
-                //   ),
-                //   child: Text(
-                //     "Actions to achieve the goal",
-                //     style: theme.textTheme.titleSmall,
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 3,
-                // ),
-                // _buildAddActionsButton(
-                //   context,
-                // ),
+                ):
+                    const SizedBox(),
+
                 const SizedBox(height: 20),
                 Consumer3<MentalStrengthEditProvider,AddActionsProvider,AdDreamsGoalsProvider>(
                   builder: (context,mentalStrengthEditProvider,addActionsProvider, adDreamsGoalsProvider, _) {

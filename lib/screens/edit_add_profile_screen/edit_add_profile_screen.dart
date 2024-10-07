@@ -227,13 +227,17 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
                                         builder: (context, editProfileProvider, _) {
                                           // Ensure interests is a List<String>
                                           final String? interestsString = editProfileProvider.getProfileModel?.interests;
-                                          final List<String> profileInterests = interestsString != null
+                                          editProfileProvider.profileInterests = interestsString != null
                                               ? interestsString.split(',').map((e) => e.trim()).toList() // Split and trim whitespace
+                                              : [];
+                                          final String? intrestIdString = editProfileProvider.getProfileModel?.interest_ids;
+                                          editProfileProvider.profileInterestIds = intrestIdString != null
+                                              ? intrestIdString.split(',').map((e) => e.trim()).toList() // Split and trim whitespace
                                               : [];
                                           final selectedCategories = editProfileProvider.selectedCategories;
 
                                           // Check if interests or selected categories are not empty.
-                                          final isProfileInterestsNotEmpty = profileInterests.isNotEmpty;
+                                          final isProfileInterestsNotEmpty = editProfileProvider.profileInterests.isNotEmpty;
                                           final areSelectedCategoriesNotEmpty = selectedCategories.isNotEmpty;
 
                                           return Container(
@@ -285,15 +289,19 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
                                                                 );
                                                               }).toList()
                                                                   : isProfileInterestsNotEmpty
-                                                                  ? profileInterests.map((interest) {
+                                                                  ? editProfileProvider.profileInterests.map((interest) {
+                                                                // Assuming you have a way to get the corresponding interest ID
+                                                                final interestId = editProfileProvider.profileInterestIds[editProfileProvider.profileInterests.indexOf(interest)];
                                                                 return Padding(
                                                                   padding: const EdgeInsets.only(right: 8.0), // Space between items
                                                                   child: Chip(
-                                                                    label: Text(interest), // Use interest as the label
+                                                                    label: Text(interest), // Use interest and its ID as the label
                                                                     deleteIcon: const Icon(Icons.close), // Add delete icon
                                                                     onDeleted: () {
                                                                       // Remove the interest from the profile interests list
-                                                                      editProfileProvider.removeInterest(interest); // Implement this method in your provider
+                                                                      editProfileProvider.removeInterest(interest);
+                                                                      editProfileProvider.removeInterestId(interestId);
+                                                                      // No need to call removeInterestId() as it was removed
                                                                     },
                                                                   ),
                                                                 );
@@ -313,6 +321,8 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
                                                             ),
                                                           ),
                                                         ),
+
+
                                                       ],
                                                     ),
                                                   ),
@@ -322,6 +332,7 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
                                           );
                                         },
                                       ),
+
                                     const SizedBox(height: 8),
                                       Align(
                                         alignment: Alignment.centerLeft,
@@ -603,7 +614,7 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
                 email: email,  // Pass the validated email
                 context: context,
                 interestIds: editProfileProvider.selectedCategories.isEmpty
-                    ? ["0"]  // Default if no categories are selected
+                    ? editProfileProvider.profileInterestIds  // Default if no categories are selected
                     : editProfileProvider.selectedCategories
                     .map((category) => category.id.toString())  // Convert categories to a list of IDs
                     .toList(),

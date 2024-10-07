@@ -109,6 +109,23 @@ class EditProfileProvider extends ChangeNotifier {
     }
   }
 
+  void removeInterestId(String interest) {
+    // Check if interests are not null
+    if (getProfileModel?.interest_ids != null) {
+      // Safely unwrap the nullable list and split into a non-nullable list
+      List<String> currentInterests = getProfileModel!.interest_ids!.split(',').map((e) => e.trim()).toList();
+
+      // Remove the specified interest
+      currentInterests.remove(interest);
+
+      // Update the interests in the profile model
+      getProfileModel!.interest_ids = currentInterests.join(', ');
+
+      // Notify listeners about the change
+      notifyListeners();
+    }
+  }
+
   void editProfileAddValue() {
     myProfileController.text = getProfileModel!.firstname.toString();
 
@@ -225,6 +242,8 @@ class EditProfileProvider extends ChangeNotifier {
   //flutter put profile method
   bool editLoading = false;
   List<Category> selectedCategories = [];
+  List<String>profileInterests = [];
+  List<String>profileInterestIds = [];
   void setSelectedCategories(List<Category> categories) {
     for (var category in categories) {
       // Check if category already exists based on its ID
@@ -456,7 +475,7 @@ class EditProfileProvider extends ChangeNotifier {
         sendOtpMailMessage = response.reasonPhrase;
         showCustomSnackBar(
           context: context,
-          message: json.decode(response.body)["text"],
+          message: 'An OTP has been sent to your email.Please enter it to verify your account.',
         );
        // Navigator.of(context).pop();
       } else {
@@ -466,7 +485,7 @@ class EditProfileProvider extends ChangeNotifier {
         // Handle errors based on the status code
         showCustomSnackBar(
           context: context,
-          message:'An OTP has been sent to your email. Please enter it to verify your account.',
+          message:'Please try again!!',
         );
       }
       if(response.statusCode == 401){
@@ -589,7 +608,7 @@ class EditProfileProvider extends ChangeNotifier {
         sendOtpPhoneMessage = response.reasonPhrase;
         showCustomSnackBar(
           context: context,
-          message: json.decode(response.body)["text"],
+          message: 'An OTP has been sent to your email.Please enter it to verify your account.',
         );
        // Navigator.of(context).pop();
       } else {
@@ -599,7 +618,7 @@ class EditProfileProvider extends ChangeNotifier {
         // Handle errors based on the status code
         showCustomSnackBar(
           context: context,
-          message: 'An OTP has been sent to your email. Please enter it to verify your account.',
+          message: 'Please try again!!',
         );
       }
       if(response.statusCode == 401){

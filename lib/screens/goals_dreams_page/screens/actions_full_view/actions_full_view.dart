@@ -361,14 +361,17 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                             //   size,
                             // ),
                             const SizedBox(height: 28),
+                            mentalStrengthEditProvider.actionsDetailsModel!.actions!.location!.locationAddress!.isNotEmpty?
                             Padding(
                               padding: const EdgeInsets.only(left: 2),
                               child: Text(
                                 "Your Location",
                                 style: CustomTextStyles.blackText16000000W700(),
                               ),
-                            ),
+                            ):
+                                const SizedBox(),
                             const SizedBox(height: 6),
+                            mentalStrengthEditProvider.actionsDetailsModel!.actions!.location!.locationAddress!.isNotEmpty?
                             SizedBox(
                               height: size.height * 0.35,
                               child: Center(
@@ -422,7 +425,8 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                                         .locationLongitude!),
                                       ),
                               ),
-                            ),
+                            ):
+                                const SizedBox(),
                             const SizedBox(height: 20),
                             Consumer<AddActionsProvider>(
                                 builder: (context, addActionsProvider, _) {

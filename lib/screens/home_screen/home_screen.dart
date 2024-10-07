@@ -138,13 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(
                     height: 3,
                   ),
-                  const ChartWidget(),
-                  const SizedBox(
-                    height: 1,
-                  ),
-                  const SizedBox(
-                    height: 1,
-                  ),
+                   ChartWidget(chartData:homeProvider.chartViewModel?.chart,),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
@@ -152,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         left: 1,
                       ),
                       child: Text(
-                        "2024",
+                        "${DateTime.now().year}",
                         style: CustomTextStyles.titleMediumBlue300,
                       ),
                     ),

@@ -1,16 +1,19 @@
 // import 'package:charts_flutter/flutter.dart' as charts;
 // import 'package:easytrax/screens/analytics_page.dart';
 import 'package:flutter/material.dart';
-import 'package:mentalhelth/screens/home_screen/provider/home_provider.dart';
-import 'package:mentalhelth/utils/core/date_time_utils.dart';
-import 'package:provider/provider.dart';
+import 'package:logger/logger.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:provider/provider.dart'; // Assuming you're using Provider for state management
+import 'package:intl/intl.dart';
 
 import '../model/chart_view_model.dart';
+import '../provider/home_provider.dart'; // For formatting date
 
 class ChartWidget extends StatefulWidget {
-  const ChartWidget({super.key});
+  final List<Chart>? chartData;
+
+  const ChartWidget({super.key, required this.chartData});
 
   @override
   State<ChartWidget> createState() => _ChartWidgetState();
@@ -18,11 +21,11 @@ class ChartWidget extends StatefulWidget {
 
 class _ChartWidgetState extends State<ChartWidget> {
   TooltipBehavior? tooltipBehavior;
+  var logger = Logger();
 
   @override
   void initState() {
-    tooltipBehavior =
-        TooltipBehavior(enable: true, header: '', canShowMarker: false);
+    tooltipBehavior = TooltipBehavior(enable: true, header: '', canShowMarker: false);
     super.initState();
   }
 
@@ -31,142 +34,28 @@ class _ChartWidgetState extends State<ChartWidget> {
     Size size = MediaQuery.of(context).size;
     return Consumer<HomeProvider>(
       builder: (context, homeProvider, _) {
-        return homeProvider.chartViewLoading
+        return
+          homeProvider.chartViewLoading
             ? Center(
           child: SizedBox(
-            height: size.height * 0.2,
+            height: size.height * 0.3,
             width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: size.height * 0.18,
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: size.height * 0.15,
-                        width: size.width * 0.05,
-                        child: Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[100]!,
-                          child: Card(
-                            elevation: 1.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: const SizedBox(height: 8),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.14,
-                        width: size.width * 0.05,
-                        child: Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[100]!,
-                          child: Card(
-                            elevation: 1.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: const SizedBox(height: 8),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.1,
-                        width: size.width * 0.05,
-                        child: Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[100]!,
-                          child: Card(
-                            elevation: 1.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: const SizedBox(height: 8),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.15,
-                        width: size.width * 0.05,
-                        child: Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[100]!,
-                          child: Card(
-                            elevation: 1.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: const SizedBox(height: 8),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.13,
-                        width: size.width * 0.05,
-                        child: Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[100]!,
-                          child: Card(
-                            elevation: 1.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: const SizedBox(height: 8),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.09,
-                        width: size.width * 0.05,
-                        child: Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[100]!,
-                          child: Card(
-                            elevation: 1.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: const SizedBox(height: 8),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                // SizedBox(
-                //   height: size.height * 0.04,
-                // ),
-                SizedBox(
-                  height: size.height * 0.02,
-                  width: double.infinity,
-                  child: Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Card(
-                      elevation: 1.0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: const SizedBox(height: 8),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         )
-            : homeProvider.chartViewModel == null
+            :
+          homeProvider.chartViewModel == null
             ? SizedBox(
-          height: size.height * 0.23,
+          height: size.height * 0.3,
           width: double.infinity,
           child: Image.asset(
             'assets/gif/home_graf.gif',
@@ -174,55 +63,35 @@ class _ChartWidgetState extends State<ChartWidget> {
           ),
         )
             : SizedBox(
-          height: size.height * 0.2,
+          height: size.height * 0.3,
           child: SfCartesianChart(
-            plotAreaBorderWidth: 0,
-            primaryXAxis:  CategoryAxis(
-              majorGridLines: MajorGridLines(
-                width: 0,
-              ), //     axisLine: const AxisLine(
-              majorTickLines: MajorTickLines(
-                width: 0,
-                color: Colors.blue,
-              ),
+            primaryXAxis: const CategoryAxis(
+              labelRotation: 0,
+              labelPlacement: LabelPlacement.betweenTicks,
             ),
-            primaryYAxis:  NumericAxis(
-              axisLine: AxisLine(
-                width: 2,
-                color: Colors.blue,
-              ),
-              majorTickLines: MajorTickLines(
-                width: 0,
-                color: Colors.blue,
-              ),
-              majorGridLines: MajorGridLines(
-                width: 0,
-                color: Colors.blue,
-              ),
-              isVisible: false,
-              minimum: 0,
-              maximum: 6,
-            ),
-            series: <ColumnSeries<Chart, String>>[
+            primaryYAxis: const NumericAxis(),
+            legend: const Legend(isVisible: true),
+            tooltipBehavior: tooltipBehavior,
+            series: <CartesianSeries>[
               ColumnSeries<Chart, String>(
-                enableTooltip: true,
-                color: Colors.blue,
-                dataLabelSettings: const DataLabelSettings(
-                  isVisible: true,
+                dataSource: widget.chartData!,
+                xValueMapper: (Chart data, _) => formatDate(int.parse(data.dateTime)),
+                yValueMapper: (Chart data, _) => data.score,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
                 ),
-                width: 0.2,
-                spacing: 0.2,
-                dataSource: homeProvider.chartViewModel!.chart!,
-                xValueMapper: (Chart sales, _) =>
-                // sales.dateTime,
-                formatDateToString(
-                  int.parse(sales.dateTime),
-                ),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(size.height * 0.1),
-                  topRight: Radius.circular(size.height * 0.1),
-                ),
-                yValueMapper: (Chart sales, _) => sales.score,
+                name: 'Score',
+                color: Colors.blue[300],
+                width: widget.chartData!.length == 2 || widget.chartData!.length == 1  ? calculateBarWidth(widget.chartData!.length): // Dynamically calculate bar width
+                calculateBarWidth1(widget.chartData!.length),
+                spacing: 0.05, // Maintain some spacing between bars
+                // gradient: LinearGradient(
+                //   colors: [Colors.blue[300]!, Colors.blue[700]!],
+                //   stops: const [0.0, 1.0],
+                //   begin: Alignment.bottomCenter,
+                //   end: Alignment.topCenter,
+                // ),
               ),
             ],
           ),
@@ -230,7 +99,32 @@ class _ChartWidgetState extends State<ChartWidget> {
       },
     );
   }
+
+  String formatDate(int timestamp) {
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    return DateFormat('MMM dd').format(date);
+  }
+
+  double calculateBarWidth1(int numberOfBars) {
+    // Log the number of bars for debugging
+    logger.w(numberOfBars);
+
+    // Set a fixed width regardless of the number of bars
+    return 0.3; // Set a fixed width of 1
+  }
+  double calculateBarWidth(int numberOfBars) {
+    // Log the number of bars for debugging
+    logger.w(numberOfBars);
+
+    // Set a fixed width regardless of the number of bars
+    return 0.10; // Set a fixed width of 1
+  }
+
 }
+
+
+
+
 
 // class CustomRoundedBars extends StatelessWidget {
 //   final List<dynamic> data;

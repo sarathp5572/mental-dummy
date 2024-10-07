@@ -26,6 +26,7 @@ class GetProfileModel {
   String? note;
   String? profileurl;
   String? interests;
+  String? interest_ids;
   int? isPassword;
   String? isSubscribed;
   String? createdAt;
@@ -47,6 +48,7 @@ class GetProfileModel {
     required this.note,
     required this.profileurl,
     required this.interests,
+    required this.interest_ids,
     required this.isPassword,
     required this.isSubscribed,
     required this.createdAt,
@@ -72,6 +74,7 @@ class GetProfileModel {
         note: json["note"],
         profileurl: json["profileurl"],
         interests: json["interests"],
+        interest_ids: json["interest_ids"],
         isPassword: json["is_password"],
         isSubscribed: json["is_subscribed"],
         createdAt: json["created_at"],
@@ -96,6 +99,7 @@ class GetProfileModel {
         "note": note,
         "profileurl": profileurl,
         "interests": interests,
+        "interest_ids": interest_ids,
         "is_password": isPassword,
         "is_subscribed": isSubscribed,
         "created_at": createdAt,

@@ -333,14 +333,17 @@ class _GoalAndDreamFullViewBottomSheetState
               //   size,
               // ),
               const SizedBox(height: 28),
+              widget.goalDetailModel.goals!.location!.locationAddress!.isNotEmpty ?
               Padding(
                 padding: const EdgeInsets.only(left: 2),
                 child: Text(
                   "Your Location",
                   style: CustomTextStyles.blackText16000000W600(),
                 ),
-              ),
+              ):
+                  const SizedBox(),
               const SizedBox(height: 6),
+              widget.goalDetailModel.goals!.location!.locationAddress!.isNotEmpty ?
               SizedBox(
                 height: size.height * 0.35,
                 child: Center(
@@ -366,8 +369,8 @@ class _GoalAndDreamFullViewBottomSheetState
                                 .location!.locationLongitude!),
                   ),
                 ),
-              ),
-
+              ):
+              const SizedBox(),
               const SizedBox(height: 20),
               Consumer<AdDreamsGoalsProvider>(
                 builder: (context, adDreamsGoalsProvider, _) {
