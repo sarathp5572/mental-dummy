@@ -6,8 +6,12 @@
 	<string>This app requires access to your camera to enable video recording features</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app requires access to your current location.</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Your custom message explaining why you need location access.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Your custom message explaining why you need location access.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>This app requires location access to function properly.</string>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>This app would like to track your location for better user experience.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -15,26 +19,28 @@
 	</dict>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app requires access to your microphone to enable audio recording features</string>
+	<key>NSFileTypeAudioRecording</key>
+	<string>We need access to the audio file type for saving recordings.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>This app requires access to Apple Music.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This example need Text to Speech recognition</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires access to your camera to allow you to take photos and videos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app requires access to your photo library to allow you to upload images</string>
-    <key>NSDocumentsFolderUsageDescription</key>
-    <string>We need access to your documents folder to save audio files</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>We need access to your documents folder to save audio files</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Mentalhelth</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
-    
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-    <key>NSFileProviderUsageDescription</key>
-    <string>App requires access to files for playback.</string>
-    <key>NSAppleMusicUsageDescription</key>
-    <string>This app requires access to Apple Music.</string>
-    
+	<key>NSFileProviderUsageDescription</key>
+	<string>App requires access to files for playback.</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -76,10 +82,10 @@
 	<string>23rf234f</string>
 	<key>FacebookAdvertiserIDCollectionEnabled</key>
 	<string>FALSE</string>
-    <key>UIBackgroundModes</key>
-    <array>
-      <string>audio</string>
-      <string>fetch</string>
-    </array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>fetch</string>
+	</array>
 </dict>
 </plist>
