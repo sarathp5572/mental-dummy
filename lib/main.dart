@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +39,15 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(AlarmInfoAdapter());
   await Hive.openBox<AlarmInfo>("alarm");
-  await Firebase.initializeApp(); // Initialize Firebase
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
+ // await Firebase.initializeApp(); // Initialize Firebase
+  if(Platform.isAndroid){
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }else{
+    await Firebase.initializeApp(); // Initialize Firebase
+  }
+
   // await LocalNotifications.init();
 
   // SystemChrome.setPreferredOrientations([
@@ -128,12 +135,10 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     _checkPermissionStatus();
     _requestPermissions();
-    // _checkPermissionStatus();
-    // _requestPermission();
-    // requestExactAlarmPermission();
   }
 
   Future<void> _checkPermissionStatus() async {
+    // Check location permission status
     final status = await Permission.locationWhenInUse.status;
     setState(() {
       permissionStatus = status;
@@ -141,11 +146,23 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _requestPermissions() async {
-    final locationStatus = await Permission.locationWhenInUse.request();
+    // Request location permission (Platform specific)
+    if (Platform.isIOS) {
+      await Permission.locationWhenInUse.request();
+      await Permission.notification.request();
+      await Permission.photos.request();
+    } else if (Platform.isAndroid) {
+      await Permission.locationWhenInUse.request();
+      await Permission.notification.request();
+      await Permission.storage.request(); // For storage permissions
+      await Permission.manageExternalStorage.request(); // For Android 11 and above
+    }
+
+    // Check updated location permission status
+    final locationStatus = await Permission.locationWhenInUse.status;
     setState(() {
       permissionStatus = locationStatus;
     });
-    await Permission.notification.request();
   }
 
   //
