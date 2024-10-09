@@ -295,11 +295,13 @@ class MentalStrengthEditProvider extends ChangeNotifier {
         if (returnCode != null && returnCode.isValueSuccess()) {
           // Video compression successful, generate thumbnail and upload
           File thumbNailFile = await generateThumbnail(File(outputPath));
-
+          logger.w("outputPath${outputPath}");
+          logger.w("lastThreeChars${lastThreeChars}");
+          logger.w("thumbNailFile.path${thumbNailFile.path}");
           await saveMediaUploadMental(
             file: outputPath,
             type: "journal",
-            fileType: lastThreeChars,
+            fileType: "mp4",
             thumbNail: thumbNailFile.path,
           );
         } else {
@@ -481,7 +483,7 @@ class MentalStrengthEditProvider extends ChangeNotifier {
               await saveMediaUploadMental(
                 file: outputPath,
                 type: "journal",
-                fileType: lastThreeChars,
+                fileType: "mp4",
                 thumbNail: thumbNailFile.path,
               );
             } else {
@@ -1035,6 +1037,8 @@ class MentalStrengthEditProvider extends ChangeNotifier {
           'file_type': fileType,
         },
       );
+
+      logger.w("fileType${fileType}");
 
       // request.fields.addAll(
       //   {
