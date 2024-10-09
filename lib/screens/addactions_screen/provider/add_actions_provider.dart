@@ -678,7 +678,7 @@ var logger = Logger();
               await saveMediaUploadAction(
                 file: outputPath,
                 type: "action",
-                fileType: lastThreeChars,
+                fileType: "mp4",
                 thumbNail: thumbNailFile.path,
               );
             } else {
@@ -835,7 +835,7 @@ var logger = Logger();
               await saveMediaUploadAction(
                 file: outputPath,
                 type: "action",
-                fileType: lastThreeChars,
+                fileType: "mp4",
                 thumbNail: thumbNailFile.path,
               );
             } else {

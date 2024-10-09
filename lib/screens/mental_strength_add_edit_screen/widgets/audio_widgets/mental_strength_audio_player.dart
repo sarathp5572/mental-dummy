@@ -176,8 +176,8 @@ class _MentalStrengthAudioPlayerState extends State<MentalStrengthAudioPlayer> {
                                         customPopup(
                                           context: context,
                                           onPressedDelete: () async {
-                                            await mentalStrengthEditProvider.removeMediaFunction(context: context, id: widget.id.toString(), type: widget.type.toString());
                                             mentalStrengthEditProvider.alreadyRecorderValuesRemove(widget.index);
+                                            mentalStrengthEditProvider.removeMediaFunction(context: context, id: widget.id.toString(), type: widget.type.toString());
                                             Navigator.of(context).pop();
                                           },
                                           yes: "Yes",
@@ -188,6 +188,7 @@ class _MentalStrengthAudioPlayerState extends State<MentalStrengthAudioPlayer> {
                                         customPopup(
                                           context: context,
                                           onPressedDelete: () async {
+                                             mentalStrengthEditProvider.removeMediaFunction(context: context, id: widget.id.toString(), type: widget.type.toString());
                                             mentalStrengthEditProvider.recorderValuesRemove(widget.index);
                                             Navigator.of(context).pop();
                                           },
