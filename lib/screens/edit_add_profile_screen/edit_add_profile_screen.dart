@@ -450,18 +450,24 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
   /// Section Widget
   Widget _buildMyProfile(BuildContext context) {
     return Consumer<EditProfileProvider>(
-        builder: (context, editProfileProvider, _) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 10, right: 1),
-        child: CustomTextFormField(
-          controller: editProfileProvider.myProfileController,
-          hintText: "",
-          hintStyle: const TextStyle(
-            color: Colors.black,
+      builder: (context, editProfileProvider, _) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 10, right: 1),
+          child: CustomTextFormField(
+            controller: editProfileProvider.myProfileController,
+            hintText: "",
+            hintStyle: const TextStyle(
+              color: Colors.black,
+            ),
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(
+                RegExp(r'[a-zA-Z0-9,. ]'),
+              ),
+            ],
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   /// Section Widget

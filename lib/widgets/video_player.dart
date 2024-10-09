@@ -66,20 +66,31 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
 
+  @override
   void initState() {
     super.initState();
 
-    // Create a File from the video path
-    File videoFile = File(widget.videoUrl);
-
-    // Initialize the VideoPlayerController with the File
-    _controller = VideoPlayerController.file(videoFile)
-      ..initialize().then((_) {
-        setState(() {}); // Update UI when initialized
-      }).catchError((error) {
-        print("Error initializing video: $error"); // Debug log for errors
-      });
+    // Check if the videoUrl is a network URL (starts with http/https) or a local file path
+    if (widget.videoUrl.startsWith("http") || widget.videoUrl.startsWith("https")) {
+      // Initialize VideoPlayerController with a network URL
+      _controller = VideoPlayerController.network(widget.videoUrl)
+        ..initialize().then((_) {
+          setState(() {}); // Update the UI when the video is initialized
+        }).catchError((error) {
+          print("Error initializing video from network: $error"); // Debug log for errors
+        });
+    } else {
+      // Initialize VideoPlayerController with a file path
+      File videoFile = File(widget.videoUrl);
+      _controller = VideoPlayerController.file(videoFile)
+        ..initialize().then((_) {
+          setState(() {}); // Update UI when the video is initialized
+        }).catchError((error) {
+          print("Error initializing video from file: $error"); // Debug log for errors
+        });
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {

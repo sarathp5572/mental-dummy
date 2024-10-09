@@ -36,6 +36,7 @@ class MentalStrengthAudioPlayer extends StatefulWidget {
 
 class _MentalStrengthAudioPlayerState extends State<MentalStrengthAudioPlayer> {
   final audioPlayer = AudioPlayer();
+  static AudioPlayer? currentAudioPlayer; // Static variable to hold the currently playing audio player
   bool isPlaying = false;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
@@ -46,7 +47,6 @@ class _MentalStrengthAudioPlayerState extends State<MentalStrengthAudioPlayer> {
 
     audioPlayer.onPlayerStateChanged.listen((event) {
       if (mounted) {
-        // Check if the widget is still mounted before calling setState
         setState(() {
           isPlaying = event == PlayerState.playing;
         });
@@ -80,228 +80,189 @@ class _MentalStrengthAudioPlayerState extends State<MentalStrengthAudioPlayer> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      margin: const EdgeInsets.only(
-        bottom: 10,
-      ),
+      margin: const EdgeInsets.only(bottom: 10),
       child: Consumer<MentalStrengthEditProvider>(
           builder: (context, mentalStrengthEditProvider, _) {
-        return Column(
-          children: [
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                padding: const EdgeInsets.only(
-                  left: 10,
-                  right: 10,
-                  bottom: 10,
-                  top: 10,
-                ),
-                decoration: AppDecoration.fillBlue300.copyWith(
-                  borderRadius: BorderRadiusStyle.roundedBorder10,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          try {
-                            if (isPlaying) {
-                              // Pause if currently playing
-                              await audioPlayer.pause();
-                            } else {
-                              // Determine if the URL is a local path or a network URL
-                              if (widget.url.startsWith("http") || widget.url.startsWith("https")) {
-                                // It's a network URL, play using UrlSource
-                                await audioPlayer.setSourceUrl(widget.url);
-                                await audioPlayer.play(UrlSource(widget.url));
-                              } else {
-                                // It's a local file path, verify if file exists before playing
-                                final file = File(widget.url);
-                                if (await file.exists()) {
-                                  // Use DeviceFileSource for local file paths
-                                  await audioPlayer.setSourceDeviceFile(widget.url);
-                                  await audioPlayer.play(DeviceFileSource(widget.url));
+            return Column(
+              children: [
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: AppDecoration.fillBlue300.copyWith(
+                      borderRadius: BorderRadiusStyle.roundedBorder10,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () async {
+                              try {
+                                if (isPlaying) {
+                                  await audioPlayer.pause();
                                 } else {
-                                  showCustomSnackBar(
-                                    context: context,
-                                    message: "Audio file not found at the given path.",
-                                  );
-                                }
-                              }
-                            }
-                          } catch (e) {
-                            // Handle the exception and show an error message
-                            showCustomSnackBar(
-                              context: context,
-                              message: "Failed to play audio: $e",
-                            );
-                          }
-                        },
+                                  // Stop the currently playing audio if it exists
+                                  if (currentAudioPlayer != null && currentAudioPlayer != audioPlayer) {
+                                    await currentAudioPlayer!.stop();
+                                  }
 
-                        child: Container(
-                          height: 35,
-                          width: 35,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle, // Makes the border circular
-                            border: Border.all(
-                              color: Colors.white, // Color of the border
-                              width: 1.5, // Width of the border
-                            ),
-                          ),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            child: Center(
-                              child: Icon(
-                                color: Colors.white,
-                                isPlaying ? Icons.pause : Icons.play_arrow,
+                                  currentAudioPlayer = audioPlayer; // Set the current player
+
+                                  // Determine if the URL is a local path or a network URL
+                                  if (widget.url.startsWith("http") || widget.url.startsWith("https")) {
+                                    await audioPlayer.setSourceUrl(widget.url);
+                                    await audioPlayer.play(UrlSource(widget.url));
+                                  } else {
+                                    final file = File(widget.url);
+                                    if (await file.exists()) {
+                                      await audioPlayer.setSourceDeviceFile(widget.url);
+                                      await audioPlayer.play(DeviceFileSource(widget.url));
+                                    } else {
+                                      showCustomSnackBar(
+                                        context: context,
+                                        message: "Audio file not found at the given path.",
+                                      );
+                                    }
+                                  }
+                                }
+                              } catch (e) {
+                                showCustomSnackBar(
+                                  context: context,
+                                  message: "Failed to play audio: $e",
+                                );
+                              }
+                            },
+                            child: Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white, width: 1.5),
+                              ),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.transparent,
+                                child: Center(
+                                  child: Icon(
+                                    color: Colors.white,
+                                    isPlaying ? Icons.pause : Icons.play_arrow,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-
-                      ),
-                      SizedBox(
-                        width: size.width * 0.5,
-                        child: Slider(
-                          inactiveColor: Colors.grey,
-                          activeColor: Colors.white,
-                          min: 0,
-                          max: duration.inSeconds.toDouble(),
-                          value: position.inSeconds.toDouble(),
-                          onChanged: (value) async {
-                            final position = Duration(
-                              seconds: value.toInt(),
-                            );
-                            await audioPlayer.seek(position);
-                            await audioPlayer.resume();
-                          },
-                        ),
-                      ),
-                      Consumer3<MentalStrengthEditProvider, AdDreamsGoalsProvider,
-                              AddActionsProvider>(
-                          builder: (context, mentalStrengthEditProvider,
-                              adDreamsGoalsProvider, addActionsProvider, _) {
-                        return GestureDetector(
-                          onTap: () {
-                            if (widget.type == "journal") {
-                              if (widget.already) {
-                                customPopup(
-                                  context: context,
-                                  onPressedDelete: () async {
-                                    mentalStrengthEditProvider
-                                        .alreadyRecorderValuesRemove(widget.index);
-                                    mentalStrengthEditProvider.removeMediaFunction(
-                                      context: context,
-                                      id: widget.id.toString(),
-                                      type: widget.type.toString(),
-                                    );
-                                    Navigator.of(context).pop();
-                                  },
-                                  yes: "Yes",
-                                  title: 'Do you Need Delete',
-                                  content: 'Are you sure do you need delete',
-                                );
-
-                              } else {
-                                customPopup(
-                                  context: context,
-                                  onPressedDelete: () async {
-                                    mentalStrengthEditProvider
-                                        .recorderValuesRemove(widget.index);
-                                    Navigator.of(context).pop();
-                                  },
-                                  yes: "Yes",
-                                  title: 'Do you Need Delete',
-                                  content: 'Are you sure do you need delete',
-                                );
-
-                              }
-                            } else if (widget.type == "goal") {
-                              if (widget.already) {
-                                customPopup(
-                                  context: context,
-                                  onPressedDelete: () async {
-                                    adDreamsGoalsProvider
-                                        .alreadyRecorderValuesRemove(widget.index);
-                                    mentalStrengthEditProvider.removeMediaFunction(
-                                      context: context,
-                                      id: widget.id.toString(),
-                                      type: widget.type.toString(),
-                                    );
-                                    Navigator.of(context).pop();
-                                  },
-                                  yes: "Yes",
-                                  title: 'Do you Need Delete',
-                                  content: 'Are you sure do you need delete',
-                                );
-
-                              } else {
-                                customPopup(
-                                  context: context,
-                                  onPressedDelete: () async {
-                                    adDreamsGoalsProvider
-                                        .recorderValuesRemove(widget.index);
-                                    Navigator.of(context).pop();
-                                  },
-                                  yes: "Yes",
-                                  title: 'Do you Need Delete',
-                                  content: 'Are you sure do you need delete',
-                                );
-
-                              }
-                            } else if (widget.type == "action") {
-                              if (widget.already) {
-                                customPopup(
-                                  context: context,
-                                  onPressedDelete: () async {
-                                    addActionsProvider
-                                        .alreadyRecorderValuesRemove(widget.index);
-                                    mentalStrengthEditProvider.removeMediaFunction(
-                                      context: context,
-                                      id: widget.id.toString(),
-                                      type: widget.type.toString(),
-                                    );
-                                    Navigator.of(context).pop();
-                                  },
-                                  yes: "Yes",
-                                  title: 'Do you Need Delete',
-                                  content: 'Are you sure do you need delete',
-                                );
-
-                              } else {
-                                customPopup(
-                                  context: context,
-                                  onPressedDelete: () async {
-                                    addActionsProvider
-                                        .recorderValuesRemove(widget.index);
-                                    Navigator.of(context).pop();
-                                  },
-                                  yes: "Yes",
-                                  title: 'Do you Need Delete',
-                                  content: 'Are you sure do you need delete',
-                                );
-
-                              }
-                            }
-                          },
-                          child: CustomImageView(
-                            imagePath: ImageConstant.imgClosePrimary,
-                            height: 35,
-                            width: 35,
+                          SizedBox(
+                            width: size.width * 0.5,
+                            child: Slider(
+                              inactiveColor: Colors.grey,
+                              activeColor: Colors.white,
+                              min: 0,
+                              max: duration.inSeconds.toDouble(),
+                              value: position.inSeconds.toDouble(),
+                              onChanged: (value) async {
+                                final position = Duration(seconds: value.toInt());
+                                await audioPlayer.seek(position);
+                                await audioPlayer.resume();
+                              },
+                            ),
                           ),
-                        );
-                      }),
-                      // }),
-                    ],
+                          Consumer3<MentalStrengthEditProvider, AdDreamsGoalsProvider, AddActionsProvider>(
+                              builder: (context, mentalStrengthEditProvider, adDreamsGoalsProvider, addActionsProvider, _) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    if (widget.type == "journal") {
+                                      if (widget.already) {
+                                        customPopup(
+                                          context: context,
+                                          onPressedDelete: () async {
+                                            await mentalStrengthEditProvider.removeMediaFunction(context: context, id: widget.id.toString(), type: widget.type.toString());
+                                            mentalStrengthEditProvider.alreadyRecorderValuesRemove(widget.index);
+                                            Navigator.of(context).pop();
+                                          },
+                                          yes: "Yes",
+                                          title: 'Do you Need Delete',
+                                          content: 'Are you sure do you need delete',
+                                        );
+                                      } else {
+                                        customPopup(
+                                          context: context,
+                                          onPressedDelete: () async {
+                                            mentalStrengthEditProvider.recorderValuesRemove(widget.index);
+                                            Navigator.of(context).pop();
+                                          },
+                                          yes: "Yes",
+                                          title: 'Do you Need Delete',
+                                          content: 'Are you sure do you need delete',
+                                        );
+                                      }
+                                    } else if (widget.type == "goal") {
+                                      if (widget.already) {
+                                        customPopup(
+                                          context: context,
+                                          onPressedDelete: () async {
+                                            adDreamsGoalsProvider.alreadyRecorderValuesRemove(widget.index);
+                                            mentalStrengthEditProvider.removeMediaFunction(context: context, id: widget.id.toString(), type: widget.type.toString());
+                                            Navigator.of(context).pop();
+                                          },
+                                          yes: "Yes",
+                                          title: 'Do you Need Delete',
+                                          content: 'Are you sure do you need delete',
+                                        );
+                                      } else {
+                                        customPopup(
+                                          context: context,
+                                          onPressedDelete: () async {
+                                            adDreamsGoalsProvider.recorderValuesRemove(widget.index);
+                                            Navigator.of(context).pop();
+                                          },
+                                          yes: "Yes",
+                                          title: 'Do you Need Delete',
+                                          content: 'Are you sure do you need delete',
+                                        );
+                                      }
+                                    } else if (widget.type == "action") {
+                                      if (widget.already) {
+                                        customPopup(
+                                          context: context,
+                                          onPressedDelete: () async {
+                                            addActionsProvider.alreadyRecorderValuesRemove(widget.index);
+                                            mentalStrengthEditProvider.removeMediaFunction(context: context, id: widget.id.toString(), type: widget.type.toString());
+                                            Navigator.of(context).pop();
+                                          },
+                                          yes: "Yes",
+                                          title: 'Do you Need Delete',
+                                          content: 'Are you sure do you need delete',
+                                        );
+                                      } else {
+                                        customPopup(
+                                          context: context,
+                                          onPressedDelete: () async {
+                                            addActionsProvider.recorderValuesRemove(widget.index);
+                                            Navigator.of(context).pop();
+                                          },
+                                          yes: "Yes",
+                                          title: 'Do you Need Delete',
+                                          content:' Are you sure do you need delete',
+                                        );
+                                      }
+                                    }
+                                  },
+                                  child:
+                                  CustomImageView(imagePath:
+                                  ImageConstant.imgClosePrimary,height:
+                                  35,width:
+                                  35,),
+                                );
+                              }),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ],
-        );
-      }),
+              ],
+            );
+          }),
     );
   }
 }
