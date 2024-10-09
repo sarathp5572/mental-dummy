@@ -82,12 +82,8 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
       <head>
         <style>
           body {
-            font-family: Arial, sans-serif;
             text-align: justify; /* Aligns text to justify */
-            padding: 15px;
-            line-height: 1.6; /* Adjust line spacing */
-            font-size: 16px; /* Standard font size */
-            color: #333; /* Standard font color */
+            padding: 0px;
           }
         </style>
       </head>

@@ -131,6 +131,7 @@ class _GoalAndDreamFullViewScreenState
                   createDate: widget.goalsanddream.createdAt.toString(),
                   achiveDate: widget.goalsanddream.goalEnddate.toString(),
                   status: widget.goalsanddream.goalStatus.toString(),
+                  comments: widget.goalsanddream.goalDetails.toString(),
                 ),
 
                 const SizedBox(height: 15),
@@ -611,7 +612,8 @@ class _GoalAndDreamFullViewScreenState
       {required String category,
       required String createDate,
       required String achiveDate,
-      required String status}) {
+      required String status,
+      required String comments}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -677,6 +679,21 @@ class _GoalAndDreamFullViewScreenState
             ),
             Text(
               status == "0" ? "Active" : "DeActive",
+              style: CustomTextStyles.bodyLargeGray700,
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 6,
+        ),
+        Row(
+          children: [
+            Text(
+              "Comments : ",
+              style: CustomTextStyles.blackText16000000W700(),
+            ),
+            Text(
+              comments,
               style: CustomTextStyles.bodyLargeGray700,
             ),
           ],

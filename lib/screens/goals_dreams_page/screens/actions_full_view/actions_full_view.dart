@@ -190,31 +190,36 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                         .actions!
                                         .actionStatus
                                         .toString(),
+                              comments:  mentalStrengthEditProvider
+                                  .actionsDetailsModel!
+                                  .actions!
+                                  .actionDetails
+                                  .toString(),
                                   ),
-                            const SizedBox(height: 10),
-                            mentalStrengthEditProvider.actionsDetailsModel ==
-                                    null
-                                ? shimmerList(
-                                    height: 50,
-                                  )
-                                : Container(
-                              //color: Colors.amber,
-                                  width: size.width * 0.75,
-                                  child: Text(
-                                      capitalText(mentalStrengthEditProvider
-                                          .actionsDetailsModel!
-                                          .actions!
-                                          .actionDetails
-                                          .toString()),
-                                      maxLines: mentalStrengthEditProvider
-                                          .actionsDetailsModel!
-                                          .actions!
-                                          .actionDetails?.length,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: CustomTextStyles
-                                          .blackText15GreyTextW400(),
-                                    ),
-                                ),
+                            // const SizedBox(height: 10),
+                            // mentalStrengthEditProvider.actionsDetailsModel ==
+                            //         null
+                            //     ? shimmerList(
+                            //         height: 50,
+                            //       )
+                            //     : Container(
+                            //   //color: Colors.amber,
+                            //       width: size.width * 0.75,
+                            //       child: Text(
+                            //           capitalText(mentalStrengthEditProvider
+                            //               .actionsDetailsModel!
+                            //               .actions!
+                            //               .actionDetails
+                            //               .toString()),
+                            //           maxLines: mentalStrengthEditProvider
+                            //               .actionsDetailsModel!
+                            //               .actions!
+                            //               .actionDetails?.length,
+                            //           overflow: TextOverflow.ellipsis,
+                            //           style: CustomTextStyles
+                            //               .blackText15GreyTextW400(),
+                            //         ),
+                            //     ),
                             const SizedBox(height: 15),
                             audioList.isEmpty
                                 ? const SizedBox()
@@ -629,7 +634,9 @@ class _ActionsFullViewState extends State<ActionsFullView> {
       {required String category,
       required String createDate,
       required String achiveDate,
-      required String status}) {
+      required String status,
+        required String comments,
+      }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -650,6 +657,9 @@ class _ActionsFullViewState extends State<ActionsFullView> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 6,
+        ),
         Row(
           children: [
             Text(
@@ -663,6 +673,30 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                 scrollDirection: Axis.horizontal, // Enable horizontal scrolling
                 child: Text(
                   category,
+                  style: CustomTextStyles.bodyLargeGray700,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1, // Set the maximum number of lines to 3
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 6,
+        ),
+        Row(
+          children: [
+            Text(
+              "Comments : ",
+              style: CustomTextStyles.blackText16000000W700(),
+            ),
+            SizedBox(
+              // color: Colors.blue,
+              width: size.width * 0.60,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                child: Text(
+                  comments,
                   style: CustomTextStyles.bodyLargeGray700,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1, // Set the maximum number of lines to 3
