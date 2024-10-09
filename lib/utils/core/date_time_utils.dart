@@ -37,6 +37,17 @@ String formatDate(int millisecondsMain) {
   return formattedDate;
 }
 
+String formatDate1(int millisecondsMain) {
+  // Use millisecondsMain directly without multiplying
+  DateTime date = DateTime.fromMillisecondsSinceEpoch(millisecondsMain);
+
+  // Format the DateTime object
+  String formattedDate = DateFormat('dd MMM yyyy').format(date);
+
+  return formattedDate;
+}
+
+
 String formatDate2(int millisecondsMain) {
   int milliseconds = int.parse("$millisecondsMain");
   DateTime date = DateTime.fromMillisecondsSinceEpoch(milliseconds);

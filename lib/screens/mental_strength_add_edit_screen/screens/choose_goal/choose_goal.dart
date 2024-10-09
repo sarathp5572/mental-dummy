@@ -375,7 +375,7 @@ class _ScreenChooseGoalMentalStrengthState
                     Text(
                       goals[index].goalEnddate == ""
                           ? ""
-                          : formatDate(
+                          : formatDate1(
                               int.parse(goals[index].goalEnddate.toString())),
                       style: theme.textTheme.bodySmall,
                     ),
