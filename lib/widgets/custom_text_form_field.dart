@@ -23,6 +23,8 @@ class CustomTextFormField extends StatelessWidget {
     this.prefixConstraints,
     this.suffix,
     this.suffixConstraints,
+    this.prefixText, // Add prefixText parameter
+    this.prefixStyle, // Add prefixStyle parameter
     this.contentPadding,
     this.borderDecoration,
     this.fillColor,
@@ -34,8 +36,8 @@ class CustomTextFormField extends StatelessWidget {
     this.inputFormatters, // Added inputFormatters here
     this.readOnly = false, // Add readOnly parameter with a default value
   }) : super(
-          key: key,
-        );
+    key: key,
+  );
 
   final Alignment? alignment;
   final double? width;
@@ -54,6 +56,8 @@ class CustomTextFormField extends StatelessWidget {
   final BoxConstraints? prefixConstraints;
   final Widget? suffix;
   final BoxConstraints? suffixConstraints;
+  final String? prefixText; // Declare prefixText
+  final TextStyle? prefixStyle; // Declare prefixStyle
   final EdgeInsets? contentPadding;
   final InputBorder? borderDecoration;
   final Color? fillColor;
@@ -69,78 +73,80 @@ class CustomTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return alignment != null
         ? Align(
-            alignment: alignment ?? Alignment.center,
-            child: textFormFieldWidget(context),
-          )
+      alignment: alignment ?? Alignment.center,
+      child: textFormFieldWidget(context),
+    )
         : textFormFieldWidget(context);
   }
 
   Widget textFormFieldWidget(BuildContext context) => SizedBox(
-        width: width ?? double.maxFinite,
-        child: TextFormField(
-
-          textAlign: textAlign ?? TextAlign.start,
-          onChanged: onChanged,
-          scrollPadding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          controller: controller,
-          focusNode: focusNode,
-          autofocus: autofocus ?? false,
-          style: textStyle ?? CustomTextStyles.bodyMediumOnPrimary,
-          obscureText: obscureText ?? false,
-          textInputAction: textInputAction,
-          keyboardType: textInputType,
-          maxLines: maxLines ?? 1,
-          decoration: decoration,
-          validator: validator,
-          inputFormatters: inputFormatters, // Apply inputFormatters here
-          readOnly: readOnly, // Pass readOnly to the TextFormField
-        ),
-      );
+    width: width ?? double.maxFinite,
+    child: TextFormField(
+      textAlign: textAlign ?? TextAlign.start,
+      onChanged: onChanged,
+      scrollPadding:
+      EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      controller: controller,
+      focusNode: focusNode,
+      autofocus: autofocus ?? false,
+      style: textStyle ?? CustomTextStyles.bodyMediumOnPrimary,
+      obscureText: obscureText ?? false,
+      textInputAction: textInputAction,
+      keyboardType: textInputType,
+      maxLines: maxLines ?? 1,
+      decoration: decoration, // Use the updated InputDecoration getter
+      validator: validator,
+      inputFormatters: inputFormatters, // Apply inputFormatters here
+      readOnly: readOnly, // Pass readOnly to the TextFormField
+    ),
+  );
 
   InputDecoration get decoration => InputDecoration(
-        hintText: hintText ?? "",
-        errorText: isValids == null
-            ? null
-            : isValids!
-                ? null
-                : 'Invalid phone number',
-        hintStyle:
-            hintStyle ?? CustomTextStyles.bodyLargeRobotoOnSecondaryContainer,
-        prefixIcon: prefix,
-        prefixIconConstraints: prefixConstraints,
-        suffixIcon: suffix,
-        suffixIconConstraints: suffixConstraints,
-        isDense: true,
-        contentPadding: contentPadding ?? const EdgeInsets.all(11),
-        fillColor: fillColor,
-        filled: filled,
-        border: borderDecoration ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: BorderSide(
-                color: appTheme.gray500,
-                width: 1,
-              ),
-            ),
-        enabledBorder: borderDecoration ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: BorderSide(
-                color: appTheme.gray500,
-                width: 1,
-              ),
-            ),
-        focusedBorder: borderDecoration ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: BorderSide(
-                color: appTheme.gray700,
-                width: 1,
-              ),
-            ),
-      );
+    hintText: hintText ?? "",
+    errorText: isValids == null
+        ? null
+        : isValids!
+        ? null
+        : 'Invalid phone number',
+    hintStyle:
+    hintStyle ?? CustomTextStyles.bodyLargeRobotoOnSecondaryContainer,
+    prefixIcon: prefix,
+    prefixIconConstraints: prefixConstraints,
+    suffixIcon: suffix,
+    suffixIconConstraints: suffixConstraints,
+    isDense: true,
+    contentPadding: contentPadding ?? const EdgeInsets.all(11),
+    fillColor: fillColor,
+    filled: filled,
+    prefixText: prefixText, // Include prefixText in the decoration
+    prefixStyle: prefixStyle ?? CustomTextStyles.bodyLargeRobotoOnSecondaryContainer, // Style for prefixText
+    border: borderDecoration ??
+        OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: BorderSide(
+            color: appTheme.gray500,
+            width: 1,
+          ),
+        ),
+    enabledBorder: borderDecoration ??
+        OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: BorderSide(
+            color: appTheme.gray500,
+            width: 1,
+          ),
+        ),
+    focusedBorder: borderDecoration ??
+        OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: BorderSide(
+            color: appTheme.gray700,
+            width: 1,
+          ),
+        ),
+  );
 }
+
 
 /// Extension on [CustomTextFormField] to facilitate inclusion of all types of border style etc
 extension TextFormFieldStyleHelper on CustomTextFormField {

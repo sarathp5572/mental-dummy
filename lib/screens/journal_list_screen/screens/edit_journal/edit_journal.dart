@@ -205,22 +205,16 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                         ),
                                   editProfileProvider.getProfileModel == null
                                       ? const SizedBox()
-                                      : Text(
-                                          editProfileProvider.getProfileModel!
-                                                          .dob ==
-                                                      null ||
-                                                  editProfileProvider
-                                                          .getProfileModel!
-                                                          .dob ==
-                                                      null
-                                              ? ""
-                                              : dateTimeFormatterMain(
-                                                  date: editProfileProvider
-                                                      .getProfileModel!.dob
-                                                      .toString()),
-                                          style: CustomTextStyles
-                                              .bodyMediumGray700,
-                                        ),
+                                      :       Text(
+                                    homeProvider.journalDetails == null
+                                        ? ""
+                                        : dateTimeFormatter(
+                                      date: homeProvider
+                                          .journalDetails!.journals!.journalDatetime
+                                          .toString(),
+                                    ),
+                                    style: CustomTextStyles.bodyMediumGray700,
+                                  ),
                                   SizedBox(
                                     height: size.height * 0.02,
                                   ),

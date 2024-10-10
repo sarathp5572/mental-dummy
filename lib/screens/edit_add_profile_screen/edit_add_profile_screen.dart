@@ -294,7 +294,8 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
                                                                 final interestId = editProfileProvider.profileInterestIds[editProfileProvider.profileInterests.indexOf(interest)];
                                                                 return Padding(
                                                                   padding: const EdgeInsets.only(right: 8.0), // Space between items
-                                                                  child: Chip(
+                                                                  child:
+                                                                  Chip(
                                                                     label: Text(interest), // Use interest and its ID as the label
                                                                     deleteIcon: const Icon(Icons.close), // Add delete icon
                                                                     onDeleted: () {
@@ -480,21 +481,30 @@ class _EditAddProfileScreenState extends State<EditAddProfileScreen> {
             isValids: editProfileProvider.phoneIsValid,
             textInputType: TextInputType.phone,
             controller: editProfileProvider.phoneController,
-            hintText: "+00 0000000000",
+            hintText: "0000000000", // Phone number hint
             hintStyle: const TextStyle(
               color: Colors.black,
             ),
-            readOnly: editProfileProvider.getProfileModel?.phoneVerify == "1", // Set readOnly based on the condition
+            readOnly: editProfileProvider.getProfileModel?.phoneVerify == "1", // Make field read-only if phone is verified
+            prefixText: "+${editProfileProvider.getProfileModel?.countryCode ?? "+00"} ", // Add country code as prefix text
+            prefixStyle: const TextStyle(
+             // fontSize: 10,
+              color: Colors.black,
+            ),
             onChanged: (value) {
-                editProfileProvider.phoneValidate(
-                  editProfileProvider.validatePhoneNumber(value),
-                );
+              editProfileProvider.phoneValidate(
+                editProfileProvider.validatePhoneNumber(value),
+              );
             },
           ),
         );
       },
     );
   }
+
+
+
+
 
 
   Widget _buildEmail(BuildContext context) {

@@ -215,7 +215,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                                   children: [
                                                     TextSpan(
                                                       text:
-                                                          "${editProfileProvider.getProfileModel!.phone}\n",
+                                                          "+${editProfileProvider.getProfileModel!.countryCode} ${editProfileProvider.getProfileModel!.phone}\n",
                                                       style: CustomTextStyles
                                                           .bodyLargeff000000,
                                                     ),
