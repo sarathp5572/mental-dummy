@@ -19,7 +19,7 @@
     <!-- Application Configuration -->
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="mentalhelth"
+        android:label="Mental Health"
         tools:replace="android:icon, android:label">
         <!-- Your activity declarations go here, e.g. -->
         <!-- <activity android:name=".MainActivity"> -->

@@ -34,7 +34,9 @@ class _SplashScreenState extends State<SplashScreen> {
               .pushReplacement(MaterialPageRoute(builder: (context) {
             if (getSubScribed != null) {
               if (getSubScribed.toString() == "0") {
-                return SubscribePlanPage();
+                //commented for purpose
+               // return SubscribePlanPage();
+                return const DashBoardScreen();
               } else if (getSubScribed.toString() == "1") {
                 return const DashBoardScreen();
               } else {
@@ -51,7 +53,9 @@ class _SplashScreenState extends State<SplashScreen> {
             .pushReplacement(MaterialPageRoute(builder: (context) {
           if (getSubScribed != null) {
             if (getSubScribed.toString() == "0") {
-              return SubscribePlanPage();
+              return const DashBoardScreen();
+              //commented for purpose
+             // return SubscribePlanPage();
             } else {
               return const DashBoardScreen();
             }

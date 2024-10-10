@@ -259,12 +259,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     top: 21,
                     bottom: 21,
                   ),
-                  child: Text(
-                    capitalText(editProfileProvider.getProfileModel == null
-                        ? ""
-                        : editProfileProvider.getProfileModel!.firstname
-                            .toString()),
-                    style: CustomTextStyles.bodyLarge18,
+                  child: SizedBox(
+                   // color: Colors.cyan,
+                    width: size.width * 0.60,
+                    child: Text(
+                      capitalText(editProfileProvider.getProfileModel == null
+                          ? ""
+                          :editProfileProvider.getProfileModel!.firstname
+                              .toString()),
+                      style: CustomTextStyles.bodyLarge18,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 10, // Set the maximum number of lines to 3
+                    ),
                   ),
                 ),
                 const Spacer(),

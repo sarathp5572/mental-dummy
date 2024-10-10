@@ -33,11 +33,20 @@ class UserProfileListItemWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           image!=null?
-          CircleAvatar(
-            radius: size.width * 0.05,
-            backgroundColor: Colors.grey[100],
-            backgroundImage: NetworkImage(image),
-          ):
+          Container(
+            width: size.width * 0.1, // Set the desired width
+            height: size.width * 0.1, // Set the desired height
+            decoration: BoxDecoration(
+              color: Colors.grey[100], // Background color
+              image: DecorationImage(
+                image: NetworkImage(image),
+                fit: BoxFit.cover, // Adjust image to fit container
+              ),
+              borderRadius: BorderRadius.circular(10), // Set curved edges
+            ),
+          )
+
+              :
               const SizedBox(),
           Padding(
             padding: const EdgeInsets.only(

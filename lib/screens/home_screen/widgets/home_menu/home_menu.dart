@@ -76,55 +76,42 @@ Widget buildPopupDialog(BuildContext context, Size size) {
             SizedBox(
               height: size.height * 0.01,
             ),
-
-            Row(
-              children: [
-                Text(
-                  "Active Monthly plan ",
-                  style: CustomTextStyles.titleMediumffffffff15,
-                ),
-                Expanded(
-                  child: Text(
-                    "( ${editProvider.getProfileModel?.subscription!.planValidity!.toString()} Days remaining ) ",
-                    style: CustomTextStyles.titleMediumffffffff13,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => SubscribePlanPage(
-                      signed: true,
-                    ),
-                  ));
-                },
-                child: Text(
-                  "Renew Now",
-                  style: CustomTextStyles.labelLargeffffffff,
-                ),
-              ),
-            ),
-            // RichText(
-            //   text: TextSpan(
-            //     children: [
-            //       TextSpan(
-            //         text:
-            //             "Active Monthly plan ( ${editProvider.getProfileModel!.subscription!.planValidity!.toString()} Days remaining )  ",
-            //         style: CustomTextStyles.titleMediumffffffff,
+//hided on purpose//
+            // Row(
+            //   children: [
+            //     Text(
+            //       "Active Monthly plan ",
+            //       style: CustomTextStyles.titleMediumffffffff15,
+            //     ),
+            //     Expanded(
+            //       child: Text(
+            //         "( ${editProvider.getProfileModel?.subscription?.planValidity!.toString()} Days remaining ) ",
+            //         style: CustomTextStyles.titleMediumffffffff13,
+            //         overflow: TextOverflow.ellipsis,
             //       ),
-            //     ],
+            //     ),
+            //   ],
+            // ),
+            // const SizedBox(
+            //   height: 10,
+            // ),
+            // Align(
+            //   alignment: Alignment.topLeft,
+            //   child: GestureDetector(
+            //     onTap: () {
+            //       Navigator.of(context).push(MaterialPageRoute(
+            //         builder: (context) => SubscribePlanPage(
+            //           signed: true,
+            //         ),
+            //       ));
+            //     },
+            //     child: Text(
+            //       "Renew Now",
+            //       style: CustomTextStyles.labelLargeffffffff,
+            //     ),
             //   ),
             // ),
-            SizedBox(
-              height: size.height * 0.01,
-            ),
+//hided on purpose//
             Consumer<DashBoardProvider>(
                 builder: (context,dashBoardProvider, _) {
               return GestureDetector(
@@ -148,7 +135,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
               );
             }),
             SizedBox(
-              height: size.height * 0.005,
+              height: size.height * 0.001,
             ),
             Consumer<DashBoardProvider>(
                 builder: (context, dashBoardProvider, _) {
@@ -173,7 +160,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
               );
             }),
             SizedBox(
-              height: size.height * 0.005,
+              height: size.height * 0.001,
             ),
             Consumer<DashBoardProvider>(
                 builder: (context, dashBoardProvider, _) {
@@ -198,7 +185,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
               );
             }),
             SizedBox(
-              height: size.height * 0.005,
+              height: size.height * 0.001,
             ),
             Consumer<HomeProvider>(
                 builder: (context, homeProvider, _) {
@@ -228,7 +215,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                 }),
 
             SizedBox(
-              height: size.height * 0.005,
+              height: size.height * 0.03,
             ),
             Consumer<DashBoardProvider>(
                 builder: (context, dashBoardProvider, _) {
@@ -253,7 +240,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
               );
             }),
             SizedBox(
-              height: size.height * 0.005,
+              height: size.height * 0.001,
             ),
             Consumer<DashBoardProvider>(
                 builder: (context, dashBoardProvider, _) {
@@ -287,7 +274,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
               );
             }),
             SizedBox(
-              height: size.height * 0.005,
+              height: size.height * 0.001,
             ),
             GestureDetector(
               onTap: () {
@@ -313,7 +300,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
               ),
             ),
             SizedBox(
-              height: size.height * 0.005,
+              height: size.height * 0.001,
             ),
             GestureDetector(
               onTap: () async {
@@ -392,7 +379,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
               },
             ),
             SizedBox(
-              height: size.height * 0.005,
+              height: size.height * 0.001,
             ),
             Consumer<DashBoardProvider>(
                 builder: (context, dashBoardProvider, _) {
@@ -417,7 +404,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
               );
             }),
             SizedBox(
-              height: size.height * 0.005,
+              height: size.height * 0.03,
             ),
             Align(
               alignment: Alignment.center,

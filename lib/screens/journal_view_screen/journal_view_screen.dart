@@ -308,6 +308,8 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                         ),
                                       ),
                                 const SizedBox(height: 28),
+                                homeProvider.journalDetails!.journals!.location == null ?
+                                    const SizedBox():
                                 Padding(
                                   padding: const EdgeInsets.only(left: 2),
                                   child: Text(

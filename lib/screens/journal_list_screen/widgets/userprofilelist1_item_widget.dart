@@ -44,17 +44,17 @@ class UserProfileList1ItemWidget extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: size.width * 0.05,
-                backgroundColor: Colors.grey[100],
-                backgroundImage:
-                    NetworkImage(journalsModelList.displayImage.toString()),
-                // child: CustomImageView(
-                //   imagePath: journalsModelList.displayImage,
-                //   height: 40,
-                //   width: 40,
-                //   margin: const EdgeInsets.only(bottom: 2),
-                // ),
+              Container(
+                width: size.width * 0.1, // Set the desired width
+                height: size.width * 0.1, // Set the desired height
+                decoration: BoxDecoration(
+                  color: Colors.grey[100], // Background color
+                  image: DecorationImage(
+                    image: NetworkImage(journalsModelList.displayImage.toString()),
+                    fit: BoxFit.cover, // Adjust image to fit container
+                  ),
+                  borderRadius: BorderRadius.circular(10), // Set curved edges
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(

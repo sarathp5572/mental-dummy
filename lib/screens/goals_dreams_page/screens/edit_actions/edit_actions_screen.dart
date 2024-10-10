@@ -1731,9 +1731,10 @@ class _EditActionScreenState extends State<EditActionScreen> {
                     isReminder: "0");
               }
 
-              adDreamsGoalsProvider.getAddActionIdAndName(
-                value: addActionsProvider.goalModelIdName!,
-              );
+              // adDreamsGoalsProvider.getAddActionIdAndName(
+              //   value: addActionsProvider.goalModelIdName!,
+              // );
+
               addActionsProvider.clearFunction();
               Navigator.of(context).pop();
             } else {

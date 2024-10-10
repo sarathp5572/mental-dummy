@@ -58,7 +58,7 @@ class _ChartWidgetState extends State<ChartWidget> {
           height: size.height * 0.3,
           width: double.infinity,
           child: Image.asset(
-            'assets/gif/home_graf.gif',
+            'assets/images/home/graph_default.png',
             fit: BoxFit.fill,
           ),
         )

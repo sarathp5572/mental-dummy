@@ -79,11 +79,17 @@ class SignInProvider extends ChangeNotifier {
         );
         if (loginModel!.status!) {
           if (loginModel!.isSubscribed == "0") {
+            // Navigator.of(context).pushAndRemoveUntil(
+            //   MaterialPageRoute(
+            //     builder: (context) => SubscribePlanPage(),
+            //   ),
+            //   (route) => false,
+            // );
             Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
-                builder: (context) => SubscribePlanPage(),
+                builder: (context) => const DashBoardScreen(),
               ),
-              (route) => false,
+                  (route) => false,
             );
           } else {
             Navigator.of(context).pushAndRemoveUntil(

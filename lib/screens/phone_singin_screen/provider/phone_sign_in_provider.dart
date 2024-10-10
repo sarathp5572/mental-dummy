@@ -122,11 +122,17 @@ class PhoneSignInProvider extends ChangeNotifier {
 
         if (verifyOtpModel!.status!) {
           if (verifyOtpModel!.isSubscribed == "0") {
+            // Navigator.of(context).pushAndRemoveUntil(
+            //   MaterialPageRoute(
+            //     builder: (context) => SubscribePlanPage(),
+            //   ),
+            //   (route) => false,
+            // );
             Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
-                builder: (context) => SubscribePlanPage(),
+                builder: (context) => const DashBoardScreen(),
               ),
-              (route) => false,
+                  (route) => false,
             );
           } else {
             Navigator.of(context).pushAndRemoveUntil(

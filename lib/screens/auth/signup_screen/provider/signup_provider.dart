@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mentalhelth/screens/auth/sign_in/screen_sign_in.dart';
 import 'package:mentalhelth/screens/auth/signup_screen/model/signup_model.dart';
 import 'package:mentalhelth/screens/auth/signup_screen/wigets/signup_widget.dart';
 import 'package:mentalhelth/utils/core/url_constant.dart';
@@ -8,6 +9,7 @@ import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 
 import '../../../token_expiry/token_expiry.dart';
 import '../../subscribe_plan_page/subscribe_plan_page.dart';
+import '../signup_screen.dart';
 
 class SignUpProvider extends ChangeNotifier {
   TextEditingController nameEditTextController = TextEditingController();
@@ -70,9 +72,16 @@ class SignUpProvider extends ChangeNotifier {
         if (signUpModel!.status!) {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => SubscribePlanPage(),
+              builder: (context) => SignupScreen(),
             ),
           );
+
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ScreenSignIn(),
+            ),
+          );
+
         }
 
         // ignore: use_build_context_synchronously

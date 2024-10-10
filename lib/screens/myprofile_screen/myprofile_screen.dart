@@ -139,17 +139,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               ),
                               radius: size.width * 0.1,
                             ),
-                            // CustomImageView(
-                            //   imagePath: editProfileProvider
-                            //       .getProfileModel!.profileurl
-                            //       .toString(),
-                            //   height: size.height * 0.11,
-                            //   width: size.height * 0.11,
-                            //   radius: BorderRadius.circular(
-                            //     54,
-                            //   ),
-                            //   alignment: Alignment.center,
-                            // ),
                           );
                         }),
                         Align(
@@ -176,19 +165,26 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                             SizedBox(
                                               height: size.height * 0.13,
                                             ),
-                                            Text(
-                                              capitalText(
-                                                editProfileProvider
-                                                            .getProfileModel ==
-                                                        null
-                                                    ? ""
-                                                    : editProfileProvider
-                                                        .getProfileModel!
-                                                        .firstname
-                                                        .toString(),
+                                            SizedBox(
+                                              width: size.width * 0.55,
+                                              child: SingleChildScrollView(
+                                                scrollDirection: Axis.vertical, // Enable horizontal scrolling
+                                                child: Text(
+                                                  capitalText(
+                                                    editProfileProvider
+                                                                .getProfileModel ==
+                                                            null
+                                                        ? ""
+                                                        :
+                                                    editProfileProvider.getProfileModel!.firstname.toString(),
+                                                  ),
+                                                  style:
+                                                      CustomTextStyles.bodyLarge18,
+                                                  textAlign: TextAlign.center,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 10, // Set the maximum number of lines to 3
+                                                ),
                                               ),
-                                              style:
-                                                  CustomTextStyles.bodyLarge18,
                                             ),
                                             Align(
                                               alignment: Alignment.centerLeft,
