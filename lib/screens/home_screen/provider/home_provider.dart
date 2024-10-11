@@ -94,7 +94,7 @@ class HomeProvider extends ChangeNotifier {
   bool journalsModelLoading = false;
   int journalStatus = 0;
 
-  Future fetchJournals({bool initial = false}) async {
+  Future fetchJournals({bool initial = false,String? pageNo}) async {
     try {
       String? token = await getUserTokenSharePref();
       journalsModelLoading = true;
@@ -116,7 +116,7 @@ class HomeProvider extends ChangeNotifier {
 
       Uri url = Uri.parse(
         UrlConstant.journalsUrl(
-          page: pageLoad.toString(),
+          page: pageNo ?? "1",
         ),
       );
       logger.w("url $url");

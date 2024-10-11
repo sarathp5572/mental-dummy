@@ -39,6 +39,8 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
   var logger = Logger();
   bool completed = false;
   final ScrollController _scrollController = ScrollController();
+  int currentPage = 1; // State to track the current page
+
 
   Future<void> _isTokenExpired() async {
     await homeProvider.fetchChartView(context);
@@ -108,11 +110,10 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
     }
   }
 
-  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return tokenStatus == false ?
-      SafeArea(
+    return tokenStatus == false
+        ? SafeArea(
       child: backGroundImager(
         size: size,
         padding: EdgeInsets.zero,
@@ -120,123 +121,171 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
           children: [
             Consumer<DashBoardProvider>(
                 builder: (context, dashBoardProvider, _) {
-              return buildAppBar(
-                context,
-                size,
-                heading: "My Goals & Dreams  ",
-                onTap: () {
-                  dashBoardProvider.changePage(index: 0);
-                },
-              );
-            }),
+                  return buildAppBar(
+                    context,
+                    size,
+                    heading: "My Goals & Dreams",
+                    onTap: () {
+                      dashBoardProvider.changePage(index: 0);
+                    },
+                  );
+                }),
             Expanded(
               child: Consumer<GoalsDreamsProvider>(
                   builder: (context, goalsDreamsProvider, _) {
-                return Stack(
-                  children: [
-                Container(
-                color: goalsDreamsProvider.goalsanddreams.isEmpty ? Colors.white : null,
-                  padding: const EdgeInsets.symmetric(horizontal: 28),
-                  child: goalsDreamsProvider.goalsAndDreamsModelLoading?
-                  const Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          Colors.blue), // Replace with your desired color
-                    ),
-                  )
-                      :
-                  goalsDreamsProvider.goalsanddreams.isEmpty
-                      ? Center(
-                    child: Image.asset(
-                      ImageConstant.noData,
-                    ),
-                  )
-                      : ListView.builder(
-                 //   controller: _scrollController,
-                    itemCount: goalsDreamsProvider.goalsanddreams.length +
-                        (goalsDreamsProvider.goalsAndDreamsModelLoading ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index < goalsDreamsProvider.goalsanddreams.length) {
-                        return GestureDetector(
-                          onTap: () {
-                            goalsDreamsProvider.openBoxFunction(index: index);
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => GoalAndDreamFullViewScreen(
-                                  goalsanddream: goalsDreamsProvider.goalsanddreams[index],
-                                  indexs: index,
-                                  goalStatus: goalsDreamsProvider.goalsanddreams[index].goalStatus ?? "",
-                                ),
-                              ),
-                            );
-                          },
-                          child: WeightLossComponentListItemWidget(
-                            image: goalsDreamsProvider.goalsanddreams[index].goalMedia.toString(),
-                            headding: goalsDreamsProvider.goalsanddreams[index].goalTitle.toString(),
-                            status: goalsDreamsProvider.goalsanddreams[index].goalStatus == "1" ? true : false,
-                            startDate: goalsDreamsProvider.goalsanddreams[index].goalStartdate.toString(),
-                            endDate: goalsDreamsProvider.goalsanddreams[index].goalEnddate.toString(),
-                          ),
-                        );
-                      } else if (goalsDreamsProvider.goalsAndDreamsModelLoading) {
-                        return shimmerList(
-                          height: size.height,
-                          list: 10,
-                          shimmerHeight: size.height * 0.1,
-                        );
-                      } else {
-                        return Center(
-                          child: Image.asset(
-                            ImageConstant.noData,
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ),
-                goalsDreamsProvider.isScrolling
-                        ? const SizedBox()
-                        : Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: ColorsContent.primaryColor,
-                                  ),
-                                  onPressed: () {
+                    return Stack(
+                      children: [
+                        Container(
+                          color: goalsDreamsProvider.goalsanddreams.isEmpty
+                              ? Colors.white
+                              : null,
+                          padding: const EdgeInsets.symmetric(horizontal: 28),
+                          child: goalsDreamsProvider.goalsAndDreamsModelLoading
+                              ? const Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.blue),
+                            ),
+                          )
+                              : goalsDreamsProvider.goalsanddreams.isEmpty
+                              ? Center(
+                            child: Image.asset(
+                              ImageConstant.noData,
+                            ),
+                          )
+                              : ListView.builder(
+                            itemCount: goalsDreamsProvider.goalsanddreams.length +
+                                (goalsDreamsProvider.goalsAndDreamsModelLoading ? 1 : 0),
+                            itemBuilder: (context, index) {
+                              if (index < goalsDreamsProvider.goalsanddreams.length) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    goalsDreamsProvider.openBoxFunction(index: index);
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const AddGoalsDreamsScreen(),
+                                        builder: (context) => GoalAndDreamFullViewScreen(
+                                          goalsanddream: goalsDreamsProvider.goalsanddreams[index],
+                                          indexs: index,
+                                          goalStatus: goalsDreamsProvider.goalsanddreams[index].goalStatus ?? "",
+                                        ),
                                       ),
                                     );
                                   },
-                                  child: const Text(
-                                    "Create New Goals",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
+                                  child: WeightLossComponentListItemWidget(
+                                    image: goalsDreamsProvider.goalsanddreams[index].goalMedia.toString(),
+                                    headding: goalsDreamsProvider.goalsanddreams[index].goalTitle.toString(),
+                                    status: goalsDreamsProvider.goalsanddreams[index].goalStatus == "1" ? true : false,
+                                    startDate: goalsDreamsProvider.goalsanddreams[index].goalStartdate.toString(),
+                                    endDate: goalsDreamsProvider.goalsanddreams[index].goalEnddate.toString(),
+                                  ),
+                                );
+                              } else if (goalsDreamsProvider.goalsAndDreamsModelLoading) {
+                                return shimmerList(
+                                  height: size.height,
+                                  list: 10,
+                                  shimmerHeight: size.height * 0.1,
+                                );
+                              } else {
+                                return Center(
+                                  child: Image.asset(
+                                    ImageConstant.noData,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                        goalsDreamsProvider.isScrolling
+                            ? const SizedBox()
+                            : Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Pagination Row
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 0.0),
+                                child: GestureDetector(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: List.generate(goalsDreamsProvider.goalsAndDreamsModel?.pageCount ?? 0, (index) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          // Update the current page and fetch new data
+                                          setState(() {
+                                          goalsDreamsProvider.goalsanddreams.clear();
+                                            currentPage = index + 1;
+                                          });
+                                          goalsDreamsProvider.fetchGoalsAndDreams(pageNo: currentPage.toString());
+                                        },
+                                        child: Container(
+                                          margin: const EdgeInsets.all(4.0),
+                                          padding: const EdgeInsets.all(8.0),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: currentPage == index + 1 ? Colors.blue : Colors.grey, // Change color based on current page
+                                          ),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              // Update the current page and fetch new data
+                                              setState(() {
+                                                goalsDreamsProvider.goalsanddreams.clear();
+                                               currentPage = index + 1;
+                                              });
+                                              goalsDreamsProvider.fetchGoalsAndDreams(pageNo: currentPage.toString());
+                                            },
+                                            child: Text(
+                                              '${index + 1}',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: size.height * 0.01,
-                                )
-                              ],
-                            ),
+                              ),
+
+                              // Create New Goals Button
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: ColorsContent.primaryColor,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => const AddGoalsDreamsScreen(),
+                                    ),
+                                  );
+                                },
+                                child: const Text(
+                                  "Create New Goals",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: size.height * 0.01,
+                              ),
+                            ],
                           ),
-                  ],
-                );
-              }),
+                        ),
+                      ],
+                    );
+                  }),
             ),
           ],
         ),
       ),
-    ):
-    const TokenExpireScreen();
+    )
+        : const TokenExpireScreen();
   }
+
 
 // /// Section Widget
 // Widget _buildWeightLossComponentList(BuildContext context) {

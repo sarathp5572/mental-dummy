@@ -1,14 +1,15 @@
 // import 'package:charts_flutter/flutter.dart' as charts;
 // import 'package:easytrax/screens/analytics_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:provider/provider.dart'; // Assuming you're using Provider for state management
-import 'package:intl/intl.dart';
 
 import '../model/chart_view_model.dart';
-import '../provider/home_provider.dart'; // For formatting date
+import '../provider/home_provider.dart';
 
 class ChartWidget extends StatefulWidget {
   final List<Chart>? chartData;
@@ -34,94 +35,82 @@ class _ChartWidgetState extends State<ChartWidget> {
     Size size = MediaQuery.of(context).size;
     return Consumer<HomeProvider>(
       builder: (context, homeProvider, _) {
-        return
-          homeProvider.chartViewLoading
-            ? Center(
-          child: SizedBox(
+        if (homeProvider.chartViewLoading) {
+          return Center(
+            child: SizedBox(
+              height: size.height * 0.3,
+              width: double.infinity,
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+          );
+        } else if (homeProvider.chartViewModel == null) {
+          return SizedBox(
             height: size.height * 0.3,
             width: double.infinity,
-            child: Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
+            child: Image.asset(
+              'assets/images/home/graph_default.png',
+              fit: BoxFit.fill,
+            ),
+          );
+        } else {
+          return SizedBox(
+            height: size.height * 0.3,
+            child: SfCartesianChart(
+              primaryXAxis: CategoryAxis(
+                labelRotation: 0,
+                labelPlacement: LabelPlacement.betweenTicks,
+                labelStyle: TextStyle(
+                  fontSize: 12,
+                  color: Colors.black,
+                  height: 1.5, // Adjust line height for better spacing
                 ),
               ),
-            ),
-          ),
-        )
-            :
-          homeProvider.chartViewModel == null
-            ? SizedBox(
-          height: size.height * 0.3,
-          width: double.infinity,
-          child: Image.asset(
-            'assets/images/home/graph_default.png',
-            fit: BoxFit.fill,
-          ),
-        )
-            : SizedBox(
-          height: size.height * 0.3,
-          child: SfCartesianChart(
-            primaryXAxis: const CategoryAxis(
-              labelRotation: 0,
-              labelPlacement: LabelPlacement.betweenTicks,
-            ),
-            primaryYAxis: const NumericAxis(),
-            legend: const Legend(isVisible: true),
-            tooltipBehavior: tooltipBehavior,
-            series: <CartesianSeries>[
-              ColumnSeries<Chart, String>(
-                dataSource: widget.chartData!,
-                xValueMapper: (Chart data, _) => formatDate(int.parse(data.dateTime)),
-                yValueMapper: (Chart data, _) => data.score,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
+              primaryYAxis: NumericAxis(),
+              legend: Legend(isVisible: true),
+              tooltipBehavior: tooltipBehavior,
+              series: <CartesianSeries>[
+                ColumnSeries<Chart, String>(
+                  dataSource: widget.chartData!,
+                  xValueMapper: (Chart data, _) => formatDate(int.parse(data.dateTime)),
+                  yValueMapper: (Chart data, _) => data.score,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                  ),
+                  name: 'Score',
+                  color: Colors.blue[300],
+                  width: calculateBarWidth(widget.chartData!.length),
+                  spacing: 0.05,
                 ),
-                name: 'Score',
-                color: Colors.blue[300],
-                width: widget.chartData!.length == 2 || widget.chartData!.length == 1  ? calculateBarWidth(widget.chartData!.length): // Dynamically calculate bar width
-                calculateBarWidth1(widget.chartData!.length),
-                spacing: 0.05, // Maintain some spacing between bars
-                // gradient: LinearGradient(
-                //   colors: [Colors.blue[300]!, Colors.blue[700]!],
-                //   stops: const [0.0, 1.0],
-                //   begin: Alignment.bottomCenter,
-                //   end: Alignment.topCenter,
-                // ),
-              ),
-            ],
-          ),
-        );
+              ],
+            ),
+          );
+        }
       },
     );
   }
 
   String formatDate(int timestamp) {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-    return DateFormat('MMM dd').format(date);
+    String datePart = DateFormat('MMM dd').format(date);
+    String timePart = DateFormat('HH:mm').format(date);
+    return '$datePart\n$timePart'; // Show date and time on separate lines
   }
 
-  double calculateBarWidth1(int numberOfBars) {
-    // Log the number of bars for debugging
-    logger.w(numberOfBars);
-
-    // Set a fixed width regardless of the number of bars
-    return 0.3; // Set a fixed width of 1
-  }
   double calculateBarWidth(int numberOfBars) {
-    // Log the number of bars for debugging
     logger.w(numberOfBars);
-
-    // Set a fixed width regardless of the number of bars
-    return 0.10; // Set a fixed width of 1
+    return numberOfBars == 7 ? 0.4 : 0.4; // Adjusting bar width based on the number of bars
   }
-
 }
-
 
 
 

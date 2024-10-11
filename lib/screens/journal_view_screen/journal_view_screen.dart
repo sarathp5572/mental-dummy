@@ -169,9 +169,10 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 15),
-                                audioList.isEmpty
-                                    ? const SizedBox()
-                                    : Padding(
+                                // audioList.isEmpty
+                                //     ? const SizedBox()
+                                //     :
+                                Padding(
                                         padding: const EdgeInsets.only(left: 2),
                                         child: Text(
                                           "Audio",
@@ -182,7 +183,9 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                     ? const SizedBox()
                                     : const SizedBox(height: 2),
                                 audioList.isEmpty
-                                    ? const SizedBox()
+                                    ? Text("NA",
+                                  style: CustomTextStyles
+                                      .bodyMediumGray700_1,)
                                     : SizedBox(
                                   height: size.height * 0.25,  // Set a fixed height to allow scrolling
                                   child: ListView.builder(
@@ -199,9 +202,11 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                     : const SizedBox(
                                         height: 23,
                                       ),
-                                imageList.isEmpty
-                                    ? const SizedBox()
-                                    : Padding(
+                                // imageList.isEmpty
+                                //     ? const SizedBox()
+                                //     :
+                                const SizedBox(height: 28),
+                                Padding(
                                         padding: const EdgeInsets.only(left: 2),
                                         child: Text(
                                           "Photo",
@@ -212,7 +217,9 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                     ? const SizedBox()
                                     : const SizedBox(height: 4),
                                 imageList.isEmpty
-                                    ? const SizedBox()
+                                    ? Text("NA",
+                                  style: CustomTextStyles
+                                      .bodyMediumGray700_1,)
                                     : SizedBox(
                                         height: size.height * 0.3,
                                         child: Stack(
@@ -252,14 +259,16 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                           ],
                                         ),
                                       ),
+                                const SizedBox(height: 28),
                                 videoList.isEmpty
                                     ? const SizedBox()
                                     : const SizedBox(
                                         height: 10,
                                       ),
-                                videoList.isEmpty
-                                    ? const SizedBox()
-                                    : Padding(
+                                // videoList.isEmpty
+                                //     ? const SizedBox()
+                                //     :
+                                Padding(
                                         padding: const EdgeInsets.only(left: 2),
                                         child: Text(
                                           "Video",
@@ -270,7 +279,9 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                     ? const SizedBox()
                                     : const SizedBox(height: 4),
                                 videoList.isEmpty
-                                    ? const SizedBox()
+                                    ? Text("NA",
+                                  style: CustomTextStyles
+                                      .bodyMediumGray700_1,)
                                     : SizedBox(
                                         height: size.height * 0.3,
                                         child: Stack(
@@ -308,8 +319,8 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                         ),
                                       ),
                                 const SizedBox(height: 28),
-                                homeProvider.journalDetails!.journals!.location == null ?
-                                    const SizedBox():
+                                // homeProvider.journalDetails!.journals!.location == null ?
+                                //     const SizedBox():
                                 Padding(
                                   padding: const EdgeInsets.only(left: 2),
                                   child: Text(
@@ -319,7 +330,9 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                 ),
                                 const SizedBox(height: 6),
                                 homeProvider.journalDetails!.journals!.location == null
-                                    ? const SizedBox()
+                                    ? Text("NA",
+                                  style: CustomTextStyles
+                                      .bodyMediumGray700_1,)
                                     : SizedBox(
                                         height: size.height * 0.35,
                                         child: Center(
@@ -412,8 +425,10 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                homeProvider.journalDetails == null
-                                    ? const SizedBox()
+                                homeProvider.journalDetails?.journals?.goal == null
+                                    ?  Text("NA",
+                                  style: CustomTextStyles
+                                      .bodyMediumGray700_1,)
                                     : Padding(
                                         padding: const EdgeInsets.only(left: 5),
                                         child: Text(
@@ -437,8 +452,12 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                homeProvider.journalDetails == null
-                                    ? const SizedBox()
+                                homeProvider.journalDetails?.journals?.action == null
+                                    ?
+                                Text("NA",
+                                  style: CustomTextStyles
+                                      .bodyMediumGray700_1,)
+
                                     : Padding(
                                         padding: const EdgeInsets.only(left: 7),
                                         child: Text(

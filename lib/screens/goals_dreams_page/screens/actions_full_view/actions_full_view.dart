@@ -221,9 +221,10 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                             //         ),
                             //     ),
                             const SizedBox(height: 15),
-                            audioList.isEmpty
-                                ? const SizedBox()
-                                : Padding(
+                            // audioList.isEmpty
+                            //     ? const SizedBox()
+                            //     :
+                            Padding(
                                     padding: const EdgeInsets.only(left: 2),
                                     child: Text(
                                       "Audio",
@@ -237,8 +238,11 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                     height: 2,
                                   ),
                             audioList.isEmpty
-                                ? const SizedBox()
-                                : SizedBox(
+                                ?       Text("NA",
+                              style: CustomTextStyles
+                                  .bodyMediumGray700_1,)
+                                :
+                            SizedBox(
                                     height:size.height * 0.25,
                                     child: ListView.builder(
                                       itemCount: audioList.length,
@@ -252,9 +256,7 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                             const SizedBox(
                               height: 10,
                             ),
-                            imageList.isEmpty
-                                ? const SizedBox()
-                                : Padding(
+                            Padding(
                                     padding: const EdgeInsets.only(left: 2),
                                     child: Text(
                                       "Photo",
@@ -266,7 +268,9 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                 ? const SizedBox()
                                 : const SizedBox(height: 4),
                             imageList.isEmpty
-                                ? const SizedBox()
+                                ?   Text("NA",
+                              style: CustomTextStyles
+                                  .bodyMediumGray700_1,)
                                 : SizedBox(
                               height: imageList.isNotEmpty ? size.height * 0.3 : 0,
                                     child: Stack(
@@ -306,14 +310,15 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                       ],
                                     ),
                                   ),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             videoList.isEmpty
                                 ? const SizedBox()
                                 : const SizedBox(
                                     height: 10,
                                   ),
-                            videoList.isEmpty
-                                ? const SizedBox()
-                                : Padding(
+                            Padding(
                                     padding: const EdgeInsets.only(left: 2),
                                     child: Text(
                                       "Video",
@@ -322,7 +327,9 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                     ),
                                   ),
                             videoList.isEmpty
-                                ? const SizedBox()
+                                ?   Text("NA",
+                              style: CustomTextStyles
+                                  .bodyMediumGray700_1,)
                                 : const SizedBox(height: 4),
                             videoList.isEmpty
                                 ? const SizedBox()
@@ -366,15 +373,13 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                             //   size,
                             // ),
                             const SizedBox(height: 28),
-                            mentalStrengthEditProvider.actionsDetailsModel!.actions!.location!.locationAddress!.isNotEmpty?
                             Padding(
                               padding: const EdgeInsets.only(left: 2),
                               child: Text(
                                 "Your Location",
                                 style: CustomTextStyles.blackText16000000W700(),
                               ),
-                            ):
-                                const SizedBox(),
+                            ),
                             const SizedBox(height: 6),
                             mentalStrengthEditProvider.actionsDetailsModel!.actions!.location!.locationAddress!.isNotEmpty?
                             SizedBox(
@@ -431,13 +436,15 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                       ),
                               ),
                             ):
-                                const SizedBox(),
+                            Text("NA",
+                              style: CustomTextStyles
+                                  .bodyMediumGray700_1,),
                             const SizedBox(height: 20),
                             Consumer<AddActionsProvider>(
                                 builder: (context, addActionsProvider, _) {
                               return Column(
                                 children: [
-                                  mentalStrengthEditProvider.actionsDetailsModel?.actions?.reminder == null
+                                       mentalStrengthEditProvider.actionsDetailsModel!.actions!.actionStatus! == "1"
                                       ? const SizedBox()
                                       : const Row(
                                           children: [
@@ -467,7 +474,7 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                       bottom: 10,
                                     ),
                                     child:
-                                    mentalStrengthEditProvider.actionsDetailsModel?.actions?.reminder == null
+                                        mentalStrengthEditProvider.actionsDetailsModel!.actions!.actionStatus! == "1"
                                             ? const SizedBox()
                                             : SizedBox(
                                                 child: Column(

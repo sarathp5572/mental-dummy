@@ -65,11 +65,20 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                 SizedBox(
                   width: size.width * 0.02,
                 ),
-                Text(
-                  capitalText(
-                    editProvider.getProfileModel?.firstname.toString() ?? "",
+                SizedBox(
+                  width: size.width * 0.40,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                    child: Text(
+                      capitalText(
+                        editProvider.getProfileModel?.firstname.toString() ?? "",
+                      ),
+                      style: CustomTextStyles.blackText24000000W500(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  style: CustomTextStyles.blackText24000000W500(),
                 ),
               ],
             ),

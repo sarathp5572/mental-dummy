@@ -39,7 +39,7 @@ class GoalsDreamsProvider extends ChangeNotifier {
 
   int pageLoad = 1;
 
-  Future fetchGoalsAndDreams({bool initial = false}) async {
+  Future fetchGoalsAndDreams({bool initial = false,String? pageNo}) async {
     // try {
     // goalsAndDreamsModel = null;
     String? token = await getUserTokenSharePref();
@@ -60,7 +60,7 @@ class GoalsDreamsProvider extends ChangeNotifier {
     notifyListeners();
     Uri url = Uri.parse(
       UrlConstant.goalsanddreamsUrl(
-        page: pageLoad.toString(),
+        page: pageNo ?? "1",
       ),
     );
     final response = await http.get(
@@ -72,15 +72,15 @@ class GoalsDreamsProvider extends ChangeNotifier {
     if (response.statusCode == 200) {
       goalsAndDreamsModel = goalsAndDreamsModelFromJson(response.body);
       logger.w("goalsAndDreamsModel ${goalsAndDreamsModel}");
-      if (initial) {
-        goalsanddreams.clear();
+     // if (initial) {
+       goalsanddreams.clear();
 
         if (goalsAndDreamsModel != null) {
           if (goalsAndDreamsModel!.goalsanddreams != null) {
             goalsanddreams.addAll(goalsAndDreamsModel!.goalsanddreams!);
           }
         }
-      }
+     // }
       // else {
       //   if (goalsAndDreamsModel != null) {
       //     if (goalsAndDreamsModel!.goalsanddreams != null) {

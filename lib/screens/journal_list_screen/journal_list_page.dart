@@ -310,7 +310,7 @@ class _JournalListPageState extends State<JournalListPage> {
                         },
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 31),
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -382,17 +382,7 @@ class _JournalListPageState extends State<JournalListPage> {
                         height: size.height * 0.021,
                       ),
                       journalListProvider.listViewBool
-                          ? homeProvider.journalsModelList.isEmpty
-                              ?
-                      Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                  child: Center(
-                                    child: Image.asset(
-                                      ImageConstant.noData,
-                                    ),
-                                  ),
-                                )
-                              : const Expanded(
+                          ? const Expanded(
                                   child: JournalListViewWidget(),
                                 )
                           : const ChartViewList(),

@@ -167,32 +167,32 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                             ),
                                             SizedBox(
                                               width: size.width * 0.55,
-                                              child: SingleChildScrollView(
-                                                scrollDirection: Axis.vertical, // Enable horizontal scrolling
-                                                child: Text(
-                                                  capitalText(
-                                                    editProfileProvider
-                                                                .getProfileModel ==
-                                                            null
-                                                        ? ""
-                                                        :
-                                                    editProfileProvider.getProfileModel!.firstname.toString(),
+                                              child: Align(
+                                                alignment: Alignment.center, // Center-align horizontally
+                                                child: SingleChildScrollView(
+                                                  scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                                                  child: Text(
+                                                    capitalText(
+                                                      editProfileProvider.getProfileModel == null
+                                                          ? ""
+                                                          : editProfileProvider.getProfileModel!.firstname.toString(),
+                                                    ),
+                                                    style: CustomTextStyles.bodyLarge18,
+                                                    textAlign: TextAlign.center,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 1,
                                                   ),
-                                                  style:
-                                                      CustomTextStyles.bodyLarge18,
-                                                  textAlign: TextAlign.center,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  maxLines: 10, // Set the maximum number of lines to 3
                                                 ),
                                               ),
                                             ),
+
                                             Align(
                                               alignment: Alignment.centerLeft,
                                               child: Padding(
                                                 padding: const EdgeInsets.only(
                                                     left: 53),
                                                 child: Text(
-                                                  "Member since ${editProfileProvider.getProfileModel?.dob == null || editProfileProvider.getProfileModel?.dob == null ? "" : formatTimestampToDate(editProfileProvider.getProfileModel!.createdAt.toString())}",
+                                                  "Member since ${editProfileProvider.getProfileModel?.createdAt == null || editProfileProvider.getProfileModel?.createdAt == null ? "" : formatTimestampToDate(editProfileProvider.getProfileModel!.createdAt.toString())}",
                                                   style: CustomTextStyles
                                                       .bodyMediumGray700,
                                                   textAlign: TextAlign.center,
@@ -209,9 +209,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                               child: RichText(
                                                 text: TextSpan(
                                                   children: [
+                                                    editProfileProvider.getProfileModel!.phone!.isNotEmpty ?
                                                     TextSpan(
                                                       text:
                                                           "+${editProfileProvider.getProfileModel!.countryCode} ${editProfileProvider.getProfileModel!.phone}\n",
+                                                      style: CustomTextStyles
+                                                          .bodyLargeff000000,
+                                                    ):
+                                                    TextSpan(
+                                                      text:
+                                                      "",
                                                       style: CustomTextStyles
                                                           .bodyLargeff000000,
                                                     ),
