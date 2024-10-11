@@ -421,7 +421,7 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
                                                 },
                                                 yes: "Yes",
                                                 title: 'Do you Need Delete',
-                                                content: 'Are you sure do you need delete',
+                                                content: 'Are you sure you want to delete',
                                               );
 
                                             },
@@ -575,7 +575,7 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
                                                 },
                                                 yes: "Yes",
                                                 title: 'Do you Need Delete',
-                                                content: 'Are you sure do you need delete',
+                                                content: 'Are you sure you want to delete',
                                               );
 
                                             },

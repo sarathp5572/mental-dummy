@@ -310,7 +310,7 @@ class _JournalListPageState extends State<JournalListPage> {
                         },
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 28),
+                        padding: const EdgeInsets.symmetric(horizontal: 31),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

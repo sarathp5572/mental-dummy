@@ -85,9 +85,9 @@ class _ScreenChooseGoalMentalStrengthState
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                SizedBox(
-                  height: size.height * 0.015,
-                ),
+                // SizedBox(
+                //   height: size.height * 0.015,
+                // ),
                 Consumer2<MentalStrengthEditProvider, AdDreamsGoalsProvider>(
                     builder: (context, mentalStrengthEditProvider,
                         adDreamsGoalsProvider, _) {
@@ -155,9 +155,9 @@ class _ScreenChooseGoalMentalStrengthState
                     ],
                   );
                 }),
-                SizedBox(
-                  height: size.height * 0.01,
-                ),
+                // SizedBox(
+                //   height: size.height * 0.01,
+                // ),
                 Padding(
                   padding: EdgeInsets.all(
                     size.width * 0.03,
@@ -270,9 +270,9 @@ class _ScreenChooseGoalMentalStrengthState
                     );
                   },
                 ),
-                SizedBox(
-                  height: size.height * 0.01,
-                ),
+                // SizedBox(
+                //   height: size.height * 0.01,
+                // ),
                 Consumer<MentalStrengthEditProvider>(
                     builder: (context, mentalStrengthEditProvider, _) {
                   return ElevatedButton(
