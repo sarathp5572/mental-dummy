@@ -92,7 +92,6 @@ dependencies:
   audio_session: ^0.1.6
   path: ^1.6.4
   flutter_sound_platform_interface: 9.16.2
-  firebase_crashlytics: ^4.0.3
 
 
 
