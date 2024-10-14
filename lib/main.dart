@@ -38,62 +38,60 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
 
 void main() async {
+  // Set this before initializing bindings
+  BindingBase.debugZoneErrorsAreFatal = true;
+
+  // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
     // Initialize Firebase
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    if(Platform.isAndroid){
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }else{
+      await Firebase.initializeApp();
+
+    }
 
     // Initialize Hive
     await Hive.initFlutter();
     Hive.registerAdapter(AlarmInfoAdapter());
     await Hive.openBox<AlarmInfo>("alarm");
 
-    // Set up Crashlytics only if available
+    // Set up Crashlytics
     FirebaseCrashlytics crashlytics = FirebaseCrashlytics.instance;
+    await crashlytics.setCrashlyticsCollectionEnabled(!kDebugMode);
 
-    // Enable/Disable Crashlytics based on the app's mode
-    bool isCrashlyticsCollectionEnabled = !kDebugMode;
-    await crashlytics.setCrashlyticsCollectionEnabled(isCrashlyticsCollectionEnabled);
-
-    // Log that Firebase and Crashlytics are successfully initialized
     debugPrint("Firebase and Crashlytics initialized successfully");
 
-    // Use runZonedGuarded for uncaught asynchronous errors
-    runZonedGuarded(() {
-      runApp(
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => SignInProvider()),
-            ChangeNotifierProvider(create: (_) => SignUpProvider()),
-            ChangeNotifierProvider(create: (_) => SubScribePlanProvider()),
-            ChangeNotifierProvider(create: (_) => PhoneSignInProvider()),
-            ChangeNotifierProvider(create: (_) => EditProfileProvider()),
-            ChangeNotifierProvider(create: (_) => DashBoardProvider()),
-            ChangeNotifierProvider(create: (_) => GoalsDreamsProvider()),
-            ChangeNotifierProvider(create: (_) => JournalListProvider()),
-            ChangeNotifierProvider(create: (_) => ConfirmPlanProvider()),
-            ChangeNotifierProvider(create: (_) => HomeProvider()),
-            ChangeNotifierProvider(create: (_) => DeleteProvider()),
-            ChangeNotifierProvider(create: (_) => PrivacyPolicyProvider()),
-            ChangeNotifierProvider(create: (_) => FeedBackProvider()),
-            ChangeNotifierProvider(create: (_) => AdDreamsGoalsProvider()),
-            ChangeNotifierProvider(create: (_) => AddActionsProvider()),
-            ChangeNotifierProvider(create: (_) => MentalStrengthEditProvider()),
-            ChangeNotifierProvider(create: (_) => MyActionProvider()),
-          ],
-          child: const MyApp(),
-        ),
-      );
-    }, (error, stackTrace) {
-      crashlytics.recordError(error, stackTrace);
-    });
-  } catch (e, stack) {
-    // Log error details for Firebase initialization failure
-    debugPrint("Firebase initialization error: $e");
-    debugPrintStack(stackTrace: stack);
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => SignInProvider()),
+          ChangeNotifierProvider(create: (_) => SignUpProvider()),
+          ChangeNotifierProvider(create: (_) => SubScribePlanProvider()),
+          ChangeNotifierProvider(create: (_) => PhoneSignInProvider()),
+          ChangeNotifierProvider(create: (_) => EditProfileProvider()),
+          ChangeNotifierProvider(create: (_) => DashBoardProvider()),
+          ChangeNotifierProvider(create: (_) => GoalsDreamsProvider()),
+          ChangeNotifierProvider(create: (_) => JournalListProvider()),
+          ChangeNotifierProvider(create: (_) => ConfirmPlanProvider()),
+          ChangeNotifierProvider(create: (_) => HomeProvider()),
+          ChangeNotifierProvider(create: (_) => DeleteProvider()),
+          ChangeNotifierProvider(create: (_) => PrivacyPolicyProvider()),
+          ChangeNotifierProvider(create: (_) => FeedBackProvider()),
+          ChangeNotifierProvider(create: (_) => AdDreamsGoalsProvider()),
+          ChangeNotifierProvider(create: (_) => AddActionsProvider()),
+          ChangeNotifierProvider(create: (_) => MentalStrengthEditProvider()),
+          ChangeNotifierProvider(create: (_) => MyActionProvider()),
+        ],
+        child: const MyApp(),
+      ),
+    );
+  } catch (error, stackTrace) {
+    FirebaseCrashlytics.instance.recordError(error, stackTrace);
   }
 }
 

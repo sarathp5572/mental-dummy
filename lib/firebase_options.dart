@@ -63,6 +63,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '38607290109',
     projectId: 'mental-strength',
     storageBucket: 'mental-strength.appspot.com',
+    androidClientId: '38607290109-h93ue15kib3bguhgcvmqp00u9hr4mqtt.apps.googleusercontent.com',
+    iosClientId: '38607290109-mudgmkhoghqg650lqprihoti6njui85p.apps.googleusercontent.com',
     iosBundleId: 'com.mentalhelth.mentalhelth',
   );
+
 }
