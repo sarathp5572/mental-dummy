@@ -1,7 +1,10 @@
+import 'dart:async'; // Import this for runZonedGuarded
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart'; // Import for Crashlytics
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -32,93 +35,68 @@ import 'screens/privacy_screen/provider/privacy_policy_provider.dart';
 import 'utils/theme/theme_helper.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-// var globalMessengerKey = GlobalKey<ScaffoldMessengerState>();
+FlutterLocalNotificationsPlugin();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  Hive.registerAdapter(AlarmInfoAdapter());
-  await Hive.openBox<AlarmInfo>("alarm");
- // await Firebase.initializeApp(); // Initialize Firebase
-  if(Platform.isAndroid){
+
+  try {
+    // Initialize Firebase
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-  }else{
-    await Firebase.initializeApp(); // Initialize Firebase
+
+    // Initialize Hive
+    await Hive.initFlutter();
+    Hive.registerAdapter(AlarmInfoAdapter());
+    await Hive.openBox<AlarmInfo>("alarm");
+
+    // Set up Crashlytics only if available
+    FirebaseCrashlytics crashlytics = FirebaseCrashlytics.instance;
+
+    // Enable/Disable Crashlytics based on the app's mode
+    bool isCrashlyticsCollectionEnabled = !kDebugMode;
+    await crashlytics.setCrashlyticsCollectionEnabled(isCrashlyticsCollectionEnabled);
+
+    // Log that Firebase and Crashlytics are successfully initialized
+    debugPrint("Firebase and Crashlytics initialized successfully");
+
+    // Use runZonedGuarded for uncaught asynchronous errors
+    runZonedGuarded(() {
+      runApp(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => SignInProvider()),
+            ChangeNotifierProvider(create: (_) => SignUpProvider()),
+            ChangeNotifierProvider(create: (_) => SubScribePlanProvider()),
+            ChangeNotifierProvider(create: (_) => PhoneSignInProvider()),
+            ChangeNotifierProvider(create: (_) => EditProfileProvider()),
+            ChangeNotifierProvider(create: (_) => DashBoardProvider()),
+            ChangeNotifierProvider(create: (_) => GoalsDreamsProvider()),
+            ChangeNotifierProvider(create: (_) => JournalListProvider()),
+            ChangeNotifierProvider(create: (_) => ConfirmPlanProvider()),
+            ChangeNotifierProvider(create: (_) => HomeProvider()),
+            ChangeNotifierProvider(create: (_) => DeleteProvider()),
+            ChangeNotifierProvider(create: (_) => PrivacyPolicyProvider()),
+            ChangeNotifierProvider(create: (_) => FeedBackProvider()),
+            ChangeNotifierProvider(create: (_) => AdDreamsGoalsProvider()),
+            ChangeNotifierProvider(create: (_) => AddActionsProvider()),
+            ChangeNotifierProvider(create: (_) => MentalStrengthEditProvider()),
+            ChangeNotifierProvider(create: (_) => MyActionProvider()),
+          ],
+          child: const MyApp(),
+        ),
+      );
+    }, (error, stackTrace) {
+      crashlytics.recordError(error, stackTrace);
+    });
+  } catch (e, stack) {
+    // Log error details for Firebase initialization failure
+    debugPrint("Firebase initialization error: $e");
+    debugPrintStack(stackTrace: stack);
   }
-
-  // await LocalNotifications.init();
-
-  // SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.portraitUp,
-  // ]);
-  // Stripe.publishableKey = "pk_test_24PsRoB2O46Bxxxxxxxxxxxxxxxxxxxxxxxx";
-  ThemeHelper().changeTheme(
-    'primary',
-  );
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => SignInProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => SignUpProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => SubScribePlanProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => PhoneSignInProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => EditProfileProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => DashBoardProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => GoalsDreamsProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => JournalListProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ConfirmPlanProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => HomeProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => DeleteProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => PrivacyPolicyProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => FeedBackProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => AdDreamsGoalsProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => AddActionsProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => MentalStrengthEditProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => MyActionProvider(),
-        ),
-        // ChangeNotifierProvider(
-        //   create: (_) => EditGoalsProvider(),
-        // ),
-      ],
-      child: const MyApp(),
-    ),
-  );
 }
+
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -164,25 +142,6 @@ class _MyAppState extends State<MyApp> {
       permissionStatus = locationStatus;
     });
   }
-
-  //
-  // Future<void> _checkPermissionStatus() async {
-  //   final status = await Permission.locationWhenInUse.status;
-  //   setState(() {
-  //     permissionStatus = status;
-  //   });
-  // }
-
-  // Future<void> requestExactAlarmPermission() async {
-  //   await Permission.notification.request();
-  // }
-
-  // Future<void> _requestPermission() async {
-  //   final status = await Permission.locationWhenInUse.request();
-  //   setState(() {
-  //     permissionStatus = status;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
