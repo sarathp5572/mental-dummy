@@ -38,15 +38,17 @@ class FeedBackProvider extends ChangeNotifier {
         body: body,
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        showCustomSnackBar(
-            context: context, message: json.decode(response.body)["text"]);
+        showToastTop(context: context, message:  json.decode(response.body)["text"]);
+        // showCustomSnackBar(
+        //     context: context, message: json.decode(response.body)["text"]);
         Navigator.of(context).pop();
         nameEditTextController.clear();
         emailEditTextController.clear();
         messageEditTextController.clear();
       } else {
-        showCustomSnackBar(
-            context: context, message: json.decode(response.body)["text"]);
+        showToastTop(context: context, message:  json.decode(response.body)["text"]);
+        // showCustomSnackBar(
+        //     context: context, message: json.decode(response.body)["text"]);
       }
       if(response.statusCode == 401){
         TokenManager.setTokenStatus(true);

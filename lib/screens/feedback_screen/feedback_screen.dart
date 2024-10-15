@@ -150,13 +150,15 @@ class FeedbackScreen extends StatelessWidget {
               );
             } else if (!isEmailValid(
                 feedBackProvider.emailEditTextController.text)) {
-              showCustomSnackBar(
-                  context: context, message: 'Enter a valid email address');
+              showToastTop(context: context, message: 'Enter a valid email address');
+              // showCustomSnackBar(
+              //     context: context, message: 'Enter a valid email address');
             } else {
-              showCustomSnackBar(
-                context: context,
-                message: 'Enter your name and email',
-              );
+              showToastTop(context: context, message: 'Enter your name and email');
+              // showCustomSnackBar(
+              //   context: context,
+              //   message: 'Enter your name and email',
+              // );
             }
           },
           width: 104,

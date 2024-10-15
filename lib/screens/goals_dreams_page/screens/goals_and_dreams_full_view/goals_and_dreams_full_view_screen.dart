@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/addgoals_dreams_screen/provider/ad_goals_dreams_provider.dart';
 import 'package:mentalhelth/screens/goals_dreams_page/model/goals_and_dreams_model.dart';
 import 'package:mentalhelth/screens/goals_dreams_page/provider/goals_dreams_provider.dart';
@@ -46,6 +47,7 @@ class _GoalAndDreamFullViewScreenState
   bool isSingleActionCompleted = false;
   late GoalsDreamsProvider goalsDreamsProvider;
   late MentalStrengthEditProvider mentalStrengthEditProvider;
+  var logger = Logger();
 
   @override
   void initState() {
@@ -339,6 +341,8 @@ class _GoalAndDreamFullViewScreenState
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: widget.goalsanddream.action!.length,
                         itemBuilder: (context, index) {
+                          logger.w("${widget.goalsanddream
+                              .action![index].actionTitle}--widget.goalsanddream");
                           return Row(
                             children: [
                               GestureDetector(
