@@ -200,6 +200,7 @@ class _GoalAndDreamFullViewBottomSheetState
                 achiveDate:
                     widget.goalDetailModel.goals!.goalEnddate.toString(),
                 status: widget.goalDetailModel.goals!.goalStatus.toString(),
+                comments: widget.goalDetailModel.goals!.goalDetails.toString(),
               ),
               audioList.isEmpty ? const SizedBox() : const SizedBox(height: 15),
               SizedBox(height: 10),
@@ -351,35 +352,29 @@ class _GoalAndDreamFullViewBottomSheetState
                   style: CustomTextStyles.blackText16000000W600(),
                 ),
               ),
-                  const SizedBox(),
               const SizedBox(height: 6),
               widget.goalDetailModel.goals!.location!.locationAddress!.isNotEmpty ?
               SizedBox(
-                height: size.height * 0.35,
                 child: Center(
-                  child: JournalGoogleMapWidgets(
-                    latitude: widget.goalDetailModel.goals!.location == null
-                        ? 0
-                        : double.parse(widget.goalDetailModel.goals!.location!
-                                        .locationLatitude ==
-                                    null ||
-                                widget.goalDetailModel.goals!.location!
-                                        .locationLatitude ==
-                                    ""
-                            ? "0.0"
-                            : widget.goalDetailModel.goals!.location!
-                                .locationLatitude!),
-                    longitude: widget.goalDetailModel.goals!.location == null
-                        ? 0
-                        : widget.goalDetailModel.goals!.location!
-                                    .locationLongitude ==
-                                ""
-                            ? 0
-                            : double.parse(widget.goalDetailModel.goals!
-                                .location!.locationLongitude!),
-                  ),
+                    child: Row(
+                      children: [
+                        CustomImageView(
+                          imagePath: ImageConstant.imgLinkedin,
+                          height: 23,
+                          width: 23,
+                        ),
+                        Text(
+                          widget.goalDetailModel.goals!.location!.locationAddress!.isEmpty
+                              ? "NA"
+                              :
+                          widget.goalDetailModel.goals!.location!.locationAddress.toString(),
+                          style: CustomTextStyles.bodyMediumGray700_1,
+                        ),
+                      ],
+                    )
                 ),
-              ):
+              )
+                  :
               Text("NA",
                 style: CustomTextStyles
                     .bodyMediumGray700_1,),
@@ -625,7 +620,8 @@ class _GoalAndDreamFullViewBottomSheetState
       {required String category,
       required String createDate,
       required String achiveDate,
-      required String status}) {
+      required String status,
+      required String comments}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -692,6 +688,21 @@ class _GoalAndDreamFullViewBottomSheetState
             ),
             Text(
               status == "0" ? "Active" : "DeActive",
+              style: CustomTextStyles.bodyLargeGray700,
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 6,
+        ),
+        Row(
+          children: [
+            Text(
+              "Comments : ",
+              style: CustomTextStyles.blackText16000000W600(),
+            ),
+            Text(
+             comments,
               style: CustomTextStyles.bodyLargeGray700,
             ),
           ],

@@ -26,6 +26,9 @@ class UrlConstant {
   static const String savegemUrl = "${baseUrl}savegem";
   static const String mediauploadUrl = "${baseUrl}mediaupload";
   static const String chartviewUrl = "${baseUrl}chartview";
+  static const String appSettingsUrl = "${baseUrl}appsettings";
+  static const String appRegisterUrl= "${baseUrl}setup";
+
 
   static String journalsUrl({required String page}) {
     return "${baseUrl}journals/$page";

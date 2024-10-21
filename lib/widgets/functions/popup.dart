@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -70,3 +72,73 @@ void customPopup({
   //   },
   // );
 }
+
+
+
+void settingsPopup({
+  required BuildContext context,
+  required Future<void> Function()? onPressedYes,
+  required Future<void> Function()? onCancelYes,
+  required String title,
+  required String content,
+  String? cancel,
+  String? yes,
+}) {
+  showCupertinoDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return WillPopScope(
+        onWillPop: () async => false, // Disable back press
+        child: GestureDetector(
+          onTap: () {}, // Prevent taps outside the dialog to close it
+          child: Stack(
+            children: [
+              // Background blur effect
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                child: Container(
+                  color: Colors.black.withOpacity(0), // Transparent container for the blur
+                ),
+              ),
+              CupertinoAlertDialog(
+                title: Text(title),
+                content: Text(content),
+                actions: <Widget>[
+                  // CupertinoDialogAction(
+                  //   onPressed: () async {
+                  //     if (onCancelYes != null) {
+                  //       await onCancelYes(); // Wait for async operation
+                  //     }
+                  //   },
+                  //   child: Text(
+                  //     cancel ?? 'Cancel',
+                  //     style: const TextStyle(
+                  //       color: Colors.blue,
+                  //     ),
+                  //   ),
+                  // ),
+                  CupertinoDialogAction(
+                    isDestructiveAction: true,
+                    onPressed: () async {
+                      if (onPressedYes != null) {
+                        await onPressedYes(); // Wait for async operation
+                      }
+                    },
+                    child: Text(
+                      yes ?? 'Delete',
+                      style: const TextStyle(
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+

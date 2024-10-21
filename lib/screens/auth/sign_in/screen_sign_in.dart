@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/auth/sign_in/provider/sign_in_provider.dart';
 import 'package:mentalhelth/screens/auth/sign_in/widget/sign_in_widget.dart';
 import 'package:mentalhelth/screens/edit_add_profile_screen/provider/edit_provider.dart';
@@ -9,16 +13,56 @@ import 'package:mentalhelth/widgets/background_image/background_imager.dart';
 import 'package:mentalhelth/widgets/custom_image_view.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'forgot_password/forgot_password_screen.dart';
 
-class ScreenSignIn extends StatelessWidget {
-  ScreenSignIn({Key? key}) : super(key: key);
+class ScreenSignIn extends StatefulWidget {
+  const ScreenSignIn({Key? key}) : super(key: key);
 
+  @override
+  _ScreenSignInState createState() => _ScreenSignInState();
+}
+
+class _ScreenSignInState extends State<ScreenSignIn> {
+  late SignInProvider signInProvider;
+  var logger = Logger();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+    signInProvider = Provider.of<SignInProvider>(context, listen: false);
+    scheduleMicrotask(() async {
+      // First, call fetchSettings
+      await signInProvider.fetchAppRegister(context);
+    });
+  }
+
+  Future<void> _launchInAppWithBrowserOptions(Uri url) async {
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.inAppBrowserView,
+      browserConfiguration: const BrowserConfiguration(showTitle: true),
+    )) {
+      throw Exception('Could not launch $url');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final signInProvider = Provider.of<SignInProvider>(context, listen: false);
+    var isRequiredValue =
+        signInProvider.settingsRegisterModel?.settings?[0].isRequired;
+    print("isRequired value: $isRequiredValue");
+
     Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -92,7 +136,7 @@ class ScreenSignIn extends StatelessWidget {
                           FocusScope.of(context).unfocus();
                           await signInProvider.callSignInButton(context);
                           homeProvider.fetchChartView(context);
-                        //  homeProvider.fetchJournals(initial: true);
+                          //  homeProvider.fetchJournals(initial: true);
                           editProfileProvider.fetchUserProfile();
                         },
                       );
@@ -110,22 +154,9 @@ class ScreenSignIn extends StatelessWidget {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const ForgotPasswordScreen(
-                                      ),
+                                      const ForgotPasswordScreen(),
                                 ),
                               );
-                              // if (signInProvider
-                              //     .emailFieldController.text.isEmpty) {
-                              //
-                              //   showToast(
-                              //     context: context,
-                              //     message: "Please enter your email",
-                              //   );
-                              // } else {
-                              //   signInProvider.forgetPassword(
-                              //     context,
-                              //   );
-                              // }
                             },
                             child: Text(
                               "Forgot your password ?",
@@ -133,19 +164,38 @@ class ScreenSignIn extends StatelessWidget {
                             ),
                           );
                         }),
-                        Text(
-                          "|",
-                          style: CustomTextStyles.bodySmallOnPrimary,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            onTapSignUpButton(context);
-                          },
-                          child: Text(
-                            "Sign up",
-                            style: CustomTextStyles.bodySmallOnPrimary,
-                          ),
-                        ),
+                        isRequiredValue == "1"
+                            ? Text(
+                                "",
+                                style: CustomTextStyles.bodySmallOnPrimary,
+                              )
+                            : Text(
+                                "|",
+                                style: CustomTextStyles.bodySmallOnPrimary,
+                              ),
+                        _isLoading
+                            ? const Column(
+                                children: [
+                                  Center(
+                                    child: SpinKitFadingCircle(
+                                      color: Colors.transparent,
+                                      size: 20.0,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : isRequiredValue == "1"
+                                ? const SizedBox()
+                                : GestureDetector(
+                                    onTap: () {
+                                      onTapSignUpButton(context);
+                                    },
+                                    child: Text(
+                                      "Sign up",
+                                      style:
+                                          CustomTextStyles.bodySmallOnPrimary,
+                                    ),
+                                  ),
                       ],
                     ),
                     const SizedBox(
@@ -164,6 +214,66 @@ class ScreenSignIn extends StatelessWidget {
                         },
                       );
                     }),
+                    SizedBox(
+                      height: size.height * 0.05,
+                    ),
+                    Column(
+                      children: [
+                        _isLoading
+                            ? Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.grey[100]!,
+                                child: Column(
+                                  children: [
+                                    Center(
+                                      child: Container(
+                                        color: Colors.grey[100],
+                                        height: 40.0,
+                                        width: size.width * 0.75,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : signInProvider.settingsRegisterModel?.settings?[0]
+                                        .isRequired ==
+                                    "1"
+                                ? Column(
+                                    children: [
+                                      Text(
+                                        signInProvider.settingsRegisterModel
+                                                ?.settings?[0].message ??
+                                            "",
+                                        style:
+                                            CustomTextStyles.bodySmallOnPrimary,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          String chatURL = signInProvider
+                                                  .settingsRegisterModel
+                                                  ?.settings?[0]
+                                                  .linkUrl ??
+                                              "";
+                                          var url = Uri.parse(chatURL);
+                                          _launchInAppWithBrowserOptions(url);
+                                        },
+                                        child:Text(
+                                          signInProvider.settingsRegisterModel?.settings?[0].link ?? "",
+                                          style: CustomTextStyles.labelLarge16.copyWith(
+                                            decoration: TextDecoration.underline,
+                                            decorationColor: Colors.blue, // Optional: change the color of the underline
+                                            decorationThickness: 1.5, // Optional: adjust the thickness of the underline
+                                          ),
+                                        ),
+                                      ),
+
+
+                                    ],
+                                  )
+                                : const SizedBox(),
+                      ],
+                    ),
+
                     // const SizedBox(
                     //   height: 10,
                     // ),

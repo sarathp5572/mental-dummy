@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/dash_borad_screen/provider/dash_board_provider.dart';
 import 'package:mentalhelth/screens/edit_add_profile_screen/provider/edit_provider.dart';
@@ -15,12 +17,15 @@ import 'package:mentalhelth/widgets/custom_elevated_button.dart';
 import 'package:mentalhelth/widgets/indicatores_widgets.dart';
 import 'package:mentalhelth/widgets/widget/shimmer.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/logic/shared_prefrence.dart';
 import '../../utils/theme/custom_button_style.dart';
 import '../../utils/theme/custom_text_style.dart';
 import '../../utils/theme/theme_helper.dart';
 import '../../widgets/custom_image_view.dart';
+import '../../widgets/functions/popup.dart';
+import '../../widgets/functions/snack_bar.dart';
 import '../auth/sign_in/provider/sign_in_provider.dart';
 import '../goals_dreams_page/provider/goals_dreams_provider.dart';
 import '../home_screen/widgets/userprofilelist_item_widget.dart';
@@ -46,19 +51,20 @@ class _HomeScreenState extends State<HomeScreen> {
   var logger = Logger();
 
   Future<void> _isTokenExpired() async {
-      await homeProvider.fetchChartView(context);
-      await homeProvider.fetchJournals(initial: true);
-      await editProfileProvider.fetchUserProfile();
-      // await homeProvider.fetchRemindersDetails();
-      tokenStatus = TokenManager.checkTokenExpiry();
-      if (tokenStatus) {
-        setState(() {
-          logger.e("Token status changed: $tokenStatus");
-        });
+
+    await homeProvider.fetchChartView(context);
+    await homeProvider.fetchJournals(initial: true);
+    await editProfileProvider.fetchUserProfile();
+    // await homeProvider.fetchRemindersDetails();
+    tokenStatus = TokenManager.checkTokenExpiry();
+    if (tokenStatus) {
+      setState(() {
         logger.e("Token status changed: $tokenStatus");
-      }else{
-        logger.e("Token status changedElse: $tokenStatus");
-      }
+      });
+      logger.e("Token status changed: $tokenStatus");
+    }else{
+      logger.e("Token status changedElse: $tokenStatus");
+    }
   }
 
   @override
@@ -70,156 +76,205 @@ class _HomeScreenState extends State<HomeScreen> {
     editProfileProvider = Provider.of<EditProfileProvider>(context, listen: false);
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     goalsDreamsProvider = Provider.of<GoalsDreamsProvider>(context, listen: false);
-    scheduleMicrotask(() {
+    scheduleMicrotask(() async {
+      // First, call fetchSettings
+      await signInProvider.fetchSettings(context);
+
+      // After 2 seconds delay, perform the rest of the operations
+
       goalsDreamsProvider.goalsanddreams.clear();
       goalsDreamsProvider.goalsanddreams = [];
       mentalStrengthEditProvider.mediaSelected = -1;
       _isTokenExpired();
+
     });
   }
+
+  Future<void> _launchInAppWithBrowserOptions(Uri url) async {
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.inAppBrowserView,
+      browserConfiguration: const BrowserConfiguration(showTitle: true),
+    )) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  // Example of checking after data load
+  void checkSubscriptionStatus() {
+    if (signInProvider.settingsModel != null && signInProvider.settingsList.isNotEmpty) {
+      if (signInProvider.settingsModel?.isSubscribed.toString() == "0" &&
+          signInProvider.settingsModel?.settings?[0].isRequired.toString() == "1") {
+        Future.delayed(Duration.zero, () {
+          settingsPopup(
+            context: context,
+            onPressedYes: () async {
+              String chatURL = signInProvider.settingsList[0].linkUrl ?? "";
+              var url = Uri.parse(chatURL);
+              _launchInAppWithBrowserOptions(url);
+              // Attempt to launch the URL
+              // Delay and then close the app
+              Future.delayed(const Duration(seconds: 2), () {
+                SystemNavigator.pop(); // Close the app
+              });
+
+            },
+            onCancelYes: () async {
+              await signInProvider.logOutUser(context);
+              SystemNavigator.pop(); // Close the app immediately
+            },
+            yes: "Yes",
+            title: signInProvider.settingsList[0].title ?? "",
+            content: signInProvider.settingsList[0].message ?? "",
+          );
+        });
+      } else {
+      }
+    }
+  }
+
+// Call this method when you know data is loaded
+
   @override
   Widget build(BuildContext context) {
     final signInProvider = Provider.of<SignInProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
-    return
-      tokenStatus == false ?
-      SafeArea(
-      child: Consumer4<MentalStrengthEditProvider,HomeProvider, EditProfileProvider, DashBoardProvider>(
-          builder: (context, mentalStrengthEditProvider,homeProvider, editProfileProvider,
-              dashBoardProvider, _) {
-        return backGroundImager(
-          size: size,
-          child: RefreshIndicator(
-            onRefresh: () async {
-              _isTokenExpired();
-              homeProvider.fetchChartView(context);
-              homeProvider.fetchJournals(initial: true);
-              editProfileProvider.fetchUserProfile();
-            },
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: size.height * 0.01,
-                  ),
-                  _buildHeaderRow(
-                      context, size, editProfileProvider, dashBoardProvider),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  _buildMessageColumn(context, size),
-                  CustomElevatedButton(
-                    onPressed: ()  {
-                      dashBoardProvider.changePage(index: 1);
-                      mentalStrengthEditProvider.fetchEmotions();
-                    },
-                    height: size.height * 0.06,
-                    width: size.width * 0.85,
-                    text: "Build your mental strength now",
-                    buttonStyle: CustomButtonStyles.fillBlueBL10,
-                    buttonTextStyle:
-                        CustomTextStyles.titleSmallOnSecondaryContainer15,
-                  ),
-                  const SizedBox(
-                    height: 31,
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 1,
-                      ),
-                      child: Text(
-                        "Your recent mental strength scores",
-                        style: theme.textTheme.titleMedium,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 3,
-                  ),
-                   ChartWidget(chartData:homeProvider.chartViewModel?.chart,),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 1,
-                      ),
-                      child: Text(
-                        "${DateTime.now().year}",
-                        style: CustomTextStyles.titleMediumBlue300,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Container(
-                    width: 324,
-                    margin: const EdgeInsets.only(left: 1, right: 10),
-                    child: Text(
-                      "You average mental strength according to the last 7 entries is 4 out of 5. keep tracking...",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: CustomTextStyles.bodyMediumOnPrimary14,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 1,
-                      ),
-                      child: Text(
-                        "Your recent Journals",
-                        style: theme.textTheme.titleMedium,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 6,
-                  ),
-                  homeProvider.journalsModel == null?
 
-                const SizedBox():
-                  _buildUserProfileList(context, size, homeProvider),
-                  const SizedBox(
-                    height: 4,
-                  ),
-                  homeProvider.journalsModel == null
-                      ? const SizedBox()
-                      : (homeProvider.journalsModel?.journals?.length ?? 0) < 0
-                          ? const SizedBox()
-                          : GestureDetector(
-                              onTap: () {
-                                dashBoardProvider.changePage(index: 2);
-                              },
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 1,
-                                  ),
-                                  child: Text(
-                                    "View more ...",
-                                    style: CustomTextStyles.bodySmallPrimary,
-                                  ),
+    // Check if token has expired, return the TokenExpireScreen if true
+    if (tokenStatus == true) {
+      return const TokenExpireScreen();
+    }
+
+    // Use FutureBuilder to fetch settings
+    return FutureBuilder(
+      future: signInProvider.fetchSettings(context), // Your method to fetch settings
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child:  SpinKitWave(
+            color: Colors.blue,
+            size: 25,
+          ),); // Show loading indicator
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}')); // Handle error
+        } else {
+          // Now you can safely check your conditions and show the main content
+          checkSubscriptionStatus();
+
+          // The main content if no token issues or settingsPopup
+          return SafeArea(
+            child: Consumer4<MentalStrengthEditProvider, HomeProvider, EditProfileProvider, DashBoardProvider>(
+              builder: (context, mentalStrengthEditProvider, homeProvider, editProfileProvider, dashBoardProvider, _) {
+                return backGroundImager(
+                  size: size,
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await signInProvider.fetchSettings(context);
+                      _isTokenExpired();
+                      homeProvider.fetchChartView(context);
+                      homeProvider.fetchJournals(initial: true);
+                      editProfileProvider.fetchUserProfile();
+                    },
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SizedBox(height: size.height * 0.01),
+                          _buildHeaderRow(context, size, editProfileProvider, dashBoardProvider),
+                          const SizedBox(height: 12),
+                          _buildMessageColumn(context, size),
+                          CustomElevatedButton(
+                            onPressed: () {
+                              dashBoardProvider.changePage(index: 1);
+                              mentalStrengthEditProvider.fetchEmotions();
+                            },
+                            height: size.height * 0.06,
+                            width: size.width * 0.85,
+                            text: "Build your mental strength now",
+                            buttonStyle: CustomButtonStyles.fillBlueBL10,
+                            buttonTextStyle: CustomTextStyles.titleSmallOnSecondaryContainer15,
+                          ),
+                          const SizedBox(height: 31),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 1),
+                              child: Text(
+                                "Your recent mental strength scores",
+                                style: theme.textTheme.titleMedium,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          ChartWidget(chartData: homeProvider.chartViewModel?.chart),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 1),
+                              child: Text(
+                                "${DateTime.now().year}",
+                                style: CustomTextStyles.titleMediumBlue300,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Container(
+                            width: 324,
+                            margin: const EdgeInsets.only(left: 1, right: 10),
+                            child: Text(
+                              "You average mental strength according to the last 7 entries is 4 out of 5. Keep tracking...",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: CustomTextStyles.bodyMediumOnPrimary14,
+                            ),
+                          ),
+                          const SizedBox(height: 25),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 1),
+                              child: Text(
+                                "Your recent Journals",
+                                style: theme.textTheme.titleMedium,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          homeProvider.journalsModel == null
+                              ? const SizedBox()
+                              : _buildUserProfileList(context, size, homeProvider),
+                          const SizedBox(height: 4),
+                          homeProvider.journalsModel == null
+                              ? const SizedBox()
+                              : (homeProvider.journalsModel?.journals?.length ?? 0) < 0
+                              ? const SizedBox()
+                              : GestureDetector(
+                            onTap: () {
+                              dashBoardProvider.changePage(index: 2);
+                            },
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 1),
+                                child: Text(
+                                  "View more ...",
+                                  style: CustomTextStyles.bodySmallPrimary,
                                 ),
                               ),
                             ),
-                  const SizedBox(
-                    height: 50,
+                          ),
+                          const SizedBox(height: 50),
+                        ],
+                      ),
+                    ),
                   ),
-                ],
-              ),
+                );
+              },
             ),
-          ),
-        );
-      }),
-    )
-          : const TokenExpireScreen();
+          );
+        }
+      },
+    );
   }
+
 
   /// Section Widget
   Widget _buildHeaderRow(
@@ -232,98 +287,98 @@ class _HomeScreenState extends State<HomeScreen> {
       height: 70,
     )
         : Padding(
+      padding: const EdgeInsets.only(
+        left: 1,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: () {
+              dashBoardProvider.changeCommentPage(index: 8);
+            },
+            child: CustomImageView(
+              imagePath: editProfileProvider.getProfileModel?.profileurl
+                  .toString() ?? "",
+              height: 58,
+              width: 58,
+              radius: BorderRadius.circular(
+                34,
+              ),
+              fit: BoxFit.cover,
+            ),
+          ),
+          Padding(
             padding: const EdgeInsets.only(
-              left: 1,
+              left: 7,
+              top: 21,
+              bottom: 21,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    dashBoardProvider.changeCommentPage(index: 8);
-                  },
-                  child: CustomImageView(
-                    imagePath: editProfileProvider.getProfileModel?.profileurl
-                        .toString() ?? "",
-                    height: 58,
-                    width: 58,
-                    radius: BorderRadius.circular(
-                      34,
-                    ),
-                    fit: BoxFit.cover,
-                  ),
+            child: SizedBox(
+              // color: Colors.cyan,
+              width: size.width * 0.60,
+              child: Text(
+                capitalText(editProfileProvider.getProfileModel == null
+                    ? ""
+                    :editProfileProvider.getProfileModel!.firstname
+                    .toString()),
+                style: CustomTextStyles.bodyLarge18,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 10, // Set the maximum number of lines to 3
+              ),
+            ),
+          ),
+          const Spacer(),
+          GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => buildPopupDialog(
+                  context,
+                  size,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 7,
-                    top: 21,
-                    bottom: 21,
-                  ),
-                  child: SizedBox(
-                   // color: Colors.cyan,
-                    width: size.width * 0.60,
-                    child: Text(
-                      capitalText(editProfileProvider.getProfileModel == null
-                          ? ""
-                          :editProfileProvider.getProfileModel!.firstname
-                              .toString()),
-                      style: CustomTextStyles.bodyLarge18,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 10, // Set the maximum number of lines to 3
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => buildPopupDialog(
-                        context,
-                        size,
+              );
+            },
+            child: CircleAvatar(
+              backgroundColor: PrimaryColors().blue300,
+              radius: size.width * 0.04,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: size.height * 0.003,
+                    width: size.width * 0.03,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(
+                          10,
+                        ),
                       ),
-                    );
-                  },
-                  child: CircleAvatar(
-                    backgroundColor: PrimaryColors().blue300,
-                    radius: size.width * 0.04,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: size.height * 0.003,
-                          width: size.width * 0.03,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(
-                                10,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: size.height * 0.005,
-                        ),
-                        Container(
-                          height: size.height * 0.003,
-                          width: size.width * 0.03,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(
-                                10,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(
+                    height: size.height * 0.005,
+                  ),
+                  Container(
+                    height: size.height * 0.003,
+                    width: size.width * 0.03,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(
+                          10,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          );
+          ),
+        ],
+      ),
+    );
   }
 
   /// Section Widget
@@ -353,83 +408,42 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.only(left: 1),
       child: homeProvider.journalsModelLoading
           ? shimmerList(
-              height: size.height * 0.5,
-              list: 4,
-              shimmerHeight: size.height * 0.07,
-            )
-          : homeProvider.journalsModel == null
-              ? SizedBox(
-                  height: size.height * 0.2,
-                  width: double.infinity,
-                  child: Stack(
-                    children: [
-                      PageView.builder(
-                        controller: homeProvider.noDataPageController,
-                        itemCount: homeProvider.noDataImageList.length,
-                        itemBuilder: (context, index) {
-                          // return Image.asset(homeProvider.noDataImageList[index]);
-                          return
-                            CustomImageView(
-                            fit: BoxFit.cover,
-                            imagePath: homeProvider.noDataImageList[index],
-                            height: size.height * 0.27,
-                            width: size.width,
-                            alignment: Alignment.center,
-                          );
-                        },
-                        onPageChanged: (int pageIndex) {
-                          homeProvider.noDataIndexChangeFunction(pageIndex);
-                        },
-                      ),
-                      Positioned(
-                        bottom: 10,
-                        left: 0,
-                        right: 0,
-                        child: SizedBox(
-                          width: homeProvider.noDataImageList.length *
-                              size.width *
-                              0.1,
-                          child: buildIndicators(
-                            homeProvider.noDataImageList.length,
-                            homeProvider.noDataCurrentIndex,
-                          ),
-                        ),
-                      ),
-                    ],
+        height: size.height * 0.5,
+        list: 4,
+        shimmerHeight: size.height * 0.07,
+      )
+          : ListView.separated(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        separatorBuilder: (context, index) {
+          return const SizedBox(height: 3);
+        },
+        itemCount: homeProvider.journalsModel!.journals!.length < 4
+            ? homeProvider.journalsModel!.journals!.length
+            : 4,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => JournalViewScreen(
+                    journalId: homeProvider
+                        .journalsModelList[index].journalId
+                        .toString(),
+                    index: index,
                   ),
-                )
-              : ListView.separated(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(height: 3);
-                  },
-                  itemCount: homeProvider.journalsModel!.journals!.length < 4
-                      ? homeProvider.journalsModel!.journals!.length
-                      : 4,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => JournalViewScreen(
-                              journalId: homeProvider
-                                  .journalsModelList[index].journalId
-                                  .toString(),
-                              index: index,
-                            ),
-                          ),
-                        );
-                      },
-                      child: UserProfileListItemWidget(
-                        title: homeProvider.journalsModel!.journals![index].journalDesc!,
-                        date: homeProvider.journalsModel!.journals![index].journalDatetime!,
-                        image: homeProvider.journalsModel!.journals![index].displayImage!,
-                      ),
-                    );
-
-                  },
                 ),
+              );
+            },
+            child: UserProfileListItemWidget(
+              title: homeProvider.journalsModel!.journals![index].journalDesc!,
+              date: homeProvider.journalsModel!.journals![index].journalDatetime!,
+              image: homeProvider.journalsModel!.journals![index].displayImage!,
+            ),
+          );
+
+        },
+      ),
     );
   }
 }

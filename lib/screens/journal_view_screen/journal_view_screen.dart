@@ -344,28 +344,29 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                     ? Text("NA",
                                   style: CustomTextStyles
                                       .bodyMediumGray700_1,)
-                                    : SizedBox(
-                                        height: size.height * 0.35,
-                                        child: Center(
-                                          child: JournalGoogleMapWidgets(
-                                            latitude: homeProvider.journalDetails!.journals!.location ==
-                                                    null
-                                                ? 0
-                                                : double.parse(homeProvider.journalDetails!.journals!.location!.locationLatitude!),
-                                            longitude: homeProvider
-                                                        .journalDetails!
-                                                        .journals!
-                                                        .location ==
-                                                    null
-                                                ? 0
-                                                : double.parse(homeProvider
-                                                    .journalDetails!
-                                                    .journals!
-                                                    .location!
-                                                    .locationLongitude!),
-                                          ),
-                                        ),
-                                      ),
+                                    :
+                                Row(
+                                  children: [
+                                    CustomImageView(
+                                      imagePath: ImageConstant.imgLinkedin,
+                                      height: 23,
+                                      width: 23,
+                                    ),
+                                    Text(
+                                      homeProvider.journalDetails == null
+                                          ? ""
+                                          : homeProvider.journalDetails!.journals == null
+                                          ? ""
+                                          : homeProvider.journalDetails!.journals!.location ==
+                                          null
+                                          ? ""
+                                          : homeProvider.journalDetails!.journals!
+                                          .location!.locationName
+                                          .toString(),
+                                      style: CustomTextStyles.bodyMediumGray700_1,
+                                    ),
+                                  ],
+                                ),
                                 const SizedBox(height: 19),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 5),
