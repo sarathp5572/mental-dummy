@@ -200,11 +200,11 @@ class _GoalAndDreamFullViewBottomSheetState
                 achiveDate:
                     widget.goalDetailModel.goals!.goalEnddate.toString(),
                 status: widget.goalDetailModel.goals!.goalStatus.toString(),
+                comments: widget.goalDetailModel.goals!.goalDetails.toString(),
               ),
               audioList.isEmpty ? const SizedBox() : const SizedBox(height: 15),
-              audioList.isEmpty
-                  ? const SizedBox()
-                  : Padding(
+              SizedBox(height: 10),
+                  Padding(
                       padding: const EdgeInsets.only(left: 2),
                       child: Text(
                         "Audio",
@@ -216,6 +216,7 @@ class _GoalAndDreamFullViewBottomSheetState
                   : const SizedBox(
                       height: 4,
                     ),
+              audioList.isNotEmpty?
               SizedBox(
                 height: audioList.length * size.height * 0.1,
                 child: ListView.builder(
@@ -227,22 +228,27 @@ class _GoalAndDreamFullViewBottomSheetState
                     );
                   },
                 ),
-              ),
+              ):
+              Text("NA",
+                style: CustomTextStyles
+                    .bodyMediumGray700_1,),
               imageList.isNotEmpty
                   ? const SizedBox(
                       height: 23,
                     )
                   : const SizedBox(),
-              imageList.isNotEmpty
-                  ? Padding(
+            Padding(
                       padding: const EdgeInsets.only(left: 2),
                       child: Text(
                         "Photo",
                         style: CustomTextStyles.blackText16000000W600(),
                       ),
-                    )
-                  : const SizedBox(),
+                    ),
               const SizedBox(height: 4),
+              imageList.isEmpty ?
+              Text("NA",
+                style: CustomTextStyles
+                    .bodyMediumGray700_1,):
               SizedBox(
                 height: imageList.isNotEmpty ? size.height * 0.2 : 0,
                 child: Stack(
@@ -285,16 +291,19 @@ class _GoalAndDreamFullViewBottomSheetState
                       height: 10,
                     )
                   : const SizedBox(),
-              videoList.isNotEmpty
-                  ? Padding(
+              const SizedBox(
+                height: 10,
+              ),
+             Padding(
                       padding: const EdgeInsets.only(left: 2),
                       child: Text(
                         "Video",
                         style: CustomTextStyles.blackText16000000W600(),
                       ),
-                    )
-                  : const SizedBox(),
+                    ),
               const SizedBox(height: 4),
+              videoList.isNotEmpty
+                  ?
               SizedBox(
                 height: videoList.isNotEmpty ? size.height * 0.3 : 0,
                 child: Stack(
@@ -327,7 +336,10 @@ class _GoalAndDreamFullViewBottomSheetState
                     ),
                   ],
                 ),
-              ),
+              ):
+              Text("NA",
+                style: CustomTextStyles
+                    .bodyMediumGray700_1,),
               // _buildGrid(
               //   context,
               //   size,
@@ -608,7 +620,8 @@ class _GoalAndDreamFullViewBottomSheetState
       {required String category,
       required String createDate,
       required String achiveDate,
-      required String status}) {
+      required String status,
+      required String comments}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -675,6 +688,21 @@ class _GoalAndDreamFullViewBottomSheetState
             ),
             Text(
               status == "0" ? "Active" : "DeActive",
+              style: CustomTextStyles.bodyLargeGray700,
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 6,
+        ),
+        Row(
+          children: [
+            Text(
+              "Comments : ",
+              style: CustomTextStyles.blackText16000000W600(),
+            ),
+            Text(
+             comments,
               style: CustomTextStyles.bodyLargeGray700,
             ),
           ],

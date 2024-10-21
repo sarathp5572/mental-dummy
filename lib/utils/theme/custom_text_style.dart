@@ -218,6 +218,11 @@ class CustomTextStyles {
         fontSize: 13,
       );
 
+  static get labelLarge16 => theme.textTheme.labelLarge!.copyWith(
+    color: const Color(0XFF59A9F2),
+    fontSize: 16,
+  );
+
   static get labelLargeffffffff => theme.textTheme.labelLarge!.copyWith(
         color: const Color(0XFFFFFFFF),
         fontSize: 13,

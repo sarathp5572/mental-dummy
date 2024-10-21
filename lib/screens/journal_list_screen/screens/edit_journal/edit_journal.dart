@@ -197,12 +197,22 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                   ),
                                   editProfileProvider.getProfileModel == null
                                       ? const SizedBox()
-                                      : Text(
-                                          editProfileProvider
-                                              .getProfileModel!.firstname
-                                              .toString(),
-                                          style: CustomTextStyles.bodyLarge18,
+                                      : SizedBox(
+                                    width: size.width * 0.6,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.vertical,
+                                          child: Center(
+                                            child: Text(
+                                                editProfileProvider
+                                                    .getProfileModel!.firstname
+                                                    .toString(),
+                                                style: CustomTextStyles.bodyLarge18,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 10, // Set the maximum number of lines
+                                              ),
+                                          ),
                                         ),
+                                      ),
                                   editProfileProvider.getProfileModel == null
                                       ? const SizedBox()
                                       :       Text(
@@ -757,7 +767,11 @@ class _EditJournalMentalStrengthState extends State<EditJournalMentalStrength> {
                                                     .toList(),
                                           );
                                           if (isSuccess) {
-                                            homeProvider.fetchJournals(initial: true);
+
+                                            Future.delayed(const Duration(seconds: 3), () async {
+                                              await homeProvider.fetchJournals(initial: true);
+                                            });
+
                                             DashBoardProvider
                                                 dashBoardProvider =
                                                 Provider.of<DashBoardProvider>(

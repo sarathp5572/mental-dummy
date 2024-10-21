@@ -31,6 +31,7 @@ import 'package:html_unescape/html_unescape.dart';
 
 import '../../utils/logic/logic.dart';
 import '../../widgets/background_image/background_imager.dart';
+import '../journal_list_screen/journal_list_page.dart';
 
 class JournalViewScreen extends StatefulWidget {
   const JournalViewScreen(
@@ -47,6 +48,7 @@ class JournalViewScreen extends StatefulWidget {
 }
 
 class _JournalViewScreenState extends State<JournalViewScreen> {
+  late HomeProvider homeProvider;
   var logger = Logger();
   @override
   void initState() {
@@ -55,7 +57,8 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
   }
 
   void init() async {
-    HomeProvider homeProvider = Provider.of<HomeProvider>(
+
+    homeProvider = Provider.of<HomeProvider>(
       context,
       listen: false,
     );
@@ -123,9 +126,14 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return SafeArea(
-      child: Consumer<HomeProvider>(builder: (context, homeProvider, _) {
+      child: Consumer2<DashBoardProvider,HomeProvider>(builder: (context, dashBoardProvider,homeProvider, _) {
         return Scaffold(
-          appBar: buildAppBar(context, size, heading: "View your journal"),
+          appBar: buildAppBar(context, size, heading: "View your journal",
+            onTap:
+              () {
+                Navigator.of(context).pop();
+          },
+          ),
           body: backGroundImager(
             size: size,
             child: Padding(
@@ -187,7 +195,9 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                   style: CustomTextStyles
                                       .bodyMediumGray700_1,)
                                     : SizedBox(
-                                  height: size.height * 0.25,  // Set a fixed height to allow scrolling
+                                  height: audioList.length <= 2
+                                      ? size.height * 0.1 * audioList.length // Adjust height based on the number of audios
+                                      : size.height * 0.25,  // Default height if more than 2 audios
                                   child: ListView.builder(
                                     itemCount: audioList.length,
                                     itemBuilder: (context, index) {
@@ -197,6 +207,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                     },
                                   ),
                                 ),
+
                                 imageList.isEmpty
                                     ? const SizedBox()
                                     : const SizedBox(
@@ -453,7 +464,7 @@ class _JournalViewScreenState extends State<JournalViewScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                homeProvider.journalDetails?.journals?.action == null
+                                homeProvider.journalDetails?.journals?.goal == null
                                     ?
                                 Text("NA",
                                   style: CustomTextStyles

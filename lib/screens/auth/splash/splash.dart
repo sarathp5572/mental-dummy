@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mentalhelth/screens/auth/sign_in/provider/sign_in_provider.dart';
 import 'package:mentalhelth/screens/auth/sign_in/screen_sign_in.dart';
 import 'package:mentalhelth/screens/auth/subscribe_plan_page/subscribe_plan_page.dart';
 import 'package:mentalhelth/screens/dash_borad_screen/dash_board_screen.dart';
@@ -68,11 +69,15 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> init() async {
+    SignInProvider signInProvider = Provider.of<SignInProvider>(context, listen: false);
     HomeProvider homeProvider =
         Provider.of<HomeProvider>(context, listen: false);
     EditProfileProvider editProfileProvider =
         Provider.of<EditProfileProvider>(context, listen: false);
+    signInProvider.fetchAppRegister(context);
+    signInProvider.fetchSettings(context);
     homeProvider.fetchChartView(context);
+
     //homeProvider.fetchJournals(initial: true);
     editProfileProvider.fetchUserProfile();
   }

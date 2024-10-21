@@ -84,7 +84,7 @@ class OtpScreen extends StatelessWidget {
                         phone: phoneSignInProvider.phoneNumberController.text,
                         otp: phoneSignInProvider.otp.toString(),
                       );
-                      phoneSignInProvider.phoneNumberController.clear();
+                     // phoneSignInProvider.phoneNumberController.clear();
                       HomeProvider homeProvider =
                           Provider.of<HomeProvider>(context, listen: false);
                       EditProfileProvider editProfileProvider =

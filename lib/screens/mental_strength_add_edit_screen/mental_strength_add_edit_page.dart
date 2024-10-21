@@ -177,12 +177,20 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
                               ),
                               editProfileProvider.getProfileModel == null
                                   ? const SizedBox()
-                                  : Text(
-                                      editProfileProvider
-                                          .getProfileModel!.firstname
-                                          .toString(),
+                                  : SizedBox(
+                                width: size.width * 0.6,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  child: Center( // Aligns the child in the center
+                                    child: Text(
+                                      editProfileProvider.getProfileModel!.firstname.toString(),
                                       style: CustomTextStyles.bodyLarge18,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 10, // Set the maximum number of lines
                                     ),
+                                  ),
+                                ),
+                              ),
                               editProfileProvider.getProfileModel == null
                                   ? const SizedBox()
                                   : Text(

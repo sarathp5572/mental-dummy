@@ -384,21 +384,21 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                             mentalStrengthEditProvider.actionsDetailsModel!.actions!.location!.locationAddress!.isNotEmpty?
                             SizedBox(
                               child: Center(
-                                  child: Row(
-                                    children: [
-                                      CustomImageView(
-                                        imagePath: ImageConstant.imgLinkedin,
-                                        height: 23,
-                                        width: 23,
-                                      ),
-                                      Text(
-                                        mentalStrengthEditProvider.actionsDetailsModel!.actions!.location!.locationAddress!.isEmpty
-                                            ? ""
-                                            :mentalStrengthEditProvider.actionsDetailsModel!.actions!.location!.locationAddress.toString(),
-                                        style: CustomTextStyles.bodyMediumGray700_1,
-                                      ),
-                                    ],
-                                  )
+                                child: Row(
+                                  children: [
+                                    CustomImageView(
+                                      imagePath: ImageConstant.imgLinkedin,
+                                      height: 23,
+                                      width: 23,
+                                    ),
+                                    Text(
+                                      mentalStrengthEditProvider.actionsDetailsModel!.actions!.location!.locationAddress!.isEmpty
+                                          ? ""
+                                          :mentalStrengthEditProvider.actionsDetailsModel!.actions!.location!.locationAddress.toString(),
+                                      style: CustomTextStyles.bodyMediumGray700_1,
+                                    ),
+                                  ],
+                                )
                               ),
                             )
                                 :
@@ -410,7 +410,8 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                 builder: (context, addActionsProvider, _) {
                               return Column(
                                 children: [
-                                       mentalStrengthEditProvider.actionsDetailsModel!.actions!.actionStatus! == "1"
+                                       mentalStrengthEditProvider.actionsDetailsModel!.actions!.actionStatus == "1" ||
+                                           mentalStrengthEditProvider.actionsDetailsModel!.actions!.reminder == null
                                       ? const SizedBox()
                                       : const Row(
                                           children: [
@@ -440,7 +441,8 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                       bottom: 10,
                                     ),
                                     child:
-                                        mentalStrengthEditProvider.actionsDetailsModel!.actions!.actionStatus! == "1"
+                                    mentalStrengthEditProvider.actionsDetailsModel!.actions!.actionStatus == "1" ||
+                                        mentalStrengthEditProvider.actionsDetailsModel!.actions!.reminder == null
                                             ? const SizedBox()
                                             : SizedBox(
                                                 child: Column(
@@ -664,8 +666,7 @@ class _ActionsFullViewState extends State<ActionsFullView> {
               style: CustomTextStyles.blackText16000000W700(),
             ),
             SizedBox(
-              // color: Colors.blue,
-              width: size.width * 0.60,
+              width: size.width * 0.55,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal, // Enable horizontal scrolling
                 child: Text(

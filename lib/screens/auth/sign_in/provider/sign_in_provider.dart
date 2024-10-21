@@ -16,6 +16,8 @@ import 'package:mentalhelth/widgets/functions/snack_bar.dart';
 
 import '../../../token_expiry/token_expiry.dart';
 import '../../subscribe_plan_page/subscribe_plan_page.dart';
+import '../model/app_settings_model.dart';
+import '../model/app_settings_register_model.dart';
 
 class SignInProvider extends ChangeNotifier {
   TextEditingController emailFieldController = TextEditingController();
@@ -79,6 +81,7 @@ class SignInProvider extends ChangeNotifier {
         );
         if (loginModel!.status!) {
           if (loginModel!.isSubscribed == "0") {
+            fetchSettings(context);
             // Navigator.of(context).pushAndRemoveUntil(
             //   MaterialPageRoute(
             //     builder: (context) => SubscribePlanPage(),
@@ -92,6 +95,7 @@ class SignInProvider extends ChangeNotifier {
                   (route) => false,
             );
           } else {
+            fetchSettings(context);
             Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
                 builder: (context) => const DashBoardScreen(),
@@ -516,6 +520,114 @@ class SignInProvider extends ChangeNotifier {
       debugPrint('Error during Google Sign-In: ${e.toString()}');
       return null;
     }
+  }
+
+  SettingsModel? settingsModel;
+  List<Setting> settingsList = [];
+  bool settingsLoading = false;
+
+  SettingsRegisterModel? settingsRegisterModel;
+  List<SettingRegister> settingsRegisterList = [];
+  bool registerSettingsLoading = false;
+
+  Future<void> fetchSettings(BuildContext context) async {
+    try {
+      settingsModel = null;
+      String? token = await getUserTokenSharePref();
+      settingsLoading = true;
+      notifyListeners();
+
+      Map<String, String> headers = {
+        'authorization': token!, // Assuming token is not null
+      };
+      Uri url = Uri.parse(
+        UrlConstant.appSettingsUrl,
+      );
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        settingsModel = settingsModelFromJson(response.body);
+        logger.w("settingsModel ${settingsModel?.settings}");
+        if (settingsModel != null) {
+          if (settingsModel!.settings != null) {
+            settingsList.addAll(settingsModel!.settings!);
+            logger.w("settingsList${jsonEncode(settingsModel)}");
+          }
+        }
+        settingsLoading = false;
+        notifyListeners();
+      }
+      else {
+        settingsLoading = false;
+        notifyListeners();
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      settingsLoading = false;
+      notifyListeners();
+    } catch (e) {
+      settingsLoading = false;
+      notifyListeners();
+    }
+    notifyListeners();
+  }
+
+  String? isRequired = '';
+  Future<void> fetchAppRegister(BuildContext context) async {
+    try {
+      settingsRegisterModel = null;
+
+      String? token = await getUserTokenSharePref();
+      registerSettingsLoading = true;
+      logger.w("registerSettingsLoading${registerSettingsLoading}");
+      notifyListeners();
+
+      Uri url = Uri.parse(
+        UrlConstant.appRegisterUrl,
+      );
+      logger.w("url ${url}");
+      final response = await http.get(url,);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        settingsRegisterModel = settingsRegisterModelFromJson(response.body);
+        registerSettingsLoading = false;
+        notifyListeners();
+        logger.w("registerSettingsLoading${registerSettingsLoading}");
+        logger.w("settingsRegisterModel ${settingsRegisterModel?.settings}");
+        if (settingsRegisterModel != null) {
+          if (settingsRegisterModel!.settings != null) {
+            settingsRegisterList.addAll(settingsRegisterModel!.settings!);
+            isRequired = settingsRegisterModel!.settings![0].isRequired;
+            logger.w("isRequired${isRequired}");
+            logger.w("settingsRegisterList${jsonEncode(settingsRegisterModel)}");
+          }
+        }
+        registerSettingsLoading = false;
+        notifyListeners();
+      }
+      else {
+        registerSettingsLoading = false;
+        notifyListeners();
+      }
+      if(response.statusCode == 401){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      if(response.statusCode == 403){
+        TokenManager.setTokenStatus(true);
+        //CacheManager.setAccessToken(CacheManager.getUser().refreshToken);
+      }
+      registerSettingsLoading = false;
+      notifyListeners();
+    } catch (e) {
+      registerSettingsLoading = false;
+      notifyListeners();
+    }
+    notifyListeners();
   }
 
 }

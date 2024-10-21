@@ -39,7 +39,7 @@ class HomeProvider extends ChangeNotifier {
         UrlConstant.chartviewUrl,
       );
       final response = await http.get(url, headers: headers);
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         chartViewModel = chartViewModelFromJson(response.body);
         logger.w("chartViewModel ${chartViewModel?.chart}");
         for (int i = 0; i < chartViewModel!.chart!.length; i++) {

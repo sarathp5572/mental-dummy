@@ -1764,12 +1764,15 @@ class _EditActionScreenState extends State<EditActionScreen> {
                     isReminder: "0");
               }
 
+              mentalStrengthEditProvider.fetchGoalActions(goalId: widget.actionsDetailsModel!.actions!.goalId ?? "",);
+
               // adDreamsGoalsProvider.getAddActionIdAndName(
               //   value: addActionsProvider.goalModelIdName!,
               // );
 
               addActionsProvider.clearFunction();
               Navigator.of(context).pop();
+             // Navigator.of(context).pop();
             } else {
               showCustomSnackBar(
                 context: context,

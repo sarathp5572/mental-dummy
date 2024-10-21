@@ -300,7 +300,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                                       style: CustomTextStyles
                                                           .bodyLargeff000000,
                                                     ),
-                                                    if(editProfileProvider.getProfileModel!.emailVerify != "1")
+                                                    if(editProfileProvider.getProfileModel!.emailVerify != "1" && editProfileProvider.getProfileModel!.email!.isNotEmpty)
                                                     TextSpan(
                                                       text: "Verify Email\n\n",
                                                       style: CustomTextStyles
@@ -401,7 +401,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                               ),
                                             ),
                                             SizedBox(
-                                              height: size.height * 0.05,
+                                              height: size.height * 0.02,
                                             ),
                                             Consumer<DashBoardProvider>(builder:
                                                 (context, dashBoardProvider,

@@ -20,7 +20,7 @@ class UserProfileListItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     var logger = Logger();
-    logger.w("title ${title}");
+    //logger.w("title ${title}");
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 7,

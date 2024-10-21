@@ -248,28 +248,29 @@ class _ActionFullViewJournalCreateBottomSheetState
                             status: mentalStrengthEditProvider
                                 .actionsDetailsModel!.actions!.actionStatus
                                 .toString(),
+                      comments: mentalStrengthEditProvider
+                          .actionsDetailsModel!.actions!.actionDetails
+                          .toString(),
                           ),
-                    const SizedBox(height: 10),
-                    mentalStrengthEditProvider.actionsDetailsModel == null
-                        ? shimmerList(
-                            height: 50,
-                          )
-                        : Text(
-                            capitalText(mentalStrengthEditProvider
-                                .actionsDetailsModel!.actions!.actionDetails
-                                .toString()),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: CustomTextStyles.bodyMediumGray700_1,
-                          ),
+                   // const SizedBox(height: 10),
+                    // mentalStrengthEditProvider.actionsDetailsModel == null
+                    //     ? shimmerList(
+                    //         height: 50,
+                    //       )
+                    //     : Text(
+                    //         capitalText(mentalStrengthEditProvider
+                    //             .actionsDetailsModel!.actions!.actionDetails
+                    //             .toString()),
+                    //         maxLines: 2,
+                    //         overflow: TextOverflow.ellipsis,
+                    //         style: CustomTextStyles.bodyMediumGray700_1,
+                    //       ),
                     const SizedBox(height: 15),
-                    audioList.isEmpty
-                        ? const SizedBox()
-                        : Padding(
+                    Padding(
                             padding: const EdgeInsets.only(left: 2),
                             child: Text(
                               "Audio",
-                              style: theme.textTheme.bodyLarge,
+                              style: CustomTextStyles.blackText16000000W600(),
                             ),
                           ),
                     audioList.isEmpty
@@ -278,7 +279,9 @@ class _ActionFullViewJournalCreateBottomSheetState
                             height: 2,
                           ),
                     audioList.isEmpty
-                        ? const SizedBox()
+                        ?Text("NA",
+                      style: CustomTextStyles
+                          .bodyMediumGray700_1,)
                         : SizedBox(
                             height: audioList.length * size.height * 0.1,
                             child: ListView.builder(
@@ -295,9 +298,8 @@ class _ActionFullViewJournalCreateBottomSheetState
                         : const SizedBox(
                             height: 23,
                           ),
-                    imageList.isEmpty
-                        ? const SizedBox()
-                        : Padding(
+                    SizedBox(height: 10,),
+                    Padding(
                             padding: const EdgeInsets.only(left: 2),
                             child: Text(
                               "Photo",
@@ -308,7 +310,9 @@ class _ActionFullViewJournalCreateBottomSheetState
                         ? const SizedBox()
                         : const SizedBox(height: 4),
                     imageList.isEmpty
-                        ? const SizedBox()
+                        ? Text("NA",
+                      style: CustomTextStyles
+                          .bodyMediumGray700_1,)
                         : SizedBox(
                             height: size.height * 0.2,
                             child: Stack(
@@ -351,9 +355,10 @@ class _ActionFullViewJournalCreateBottomSheetState
                         : const SizedBox(
                             height: 10,
                           ),
-                    videoList.isEmpty
-                        ? const SizedBox()
-                        : Padding(
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
                             padding: const EdgeInsets.only(left: 2),
                             child: Text(
                               "Video",
@@ -364,7 +369,9 @@ class _ActionFullViewJournalCreateBottomSheetState
                         ? const SizedBox()
                         : const SizedBox(height: 4),
                     videoList.isEmpty
-                        ? const SizedBox()
+                        ? Text("NA",
+                      style: CustomTextStyles
+                          .bodyMediumGray700_1,)
                         : SizedBox(
                             height: size.height * 0.3,
                             child: Stack(
@@ -402,7 +409,7 @@ class _ActionFullViewJournalCreateBottomSheetState
                     //   context,
                     //   size,
                     // ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.only(left: 2),
                       child: Text(
@@ -614,7 +621,8 @@ class _ActionFullViewJournalCreateBottomSheetState
       {required String category,
       required String createDate,
       required String achiveDate,
-      required String status}) {
+      required String status,
+        required String comments}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -643,6 +651,28 @@ class _ActionFullViewJournalCreateBottomSheetState
                 scrollDirection: Axis.horizontal, // Enable horizontal scrolling
                 child: Text(
                   category,
+                  style: CustomTextStyles.bodyLargeGray700,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1, // Set the maximum number of lines to 3
+                ),
+
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Text(
+              "Comments : ",
+              style: CustomTextStyles.blackText16000000W600(),
+            ),
+            SizedBox(
+              width: size.width * 0.60,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                child: Text(
+                  comments,
                   style: CustomTextStyles.bodyLargeGray700,
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,

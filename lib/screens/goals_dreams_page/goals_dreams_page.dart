@@ -40,7 +40,13 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
   bool completed = false;
   final ScrollController _scrollController = ScrollController();
   int currentPage = 1; // State to track the current page
+  void _onPageChanged(int newPage) {
+    setState(() {
+      currentPage = newPage;
+    });
 
+    goalsDreamsProvider.fetchGoalsAndDreams(pageNo: currentPage.toString()); // Fetch new data for the updated page
+  }
 
   Future<void> _isTokenExpired() async {
     await homeProvider.fetchChartView(context);
@@ -80,7 +86,7 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
      WidgetsBinding.instance.addPostFrameCallback((_) {
        goalsDreamsProvider.goalsanddreams = [];
        goalsDreamsProvider.goalsanddreams.clear();
-       goalsDreamsProvider.fetchGoalsAndDreams(initial: true);
+       goalsDreamsProvider.fetchGoalsAndDreams(pageNo: currentPage.toString());
       // mentalStrengthEditProvider.fetchGoalActions(goalId: widget.goalsanddream.goalId.toString(),);
        _isTokenExpired();
      });
@@ -167,9 +173,13 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
                                           goalsanddream: goalsDreamsProvider.goalsanddreams[index],
                                           indexs: index,
                                           goalStatus: goalsDreamsProvider.goalsanddreams[index].goalStatus ?? "",
-                                        ),
+                                        )
                                       ),
-                                    );
+                                    ).then((_) {
+                                      // Fetch the correct page's data when coming back
+                                      goalsDreamsProvider.fetchGoalsAndDreams(pageNo: currentPage.toString());
+                                    });
+                                   // currentPage = 1;
                                   },
                                   child: WeightLossComponentListItemWidget(
                                     image: goalsDreamsProvider.goalsanddreams[index].goalMedia.toString(),
@@ -214,7 +224,8 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
                                           // Update the current page and fetch new data
                                           setState(() {
                                           goalsDreamsProvider.goalsanddreams.clear();
-                                            currentPage = index + 1;
+                                          _onPageChanged(index + 1);
+                                          //  currentPage = index + 1;
                                           });
                                           goalsDreamsProvider.fetchGoalsAndDreams(pageNo: currentPage.toString());
                                         },
@@ -230,7 +241,8 @@ class _GoalsDreamsPageState extends State<GoalsDreamsPage> {
                                               // Update the current page and fetch new data
                                               setState(() {
                                                 goalsDreamsProvider.goalsanddreams.clear();
-                                               currentPage = index + 1;
+                                                _onPageChanged(index + 1);
+                                              // currentPage = index + 1;
                                               });
                                               goalsDreamsProvider.fetchGoalsAndDreams(pageNo: currentPage.toString());
                                             },
