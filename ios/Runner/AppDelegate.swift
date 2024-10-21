@@ -12,18 +12,7 @@ import AVFoundation
         
         GeneratedPluginRegistrant.register(with: self)
         GMSServices.provideAPIKey("AIzaSyB_mUl0uBmISnObRAdQEF-Ffaa4mxq1LpQ")
-        do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
-            try AVAudioSession.sharedInstance().setActive(true)
-        } catch {
-            print("Failed to set audio session category")
-        }
-        var filePath: String!
 
-
-
-
-        
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 }

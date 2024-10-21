@@ -286,34 +286,25 @@ class _GoalAndDreamFullViewScreenState
                 ),
                 const SizedBox(height: 6),
                 widget.goalsanddream.location!.locationAddress!.isNotEmpty ?
-                SizedBox(
-                  height: size.height * 0.35,
-                  child: Center(
-                    child: JournalGoogleMapWidgets(
-                      latitude: widget.goalsanddream.location == null
-                          ? 0
-                          : double.parse(
-                              widget.goalsanddream.location!.locationLatitude ==
-                                          null ||
-                                      widget.goalsanddream.location!
-                                              .locationLatitude ==
-                                          ""
-                                  ? "0.0"
-                                  : widget.goalsanddream.location!
-                                      .locationLatitude!),
-                      longitude: widget.goalsanddream.location == null
-                          ? 0
-                          : widget.goalsanddream.location!.locationLongitude ==
-                                  ""
-                              ? 0
-                              : double.parse(widget
-                                  .goalsanddream.location!.locationLongitude!),
+                Row(
+                  children: [
+                    CustomImageView(
+                      imagePath: ImageConstant.imgLinkedin,
+                      height: 23,
+                      width: 23,
                     ),
-                  ),
+                    Text(
+                      widget.goalsanddream.location!.locationAddress!.isEmpty
+                          ? ""
+                          : widget.goalsanddream.location!.locationAddress.toString(),
+                      style: CustomTextStyles.bodyMediumGray700_1,
+                    ),
+                  ],
                 ):
                 Text("NA",
                   style: CustomTextStyles
                       .bodyMediumGray700_1,),
+                const SizedBox(height: 10,),
 
                 Padding(
                   padding: const EdgeInsets.only(left: 2),

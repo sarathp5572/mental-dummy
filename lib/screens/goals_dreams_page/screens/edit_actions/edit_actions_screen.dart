@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -24,6 +26,7 @@ import 'package:mentalhelth/widgets/custom_icon_button.dart';
 import 'package:mentalhelth/widgets/custom_image_view.dart';
 import 'package:mentalhelth/widgets/custom_text_form_field.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../../../addactions_screen/model/alaram_info.dart';
@@ -54,6 +57,7 @@ class _EditActionScreenState extends State<EditActionScreen> {
   bool tokenStatus = false;
   var logger = Logger();
   AlarmInfo? alarmInfo;
+  PermissionStatus permissionStatus = PermissionStatus.denied;
 
   @override
   void initState() {
@@ -94,6 +98,35 @@ class _EditActionScreenState extends State<EditActionScreen> {
           mentalStrengthEditProvider.actionsDetailsModel!.actions!.actionId!),
     );
     logger.w("alarmInfo $alarmInfo");
+  }
+
+
+  Future<void> _checkPermissionStatus() async {
+    // Check location permission status
+    final status = await Permission.locationWhenInUse.status;
+    setState(() {
+      permissionStatus = status;
+    });
+  }
+
+  Future<void> _requestPermissions() async {
+    // Request location permission (Platform specific)
+    if (Platform.isIOS) {
+      await Permission.locationWhenInUse.request();
+      await Permission.notification.request();
+      await Permission.photos.request();
+    } else if (Platform.isAndroid) {
+      await Permission.locationWhenInUse.request();
+      await Permission.notification.request();
+      await Permission.storage.request(); // For storage permissions
+      await Permission.manageExternalStorage.request(); // For Android 11 and above
+    }
+
+    // Check updated location permission status
+    final locationStatus = await Permission.locationWhenInUse.status;
+    setState(() {
+      permissionStatus = locationStatus;
+    });
   }
 
   // await addActionsProvider.editActionFunction(
@@ -2021,6 +2054,8 @@ class _EditActionScreenState extends State<EditActionScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          _checkPermissionStatus();
+                          _requestPermissions();
                           addActionsProvider.selectedMedia(
                             3,
                           );

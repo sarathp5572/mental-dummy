@@ -51,16 +51,26 @@ void main() async {
         options: DefaultFirebaseOptions.currentPlatform,
       );
     }else{
-      await Firebase.initializeApp();
-
+      await Firebase.initializeApp(
+        name: 'mentalhealth',
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
     }
 
+    FlutterError.onError = (errorDetails) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    };
+    // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
     // Initialize Hive
     await Hive.initFlutter();
     Hive.registerAdapter(AlarmInfoAdapter());
     await Hive.openBox<AlarmInfo>("alarm");
 
-    // Set up Crashlytics
+    // // Set up Crashlytics
     FirebaseCrashlytics crashlytics = FirebaseCrashlytics.instance;
     await crashlytics.setCrashlyticsCollectionEnabled(!kDebugMode);
 
@@ -124,9 +134,9 @@ class _MyAppState extends State<MyApp> {
   Future<void> _requestPermissions() async {
     // Request location permission (Platform specific)
     if (Platform.isIOS) {
-      await Permission.locationWhenInUse.request();
-      await Permission.notification.request();
-      await Permission.photos.request();
+      // await Permission.locationWhenInUse.request();
+      // await Permission.notification.request();
+      // await Permission.photos.request();
     } else if (Platform.isAndroid) {
       await Permission.locationWhenInUse.request();
       await Permission.notification.request();

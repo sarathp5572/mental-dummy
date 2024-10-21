@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/addactions_screen/widget/popup/audio_popup.dart';
@@ -16,6 +18,7 @@ import 'package:mentalhelth/widgets/custom_elevated_button.dart';
 import 'package:mentalhelth/widgets/custom_image_view.dart';
 import 'package:mentalhelth/widgets/custom_text_form_field.dart';
 import 'package:mentalhelth/widgets/functions/snack_bar.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../addgoals_dreams_screen/provider/ad_goals_dreams_provider.dart';
@@ -48,6 +51,7 @@ class _AddactionsScreenState extends State<AddactionsScreen> {
   late AddActionsProvider addActionsProvider;
   bool tokenStatus = false;
   var logger = Logger();
+  PermissionStatus permissionStatus = PermissionStatus.denied;
 
   Future<void> _isTokenExpired() async {
     await homeProvider.fetchChartView(context);
@@ -84,6 +88,34 @@ class _AddactionsScreenState extends State<AddactionsScreen> {
       _isTokenExpired();
     });
     super.initState();
+  }
+
+  Future<void> _checkPermissionStatus() async {
+    // Check location permission status
+    final status = await Permission.locationWhenInUse.status;
+    setState(() {
+      permissionStatus = status;
+    });
+  }
+
+  Future<void> _requestPermissions() async {
+    // Request location permission (Platform specific)
+    if (Platform.isIOS) {
+      await Permission.locationWhenInUse.request();
+      await Permission.notification.request();
+      await Permission.photos.request();
+    } else if (Platform.isAndroid) {
+      await Permission.locationWhenInUse.request();
+      await Permission.notification.request();
+      await Permission.storage.request(); // For storage permissions
+      await Permission.manageExternalStorage.request(); // For Android 11 and above
+    }
+
+    // Check updated location permission status
+    final locationStatus = await Permission.locationWhenInUse.status;
+    setState(() {
+      permissionStatus = locationStatus;
+    });
   }
 
   @override
@@ -1343,6 +1375,8 @@ class _AddactionsScreenState extends State<AddactionsScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          _checkPermissionStatus();
+                          _requestPermissions();
                           addActionsProvider.selectedMedia(
                             3,
                           );

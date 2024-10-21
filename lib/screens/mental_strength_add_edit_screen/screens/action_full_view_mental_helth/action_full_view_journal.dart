@@ -403,74 +403,47 @@ class _ActionFullViewJournalCreateBottomSheetState
                     //   size,
                     // ),
                     const SizedBox(height: 28),
-                    mentalStrengthEditProvider
-                        .actionsDetailsModel!
-                        .actions!
-                        .location!.locationAddress!.isNotEmpty ?
                     Padding(
                       padding: const EdgeInsets.only(left: 2),
                       child: Text(
                         "Your Location",
                         style: CustomTextStyles.blackText16000000W600(),
                       ),
-                    ):
-                        SizedBox(),
+                    ),
                     const SizedBox(height: 6),
                     mentalStrengthEditProvider
                         .actionsDetailsModel!
                         .actions!
                         .location!.locationAddress!.isNotEmpty
                         ? SizedBox(
-                      height: size.height * 0.35,
                       child: Center(
-                        child: JournalGoogleMapWidgets(
-                          latitude: mentalStrengthEditProvider
-                              .actionsDetailsModel!
-                              .actions!
-                              .location ==
-                              null
-                              ? 0
-                              : double.parse(mentalStrengthEditProvider
-                              .actionsDetailsModel!
-                              .actions!
-                              .location!
-                              .locationLatitude ==
-                              null ||
-                              mentalStrengthEditProvider
-                                  .actionsDetailsModel!
-                                  .actions!
-                                  .location!
-                                  .locationLatitude ==
-                                  ""
-                              ? "0.0"
-                              : mentalStrengthEditProvider
-                              .actionsDetailsModel!
-                              .actions!
-                              .location!
-                              .locationLatitude!),
-                          longitude: mentalStrengthEditProvider
-                              .actionsDetailsModel!
-                              .actions!
-                              .location ==
-                              null
-                              ? 0
-                              : mentalStrengthEditProvider
-                              .actionsDetailsModel!
-                              .actions!
-                              .location!
-                              .locationLongitude ==
-                              ""
-                              ? 0
-                              : double.parse(
-                              mentalStrengthEditProvider
-                                  .actionsDetailsModel!
-                                  .actions!
-                                  .location!
-                                  .locationLongitude!),
-                        ),
+                          child: Row(
+                            children: [
+                              CustomImageView(
+                                imagePath: ImageConstant.imgLinkedin,
+                                height: 23,
+                                width: 23,
+                              ),
+                              Text(
+                                mentalStrengthEditProvider
+                                    .actionsDetailsModel!
+                                    .actions!
+                                    .location!.locationAddress!.isEmpty
+                                    ? "NA"
+                                    :
+                                mentalStrengthEditProvider
+                                    .actionsDetailsModel!
+                                    .actions!
+                                    .location!.locationAddress!.toString(),
+                                style: CustomTextStyles.bodyMediumGray700_1,
+                              ),
+                            ],
+                          )
                       ),
                     ) :
-                    const SizedBox(),
+                    Text("NA",
+                      style: CustomTextStyles
+                          .bodyMediumGray700_1,),
                     const SizedBox(height: 20),
                     Consumer<AddActionsProvider>(
                         builder: (context, addActionsProvider, _) {

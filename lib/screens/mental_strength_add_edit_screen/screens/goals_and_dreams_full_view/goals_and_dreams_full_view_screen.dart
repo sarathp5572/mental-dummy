@@ -333,44 +333,39 @@ class _GoalAndDreamFullViewBottomSheetState
               //   size,
               // ),
               const SizedBox(height: 28),
-              widget.goalDetailModel.goals!.location!.locationAddress!.isNotEmpty ?
               Padding(
                 padding: const EdgeInsets.only(left: 2),
                 child: Text(
                   "Your Location",
                   style: CustomTextStyles.blackText16000000W600(),
                 ),
-              ):
-                  const SizedBox(),
+              ),
               const SizedBox(height: 6),
               widget.goalDetailModel.goals!.location!.locationAddress!.isNotEmpty ?
               SizedBox(
-                height: size.height * 0.35,
                 child: Center(
-                  child: JournalGoogleMapWidgets(
-                    latitude: widget.goalDetailModel.goals!.location == null
-                        ? 0
-                        : double.parse(widget.goalDetailModel.goals!.location!
-                                        .locationLatitude ==
-                                    null ||
-                                widget.goalDetailModel.goals!.location!
-                                        .locationLatitude ==
-                                    ""
-                            ? "0.0"
-                            : widget.goalDetailModel.goals!.location!
-                                .locationLatitude!),
-                    longitude: widget.goalDetailModel.goals!.location == null
-                        ? 0
-                        : widget.goalDetailModel.goals!.location!
-                                    .locationLongitude ==
-                                ""
-                            ? 0
-                            : double.parse(widget.goalDetailModel.goals!
-                                .location!.locationLongitude!),
-                  ),
+                    child: Row(
+                      children: [
+                        CustomImageView(
+                          imagePath: ImageConstant.imgLinkedin,
+                          height: 23,
+                          width: 23,
+                        ),
+                        Text(
+                          widget.goalDetailModel.goals!.location!.locationAddress!.isEmpty
+                              ? "NA"
+                              :
+                          widget.goalDetailModel.goals!.location!.locationAddress.toString(),
+                          style: CustomTextStyles.bodyMediumGray700_1,
+                        ),
+                      ],
+                    )
                 ),
-              ):
-              const SizedBox(),
+              )
+                  :
+              Text("NA",
+                style: CustomTextStyles
+                    .bodyMediumGray700_1,),
               const SizedBox(height: 20),
               Consumer<AdDreamsGoalsProvider>(
                 builder: (context, adDreamsGoalsProvider, _) {
