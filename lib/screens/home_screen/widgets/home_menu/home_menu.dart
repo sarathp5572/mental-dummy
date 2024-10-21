@@ -13,6 +13,7 @@ import 'package:mentalhelth/widgets/functions/popup.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../utils/core/firebase_api.dart';
 import '../../../../utils/core/image_constant.dart';
 import '../../../../utils/theme/custom_text_style.dart';
 import '../../../../utils/theme/theme_helper.dart';
@@ -364,6 +365,9 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                     customPopup(
                       context: context,
                       onPressedDelete: () async {
+                        await PushNotifications.unsubscribeFromTopic("message");
+                        await PushNotifications.subscribeToTopic("live_doLogin");
+                        addFCMTokenToSharePref(token: "");
                         await signInProvider.logOutUser(context);
                         await removeUserDetailsSharePref(context: context);
                         removeAllValuesLogout(context: context);

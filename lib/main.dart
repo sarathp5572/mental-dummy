@@ -1,9 +1,11 @@
 import 'dart:async'; // Import this for runZonedGuarded
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart'; // Import for Crashlytics
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -18,6 +20,7 @@ import 'package:mentalhelth/screens/edit_add_profile_screen/provider/edit_provid
 import 'package:mentalhelth/screens/goals_dreams_page/provider/goals_dreams_provider.dart';
 import 'package:mentalhelth/screens/journal_list_screen/provider/journal_list_provider.dart';
 import 'package:mentalhelth/screens/mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
+import 'package:mentalhelth/utils/core/firebase_api.dart';
 import 'package:mentalhelth/utils/core/local_notification.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +40,12 @@ import 'utils/theme/theme_helper.dart';
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
 
+Future _firebaseBackgroundMessage(RemoteMessage message) async {
+  if (message.notification != null) {
+    print("Some notification Received in background...");
+  }
+}
+
 void main() async {
   // Set this before initializing bindings
   BindingBase.debugZoneErrorsAreFatal = true;
@@ -55,6 +64,66 @@ void main() async {
         name: 'mentalhealth',
         options: DefaultFirebaseOptions.currentPlatform,
       );
+    }
+
+
+    await PushNotifications.init();
+    //await PushNotifications().initNotification();
+    // initialize local notifications
+    // dont use local notifications for web platform
+    if (!kIsWeb) {
+      await PushNotifications.localNotiInit();
+    }
+    // if (!kIsWeb) {
+    //   await PushNotifications.subscribeToTopic("message");
+    //   await PushNotifications.unsubscribeFromTopic("live_doLogin");
+    // }
+    // Subscribe to a topic
+
+
+
+    // Listen to background notifications
+    FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
+
+    // on background notification tapped
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        print("Background Notification Tapped");
+        // navigatorKey.currentState!.pushNamed("/message", arguments: message);
+      }
+    });
+
+// to handle foreground notifications
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      String payloadData = jsonEncode(message.data);
+      print("Got a message in foreground");
+      if (message.notification != null) {
+        if (kIsWeb) {
+
+        } else {
+          PushNotifications.showSimpleNotification(
+              title: message.notification!.title ?? "",
+              body: message.notification!.body ?? "",
+              payload: payloadData);
+        }
+      }
+    });
+    ///for handling in terminated state
+    final RemoteMessage? message =
+    await FirebaseMessaging.instance.getInitialMessage();
+    if (message != null) {
+      String payloadData = jsonEncode(message.data);
+      print('Got a Message in Foreground');
+      if (message.notification != null) {
+        PushNotifications.showSimpleNotification(
+            title: message.notification!.title ?? "",
+            body: message.notification!.body ?? "",
+            payload: payloadData);
+      }
+      print('Launched from terminated state');
+      Future.delayed(Duration(seconds: 1), () {
+        ///if to navigate to another screen
+      });
     }
 
     FlutterError.onError = (errorDetails) {

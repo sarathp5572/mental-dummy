@@ -138,6 +138,7 @@ class _TokenExpireScreenState extends State<TokenExpireScreen> {
                                   ),
                                   GestureDetector(
                                     onTap: () async {
+                                      addFCMTokenToSharePref(token: '');
                                       TokenManager.setTokenStatus(false);
                                       await signInProvider.logOutUser(context);
                                       await removeUserDetailsSharePref(context: context);

@@ -303,9 +303,9 @@ class SignInProvider extends ChangeNotifier {
       print("Social media function executed.");
 
       // Save Firebase token
-      await saveFirebaseToken(context,
-          registrationId: firebaseRegistrationId.toString(), deviceOs: os);
-      print("Firebase token saved.");
+      // await saveFirebaseToken(context,
+      //     registrationId: firebaseRegistrationId.toString(), deviceOs: os);
+      // print("Firebase token saved.");
 
     } catch (e) {
       print("Error during Google Sign-In: $e");

@@ -115,6 +115,20 @@ Future<String?> getUserPasswordSharePref() async {
   return prefs.getString("password");
 }
 
+//  // New methods for FCM token
+// Method to save FCM token
+void addFCMTokenToSharePref({required String token}) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString("fcm_token", token);
+}
+
+// Method to retrieve FCM token
+Future<String?> getFCMTokenFromSharePref() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString("fcm_token");
+}
+
+
 void removeAllValuesLogout({required BuildContext context}) {
   SignInProvider signInProvider =
       Provider.of<SignInProvider>(context, listen: false);

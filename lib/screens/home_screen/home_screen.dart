@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -14,18 +16,18 @@ import 'package:mentalhelth/utils/logic/logic.dart';
 import 'package:mentalhelth/utils/theme/app_decoration.dart';
 import 'package:mentalhelth/widgets/background_image/background_imager.dart';
 import 'package:mentalhelth/widgets/custom_elevated_button.dart';
-import 'package:mentalhelth/widgets/indicatores_widgets.dart';
 import 'package:mentalhelth/widgets/widget/shimmer.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../utils/core/constants.dart';
+import '../../utils/core/firebase_api.dart';
 import '../../utils/logic/shared_prefrence.dart';
 import '../../utils/theme/custom_button_style.dart';
 import '../../utils/theme/custom_text_style.dart';
 import '../../utils/theme/theme_helper.dart';
 import '../../widgets/custom_image_view.dart';
 import '../../widgets/functions/popup.dart';
-import '../../widgets/functions/snack_bar.dart';
 import '../auth/sign_in/provider/sign_in_provider.dart';
 import '../goals_dreams_page/provider/goals_dreams_provider.dart';
 import '../home_screen/widgets/userprofilelist_item_widget.dart';
@@ -57,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await editProfileProvider.fetchUserProfile();
     // await homeProvider.fetchRemindersDetails();
     tokenStatus = TokenManager.checkTokenExpiry();
+
     if (tokenStatus) {
       setState(() {
         logger.e("Token status changed: $tokenStatus");
@@ -77,8 +80,25 @@ class _HomeScreenState extends State<HomeScreen> {
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     goalsDreamsProvider = Provider.of<GoalsDreamsProvider>(context, listen: false);
     scheduleMicrotask(() async {
+
+      if (!kIsWeb) {
+        await PushNotifications.subscribeToTopic("message");
+        await PushNotifications.unsubscribeFromTopic("live_doLogin");
+      }
+
       // First, call fetchSettings
       await signInProvider.fetchSettings(context);
+
+      print(" new fcm token    $fcmToken");
+
+      print(" cache fcm token    ${getFCMTokenFromSharePref()}");
+
+      updateFCMTokenIfNeeded(fcmToken);
+
+      // if(fcmToken != getFCMTokenFromSharePref()){
+      //   sendPushNotificationByUser();
+      //   addFCMTokenToSharePref(token: fcmToken);
+      // }
 
       // After 2 seconds delay, perform the rest of the operations
 
@@ -88,6 +108,31 @@ class _HomeScreenState extends State<HomeScreen> {
       _isTokenExpired();
 
     });
+  }
+
+  void updateFCMTokenIfNeeded(String fcmToken) async {
+    String? storedFCMToken = await getFCMTokenFromSharePref();  // Await the result here
+    if (fcmToken != storedFCMToken) {
+      sendPushNotificationByUser();
+      addFCMTokenToSharePref(token: fcmToken);
+    }
+  }
+
+
+  Future<void> sendPushNotificationByUser() async {
+    //isLoading = true;
+    final signInProvider = Provider.of<SignInProvider>(context, listen: false);
+    if(Platform.isAndroid){
+      await signInProvider.saveFirebaseToken(context,
+          registrationId: fcmToken, deviceOs: 'android');
+      print("Firebase token saved.");
+    }else{
+      await signInProvider.saveFirebaseToken(context,
+          registrationId: fcmToken, deviceOs: 'ios');
+      print("Firebase token saved.");
+    }
+
+
   }
 
   Future<void> _launchInAppWithBrowserOptions(Uri url) async {

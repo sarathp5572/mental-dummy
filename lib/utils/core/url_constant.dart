@@ -6,7 +6,6 @@ class UrlConstant {
   static const String forgotPassword = "${baseUrl}forgotpassword";
   static const String signupUrl = "${baseUrl}signup";
   static const String plansUrl = "${baseUrl}plans";
-
   static String profileUrl({required String userId}) {
     return "${baseUrl}profile/$userId";
   }
