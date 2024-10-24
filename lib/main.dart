@@ -131,6 +131,7 @@ void main() async {
     };
     // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
     PlatformDispatcher.instance.onError = (error, stack) {
+      print("Error during initialization: $error");
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       return true;
     };

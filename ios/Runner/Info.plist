@@ -30,6 +30,10 @@
 	<string>23rf234f</string>
 	<key>FacebookClientToken</key>
 	<string>hcjsakdbfuywkjhckblsc</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
+	<key>FirebaseMessagingAutoInitEnabled</key>
+	<true/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -61,11 +65,16 @@
 	<string>We need access to your photo library to let you upload images to your posts. in for your profile, Mental strength,Goals, Actions.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>This app requires access to speech recognition to enable voice commands and enhance user interaction. Your privacy is important, and we will only use this access to improve your experience within the app.</string>
+	<key>NSUserNotificationUsageDescription</key>
+	<string>This app needs access to notifications.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This app uses notifications to keep you updated.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

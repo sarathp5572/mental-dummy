@@ -80,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     goalsDreamsProvider = Provider.of<GoalsDreamsProvider>(context, listen: false);
     scheduleMicrotask(() async {
+      updateFCMTokenIfNeeded(fcmToken);
 
       if (!kIsWeb) {
         await PushNotifications.subscribeToTopic("message");
@@ -93,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       print(" cache fcm token    ${getFCMTokenFromSharePref()}");
 
-      updateFCMTokenIfNeeded(fcmToken);
+
 
       // if(fcmToken != getFCMTokenFromSharePref()){
       //   sendPushNotificationByUser();
@@ -112,10 +113,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void updateFCMTokenIfNeeded(String fcmToken) async {
     String? storedFCMToken = await getFCMTokenFromSharePref();  // Await the result here
-    if (fcmToken != storedFCMToken) {
+  //  if (fcmToken != storedFCMToken) {
       sendPushNotificationByUser();
       addFCMTokenToSharePref(token: fcmToken);
-    }
+    //}
   }
 
 
