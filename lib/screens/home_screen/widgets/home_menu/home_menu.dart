@@ -412,11 +412,11 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                       context: context,
                       onPressedDelete: () async {
                         if(Platform.isAndroid){
-                          await PushNotifications.subscribeToTopic("message");
-                          await PushNotifications.unsubscribeFromTopic("live_doLogin");
+                          await PushNotifications.subscribeToTopic("live_doLogin");
+                          await PushNotifications.unsubscribeFromTopic("message");
                         }else{
-                          OneSignal.User.addTagWithKey("message","1");
-                          OneSignal.User.removeTag("live_doLogin");
+                          OneSignal.User.addTagWithKey("live_doLogin","1");
+                          OneSignal.User.removeTag("message");
                         }
                         addFCMTokenToSharePref(token: "");
                         await signInProvider.logOutUser(context);
