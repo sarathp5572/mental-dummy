@@ -17,6 +17,7 @@ import 'package:mentalhelth/utils/theme/app_decoration.dart';
 import 'package:mentalhelth/widgets/background_image/background_imager.dart';
 import 'package:mentalhelth/widgets/custom_elevated_button.dart';
 import 'package:mentalhelth/widgets/widget/shimmer.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -85,8 +86,14 @@ class _HomeScreenState extends State<HomeScreen> {
     scheduleMicrotask(() async {
 
       if (!kIsWeb) {
-        await PushNotifications.subscribeToTopic("message");
-        await PushNotifications.unsubscribeFromTopic("live_doLogin");
+        if(Platform.isAndroid){
+          await PushNotifications.subscribeToTopic("message");
+          await PushNotifications.unsubscribeFromTopic("live_doLogin");
+        }else{
+          OneSignal.User.addTagWithKey("message","1");
+          OneSignal.User.removeTag("live_doLogin");
+        }
+
       }
 
       // First, call fetchSettings
@@ -130,13 +137,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> sendPushNotificationByUser() async {
     //isLoading = true;
     final signInProvider = Provider.of<SignInProvider>(context, listen: false);
+    OneSignal.User ?? '';
     if(Platform.isAndroid){
       await signInProvider.saveFirebaseToken(context,
           registrationId: fcmToken, deviceOs: 'android');
       print("Firebase token saved.");
     }else{
       await signInProvider.saveFirebaseToken(context,
-          registrationId: fcmToken, deviceOs: 'ios');
+          registrationId: oneSignalIdOriginal, deviceOs: 'ios');
       print("Firebase token saved.");
     }
 

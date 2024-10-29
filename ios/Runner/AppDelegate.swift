@@ -13,6 +13,8 @@ import UserNotifications
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        FirebaseConfiguration.shared.setLoggerLevel(.debug) // Change to .min for less logging
+        application.registerForRemoteNotifications()
         FirebaseApp.configure()
         GeneratedPluginRegistrant.register(with: self)
         GMSServices.provideAPIKey("AIzaSyB_mUl0uBmISnObRAdQEF-Ffaa4mxq1LpQ")

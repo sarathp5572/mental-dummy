@@ -20,6 +20,7 @@ import 'package:mentalhelth/screens/edit_add_profile_screen/provider/edit_provid
 import 'package:mentalhelth/screens/goals_dreams_page/provider/goals_dreams_provider.dart';
 import 'package:mentalhelth/screens/journal_list_screen/provider/journal_list_provider.dart';
 import 'package:mentalhelth/screens/mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
+import 'package:mentalhelth/utils/core/constants.dart';
 import 'package:mentalhelth/utils/core/firebase_api.dart';
 import 'package:mentalhelth/utils/core/local_notification.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -36,6 +37,7 @@ import 'screens/home_screen/provider/home_provider.dart';
 import 'screens/phone_singin_screen/provider/phone_sign_in_provider.dart';
 import 'screens/privacy_screen/provider/privacy_policy_provider.dart';
 import 'utils/theme/theme_helper.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
@@ -59,27 +61,43 @@ void main() async {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
-    }else{
+    }else if(Platform.isIOS){
       await Firebase.initializeApp(
         name: 'mentalhealth',
         options: DefaultFirebaseOptions.currentPlatform,
       );
     }
 
+    if(Platform.isIOS){
+      OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
 
-    await PushNotifications.init();
-    //await PushNotifications().initNotification();
-    // initialize local notifications
-    // dont use local notifications for web platform
-    if (!kIsWeb) {
-      await PushNotifications.localNotiInit();
+      OneSignal.initialize("efe6e3e8-86a4-4d67-851b-ce8151850bc1");
+
+  final oneSignalId = await OneSignal.User.getOnesignalId();
+  if(oneSignalId!= null){
+    oneSignalIdOriginal = oneSignalId;
+    print("oneSignalId--${oneSignalId}");
+  }
+      print("oneSignalId--${oneSignalId}");
+
+// The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+      OneSignal.Notifications.requestPermission(true);
     }
+    else if(Platform.isAndroid){
+      await PushNotifications.init();
+      //await PushNotifications().initNotification();
+      // initialize local notifications
+      // dont use local notifications for web platform
+      if (!kIsWeb) {
+        await PushNotifications.localNotiInit();
+      }
+    }
+
     // if (!kIsWeb) {
     //   await PushNotifications.subscribeToTopic("message");
     //   await PushNotifications.unsubscribeFromTopic("live_doLogin");
     // }
     // Subscribe to a topic
-
 
 
     // Listen to background notifications

@@ -1,18 +1,17 @@
-import 'dart:io';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'constants.dart';
-
+import 'constent.dart';
 
 class PushNotifications {
-  static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  static final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  static final _firebaseMessaging = FirebaseMessaging.instance;
+  static final FlutterLocalNotificationsPlugin
+  _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  // Request notification permission
-  static Future<void> init() async {
-    // Request permission for iOS
+  // request notification permission
+  static Future init() async {
+
     await _firebaseMessaging.requestPermission(
       alert: true,
       announcement: true,
@@ -22,93 +21,67 @@ class PushNotifications {
       provisional: false,
       sound: true,
     );
+    print("heloo");
 
-
-    print("Notification permission requested");
-
-    // Get the FCM token
-    final fc1 = await _firebaseMessaging.getToken();
-    fcmToken = fc1 ?? "";
-
-    print("FCM Token: $fc1");
+    final gettoken=await _firebaseMessaging.getToken();
+    fcmToken = gettoken ?? "";
+    print("get token from user    $gettoken");
   }
 
-  // Initialize local notifications
-  static Future<void> localNotiInit() async {
+  // initalize local notifications
+  static Future localNotiInit() async {
+    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher'); // Ensure your app icon is correct
-
+    AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     final DarwinInitializationSettings initializationSettingsDarwin =
     DarwinInitializationSettings(
-      requestSoundPermission: true,
-      requestBadgePermission: true,
-      requestAlertPermission: true,
-      onDidReceiveLocalNotification: (id, title, body, payload) async {
-        // Handle the received notification here
-        print("notification received");
-      },
+      onDidReceiveLocalNotification: (id, title, body, payload) => null,
     );
+    final LinuxInitializationSettings initializationSettingsLinux =
+    LinuxInitializationSettings(defaultActionName: 'Open notification');
+    final InitializationSettings initializationSettings =
+    InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsDarwin,
+        linux: initializationSettingsLinux);
 
-    final InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsDarwin,
-    );
+    // request notification permissions for android 13 or above
+    _flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()!.requestNotificationsPermission();
 
-    // Request notification permissions for Android 13 or above
-    if (Platform.isAndroid) {
-      await _flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
-    }
-
-    // Initialize the plugin
-    await _flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: onNotificationTap,
-      onDidReceiveBackgroundNotificationResponse: onNotificationTap,
-    );
+    _flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse: onNotificationTap,
+        onDidReceiveBackgroundNotificationResponse: onNotificationTap);
   }
 
-  // Handle notification tap
+  // on tap local notification in foreground
   static void onNotificationTap(NotificationResponse notificationResponse) {
-    // Handle the notification tap here (e.g., navigate to a specific screen)
+
   }
 
-  // Show a simple notification
-  static Future<void> showSimpleNotification({
+  // show a simple notification
+  static Future showSimpleNotification({
     required String title,
     required String body,
     required String payload,
   }) async {
-    const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
-      'your_channel_id',
-      'Your Channel Name',
-      channelDescription: 'Your channel description',
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
-    );
-
-    const DarwinNotificationDetails iosNotificationDetails = DarwinNotificationDetails(
-      sound: 'default',  // Use 'default' for default sound or specify a custom sound
-      presentAlert: true,  // Show an alert
-      presentBadge: true,  // Update the app's badge count
-      presentSound: true,
-
-      // Play a sound
-    );
-
-    const NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails,iOS: iosNotificationDetails);
-
-    await _flutterLocalNotificationsPlugin.show(
-      0, // Notification ID
-      title,
-      body,
-      notificationDetails,
-      payload: payload, // Optional payload for handling taps
-    );
+    const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails('your channel id', 'your channel name',
+        channelDescription: 'your channel description',
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: 'ticker');
+    const NotificationDetails notificationDetails =
+    NotificationDetails(android: androidNotificationDetails);
+    await _flutterLocalNotificationsPlugin
+        .show(0, title, body, notificationDetails, payload: payload);
   }
 
   // Subscribe to a topic
-  static Future<void> subscribeToTopic(String topic) async {
+  static Future subscribeToTopic(String topic) async {
     try {
       await _firebaseMessaging.subscribeToTopic(topic);
       print("Subscribed to topic: $topic");
@@ -118,7 +91,7 @@ class PushNotifications {
   }
 
   // Unsubscribe from a topic
-  static Future<void> unsubscribeFromTopic(String topic) async {
+  static Future unsubscribeFromTopic(String topic) async {
     try {
       await _firebaseMessaging.unsubscribeFromTopic(topic);
       print("Unsubscribed from topic: $topic");

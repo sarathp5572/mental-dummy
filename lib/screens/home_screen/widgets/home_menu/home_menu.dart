@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:mentalhelth/screens/auth/sign_in/provider/sign_in_provider.dart';
 import 'package:mentalhelth/screens/auth/subscribe_plan_page/subscribe_plan_page.dart';
@@ -10,6 +12,7 @@ import 'package:mentalhelth/utils/core/constent.dart';
 import 'package:mentalhelth/utils/logic/logic.dart';
 import 'package:mentalhelth/utils/logic/shared_prefrence.dart';
 import 'package:mentalhelth/widgets/functions/popup.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -408,9 +411,13 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                     customPopup(
                       context: context,
                       onPressedDelete: () async {
-                        await PushNotifications.unsubscribeFromTopic("message");
-                        await PushNotifications.subscribeToTopic(
-                            "live_doLogin");
+                        if(Platform.isAndroid){
+                          await PushNotifications.subscribeToTopic("message");
+                          await PushNotifications.unsubscribeFromTopic("live_doLogin");
+                        }else{
+                          OneSignal.User.addTagWithKey("message","1");
+                          OneSignal.User.removeTag("live_doLogin");
+                        }
                         addFCMTokenToSharePref(token: "");
                         await signInProvider.logOutUser(context);
                         await removeUserDetailsSharePref(context: context);
