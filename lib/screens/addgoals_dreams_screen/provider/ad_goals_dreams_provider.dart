@@ -88,7 +88,7 @@ class AdDreamsGoalsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  int mediaSelected = 0;
+  int mediaSelected = -1;
 
   void selectedMedia(int index) {
     mediaSelected = index;

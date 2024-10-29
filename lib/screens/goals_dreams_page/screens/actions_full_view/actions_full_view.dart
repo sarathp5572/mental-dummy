@@ -243,7 +243,7 @@ class _ActionsFullViewState extends State<ActionsFullView> {
                                   .bodyMediumGray700_1,)
                                 :
                             SizedBox(
-                                    height:size.height * 0.25,
+                                    height:size.height * 0.15,
                                     child: ListView.builder(
                                       itemCount: audioList.length,
                                       itemBuilder: (context, index) {

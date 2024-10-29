@@ -32,6 +32,9 @@ import '../auth/sign_in/provider/sign_in_provider.dart';
 import '../goals_dreams_page/provider/goals_dreams_provider.dart';
 import '../home_screen/widgets/userprofilelist_item_widget.dart';
 import '../mental_strength_add_edit_screen/provider/mental_strenght_edit_provider.dart';
+import '../subscription_view/subscription_check_screen.dart';
+import '../subscription_view/subscription_in_app_screen.dart';
+import '../subscription_view/subscription_view_screen.dart';
 import '../token_expiry/tocken_expiry_warning_screen.dart';
 import '../token_expiry/token_expiry.dart';
 
@@ -90,10 +93,14 @@ class _HomeScreenState extends State<HomeScreen> {
       await signInProvider.fetchSettings(context);
 
       print(" new fcm token    $fcmToken");
-
-      print(" cache fcm token    ${getFCMTokenFromSharePref()}");
-
       updateFCMTokenIfNeeded(fcmToken);
+
+      String? cachedToken = await getFCMTokenFromSharePref();
+      print(" cache fcm token    $cachedToken");
+
+
+
+
 
       // if(fcmToken != getFCMTokenFromSharePref()){
       //   sendPushNotificationByUser();
@@ -115,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (fcmToken != storedFCMToken) {
       sendPushNotificationByUser();
       addFCMTokenToSharePref(token: fcmToken);
+      print(" cache fcm token    ${getFCMTokenFromSharePref()}");
     }
   }
 
@@ -145,33 +153,70 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+
+  Future<void> _launchInAppWithWebView(Uri url) async {
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.inAppWebView,
+      webViewConfiguration: const WebViewConfiguration(
+        enableJavaScript: true, // Enable JavaScript if needed
+        enableDomStorage: true, // Enable DOM storage if needed
+      ),
+    )) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+
   // Example of checking after data load
   void checkSubscriptionStatus() {
     if (signInProvider.settingsModel != null && signInProvider.settingsList.isNotEmpty) {
       if (signInProvider.settingsModel?.isSubscribed.toString() == "0" &&
           signInProvider.settingsModel?.settings?[0].isRequired.toString() == "1") {
         Future.delayed(Duration.zero, () {
-          settingsPopup(
-            context: context,
-            onPressedYes: () async {
-              String chatURL = signInProvider.settingsList[0].linkUrl ?? "";
-              var url = Uri.parse(chatURL);
-              _launchInAppWithBrowserOptions(url);
-              // Attempt to launch the URL
-              // Delay and then close the app
-              Future.delayed(const Duration(seconds: 2), () {
-                SystemNavigator.pop(); // Close the app
-              });
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => SubscriptionCheckScreen(
+                linkUrl: signInProvider.settingsList[0].linkUrl ?? "",link: signInProvider.settingsList[0].link ?? "",
+                title: signInProvider.settingsList[0].title ?? "",message: signInProvider.settingsList[0].message ?? "",
+              ),
+            ),
 
-            },
-            onCancelYes: () async {
-              await signInProvider.logOutUser(context);
-              SystemNavigator.pop(); // Close the app immediately
-            },
-            yes: "Yes",
-            title: signInProvider.settingsList[0].title ?? "",
-            content: signInProvider.settingsList[0].message ?? "",
           );
+          // settingsPopup(
+          //   context: context,
+          //   onPressedYes: () async {
+          //     String chatURL = signInProvider.settingsList[0].linkUrl ?? "";
+          //     var url = Uri.parse(chatURL);
+          //     if(signInProvider.settingsList[0].target == "external"){
+          //       _launchInAppWithBrowserOptions(url);
+          //     }else{
+          //       Navigator.of(context).push(
+          //         MaterialPageRoute(
+          //           builder: (context) => SubscriptionInAppScreen(
+          //             url: signInProvider
+          //                 .settingsList[0].linkUrl ??
+          //                 "",
+          //           ),
+          //         ),
+          //       );
+          //
+          //     }
+          //     // Attempt to launch the URL
+          //     // Delay and then close the app
+          //     // Future.delayed(const Duration(seconds: 2), () {
+          //     //   SystemNavigator.pop(); // Close the app
+          //     // });
+          //
+          //   },
+          //   onCancelYes: () async {
+          //     await signInProvider.logOutUser(context);
+          //     SystemNavigator.pop(); // Close the app immediately
+          //   },
+          //   yes: signInProvider.settingsList[0].link,
+          //   title: signInProvider.settingsList[0].title ?? "",
+          //   content: signInProvider.settingsList[0].message ?? "",
+          // );
         });
       } else {
       }

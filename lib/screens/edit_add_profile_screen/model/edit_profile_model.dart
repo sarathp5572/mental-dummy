@@ -29,6 +29,7 @@ class GetProfileModel {
   String? interest_ids;
   int? isPassword;
   String? isSubscribed;
+  String? show_subscription;
   String? isRequired;
   String? createdAt;
   Subscription? subscription;
@@ -52,6 +53,7 @@ class GetProfileModel {
     required this.interest_ids,
     required this.isPassword,
     required this.isSubscribed,
+    required this.show_subscription,
     required this.isRequired,
     required this.createdAt,
     required this.subscription,
@@ -80,6 +82,7 @@ class GetProfileModel {
         isPassword: json["is_password"],
         isSubscribed: json["is_subscribed"],
         isRequired: json["is_required"],
+        show_subscription: json["show_subscription"],
         createdAt: json["created_at"],
         subscription: json["subscription"] == null || json["subscription"] == ""
             ? null
@@ -105,7 +108,8 @@ class GetProfileModel {
         "interest_ids": interest_ids,
         "is_password": isPassword,
         "is_subscribed": isSubscribed,
-        "is_required":isRequired,
+        "is_required": isRequired,
+        "show_subscription": show_subscription,
         "created_at": createdAt,
         "subscription": subscription?.toJson(),
       };

@@ -45,6 +45,8 @@ class Setting {
   String? message;
   String? link;
   String? linkUrl;
+  String? subscription_url;
+  String? target;
   String? status;
 
   Setting({
@@ -55,6 +57,8 @@ class Setting {
     this.message,
     this.link,
     this.linkUrl,
+    this.subscription_url,
+    this.target,
     this.status,
   });
 
@@ -66,6 +70,8 @@ class Setting {
     message: json["message"],
     link: json["link"],
     linkUrl: json["link_url"],
+    subscription_url: json["subscription_url"],
+    target: json["target"],
     status: json["status"],
   );
 
@@ -77,6 +83,8 @@ class Setting {
     "message": message,
     "link": link,
     "link_url": linkUrl,
+    "subscription_url":subscription_url,
+    "target":target,
     "status": status,
   };
 }

@@ -222,6 +222,15 @@ class CustomTextStyles {
     color: const Color(0XFF59A9F2),
     fontSize: 16,
   );
+  static get labelLarge16red => theme.textTheme.labelLarge!.copyWith(
+    color: const Color(0xFFFF0000), // Example: A custom red color using hex
+    fontSize: 16,
+  );
+
+  static get labelLarge14 => theme.textTheme.labelLarge!.copyWith(
+    color: const Color(0XFF59A9F2),
+    fontSize: 14,
+  );
 
   static get labelLargeffffffff => theme.textTheme.labelLarge!.copyWith(
         color: const Color(0XFFFFFFFF),

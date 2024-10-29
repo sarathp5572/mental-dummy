@@ -154,7 +154,7 @@ class _GoalAndDreamFullViewScreenState
                       .bodyMediumGray700_1,)
                     :
                 SizedBox(
-                  height: size.height * 0.25,
+                  height: size.height * 0.15,
                   child: ListView.builder(
                  //   physics: const NeverScrollableScrollPhysics(),
                     itemCount: audioList.length,

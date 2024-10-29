@@ -12,6 +12,8 @@ import 'package:mentalhelth/utils/core/image_constant.dart';
 import 'package:mentalhelth/utils/logic/shared_prefrence.dart';
 import 'package:provider/provider.dart';
 
+import '../sign_in/landing_register_screen.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -20,10 +22,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  late SignInProvider signInProvider;
   String? getSubScribed;
 
   @override
   void initState() {
+    signInProvider = Provider.of<SignInProvider>(context, listen: false);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       try {
@@ -41,10 +45,12 @@ class _SplashScreenState extends State<SplashScreen> {
               } else if (getSubScribed.toString() == "1") {
                 return const DashBoardScreen();
               } else {
-                return ScreenSignIn();
+                return const LandingRegisterScreenScreen(
+                );
               }
             } else {
-              return ScreenSignIn();
+              return const LandingRegisterScreenScreen(
+              );
             }
           }));
         });

@@ -80,6 +80,7 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
       unixTimestamp = convertToUnixTimestamp(adDreamsGoalsProvider.selectedDate);
       logger.w(" unixTimestamp--${unixTimestamp}");
       editProfileProvider.fetchCategory();
+      adDreamsGoalsProvider.mediaSelected = -1;
       _isTokenExpired();
     });
     adDreamsGoalsProvider

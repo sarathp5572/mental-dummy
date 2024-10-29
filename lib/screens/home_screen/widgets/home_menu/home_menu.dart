@@ -18,6 +18,7 @@ import '../../../../utils/core/image_constant.dart';
 import '../../../../utils/theme/custom_text_style.dart';
 import '../../../../utils/theme/theme_helper.dart';
 import '../../../../widgets/custom_image_view.dart';
+import '../../../subscription_view/subscription_view_screen.dart';
 import '../../../view_reminder_screen/screens/view_reminder_screen.dart';
 
 Widget buildPopupDialog(BuildContext context, Size size) {
@@ -69,10 +70,12 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                 SizedBox(
                   width: size.width * 0.40,
                   child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                    scrollDirection: Axis.horizontal,
+                    // Enable horizontal scrolling
                     child: Text(
                       capitalText(
-                        editProvider.getProfileModel?.firstname.toString() ?? "",
+                        editProvider.getProfileModel?.firstname.toString() ??
+                            "",
                       ),
                       style: CustomTextStyles.blackText24000000W500(),
                       maxLines: 1,
@@ -123,7 +126,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
             // ),
 //hided on purpose//
             Consumer<DashBoardProvider>(
-                builder: (context,dashBoardProvider, _) {
+                builder: (context, dashBoardProvider, _) {
               return GestureDetector(
                 onTap: () {
                   dashBoardProvider.changePage(index: 1);
@@ -197,32 +200,72 @@ Widget buildPopupDialog(BuildContext context, Size size) {
             SizedBox(
               height: size.height * 0.001,
             ),
-            Consumer<HomeProvider>(
-                builder: (context, homeProvider, _) {
-                  return   GestureDetector(
-                    onTap: () async {
-                      await homeProvider.fetchRemindersDetails();
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                          const ViewReminderScreen(),
-                        ),
-                      );
-                    },
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        "Reminders",
-                        maxLines: 13,
-                        overflow: TextOverflow.ellipsis,
-                        style: CustomTextStyles.titleMediumOnSecondaryContainerMedium
-                            .copyWith(
-                          height: 2.19,
-                        ),
-                      ),
+            Consumer<HomeProvider>(builder: (context, homeProvider, _) {
+              return GestureDetector(
+                onTap: () async {
+                  await homeProvider.fetchRemindersDetails();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ViewReminderScreen(),
                     ),
                   );
-                }),
+                },
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Reminders",
+                    maxLines: 13,
+                    overflow: TextOverflow.ellipsis,
+                    style: CustomTextStyles
+                        .titleMediumOnSecondaryContainerMedium
+                        .copyWith(
+                      height: 2.19,
+                    ),
+                  ),
+                ),
+              );
+            }),
+            SizedBox(
+              height: size.height * 0.001,
+            ),
+            Consumer2<SignInProvider,EditProfileProvider>(
+              builder: (context, signInProvider,editProfileProvider, _) {
+                // Check the conditions for showing the "Subscription" button
+                bool showSubscription = editProfileProvider.getProfileModel?.show_subscription == "1" ;
+
+
+                // If conditions are met, display the GestureDetector for "Subscription"
+                return showSubscription
+                    ? GestureDetector(
+                        onTap: () async {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => SubscriptionViewScreen(
+                                url: signInProvider
+                                        .settingsList[0].subscription_url ??
+                                    "",
+                              ),
+                            ),
+                          );
+                        },
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Subscription",
+                            maxLines: 13,
+                            overflow: TextOverflow.ellipsis,
+                            style: CustomTextStyles
+                                .titleMediumOnSecondaryContainerMedium
+                                .copyWith(
+                              height: 2.19,
+                            ),
+                          ),
+                        ),
+                      )
+                    : SizedBox
+                        .shrink(); // Hide the button if the conditions are not met
+              },
+            ),
 
             SizedBox(
               height: size.height * 0.03,
@@ -366,7 +409,8 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                       context: context,
                       onPressedDelete: () async {
                         await PushNotifications.unsubscribeFromTopic("message");
-                        await PushNotifications.subscribeToTopic("live_doLogin");
+                        await PushNotifications.subscribeToTopic(
+                            "live_doLogin");
                         addFCMTokenToSharePref(token: "");
                         await signInProvider.logOutUser(context);
                         await removeUserDetailsSharePref(context: context);
@@ -383,7 +427,9 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                       "Logout",
                       maxLines: 13,
                       overflow: TextOverflow.ellipsis,
-                      style: CustomTextStyles.titleMediumOnSecondaryContainerMedium.copyWith(
+                      style: CustomTextStyles
+                          .titleMediumOnSecondaryContainerMedium
+                          .copyWith(
                         height: 2.19,
                       ),
                     ),
@@ -425,8 +471,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                 "App Version 1.0.1",
                 maxLines: 13,
                 overflow: TextOverflow.ellipsis,
-                style: CustomTextStyles
-                    .titleMediumOnSecondaryContainerMedium
+                style: CustomTextStyles.titleMediumOnSecondaryContainerMedium
                     .copyWith(
                   height: 2.19,
                 ),

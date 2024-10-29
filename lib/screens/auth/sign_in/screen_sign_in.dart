@@ -217,62 +217,62 @@ class _ScreenSignInState extends State<ScreenSignIn> {
                     SizedBox(
                       height: size.height * 0.05,
                     ),
-                    Column(
-                      children: [
-                        _isLoading
-                            ? Shimmer.fromColors(
-                                baseColor: Colors.grey[300]!,
-                                highlightColor: Colors.grey[100]!,
-                                child: Column(
-                                  children: [
-                                    Center(
-                                      child: Container(
-                                        color: Colors.grey[100],
-                                        height: 40.0,
-                                        width: size.width * 0.75,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : signInProvider.settingsRegisterModel?.settings?[0]
-                                        .isRequired ==
-                                    "1"
-                                ? Column(
-                                    children: [
-                                      Text(
-                                        signInProvider.settingsRegisterModel
-                                                ?.settings?[0].message ??
-                                            "",
-                                        style:
-                                            CustomTextStyles.bodySmallOnPrimary,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          String chatURL = signInProvider
-                                                  .settingsRegisterModel
-                                                  ?.settings?[0]
-                                                  .linkUrl ??
-                                              "";
-                                          var url = Uri.parse(chatURL);
-                                          _launchInAppWithBrowserOptions(url);
-                                        },
-                                        child:Text(
-                                          signInProvider.settingsRegisterModel?.settings?[0].link ?? "",
-                                          style: CustomTextStyles.labelLarge16.copyWith(
-                                            decoration: TextDecoration.underline,
-                                            decorationColor: Colors.blue, // Optional: change the color of the underline
-                                            decorationThickness: 1.5, // Optional: adjust the thickness of the underline
-                                          ),
-                                        ),
-                                      ),
-
-
-                                    ],
-                                  )
-                                : const SizedBox(),
-                      ],
-                    ),
+                    // Column(
+                    //   children: [
+                    //     _isLoading
+                    //         ? Shimmer.fromColors(
+                    //             baseColor: Colors.grey[300]!,
+                    //             highlightColor: Colors.grey[100]!,
+                    //             child: Column(
+                    //               children: [
+                    //                 Center(
+                    //                   child: Container(
+                    //                     color: Colors.grey[100],
+                    //                     height: 40.0,
+                    //                     width: size.width * 0.75,
+                    //                   ),
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //           )
+                    //         : signInProvider.settingsRegisterModel?.settings?[0]
+                    //                     .isRequired ==
+                    //                 "1"
+                    //             ? Column(
+                    //                 children: [
+                    //                   Text(
+                    //                     signInProvider.settingsRegisterModel
+                    //                             ?.settings?[0].message ??
+                    //                         "",
+                    //                     style:
+                    //                         CustomTextStyles.bodySmallOnPrimary,
+                    //                   ),
+                    //                   GestureDetector(
+                    //                     onTap: () {
+                    //                       String chatURL = signInProvider
+                    //                               .settingsRegisterModel
+                    //                               ?.settings?[0]
+                    //                               .linkUrl ??
+                    //                           "";
+                    //                       var url = Uri.parse(chatURL);
+                    //                       _launchInAppWithBrowserOptions(url);
+                    //                     },
+                    //                     child:Text(
+                    //                       signInProvider.settingsRegisterModel?.settings?[0].link ?? "",
+                    //                       style: CustomTextStyles.labelLarge16.copyWith(
+                    //                         decoration: TextDecoration.underline,
+                    //                         decorationColor: Colors.blue, // Optional: change the color of the underline
+                    //                         decorationThickness: 1.5, // Optional: adjust the thickness of the underline
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //
+                    //
+                    //                 ],
+                    //               )
+                    //             : const SizedBox(),
+                    //   ],
+                    // ),
 
                     // const SizedBox(
                     //   height: 10,

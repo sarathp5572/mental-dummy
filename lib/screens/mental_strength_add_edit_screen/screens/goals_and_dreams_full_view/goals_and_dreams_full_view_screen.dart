@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:logger/logger.dart';
 import 'package:mentalhelth/screens/addgoals_dreams_screen/provider/ad_goals_dreams_provider.dart';
 import 'package:mentalhelth/screens/goals_dreams_page/provider/goals_dreams_provider.dart';
 import 'package:mentalhelth/screens/journal_view_screen/widgets/jouranl_view_google_map.dart';
@@ -38,6 +39,7 @@ class GoalAndDreamFullViewBottomSheet extends StatefulWidget {
 class _GoalAndDreamFullViewBottomSheetState
     extends State<GoalAndDreamFullViewBottomSheet> {
   bool isCompleted = false;
+  var logger = Logger();
 
   @override
   void initState() {
@@ -379,19 +381,30 @@ class _GoalAndDreamFullViewBottomSheetState
                 style: CustomTextStyles
                     .bodyMediumGray700_1,),
               const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.only(left: 2),
+                child: Text(
+                  "Actions",
+                  style: CustomTextStyles.blackText16000000W600(),
+                ),
+              ),
+              const SizedBox(height: 5),
               Consumer<AdDreamsGoalsProvider>(
                 builder: (context, adDreamsGoalsProvider, _) {
-                  return SizedBox(
-                    height: adDreamsGoalsProvider.goalModelIdName.length *
+                  logger.w("adDreamsGoalsProvider.goalModelIdName${adDreamsGoalsProvider.goalModelIdName}");
+                  return
+                    widget.goalDetailModel.goals!.action!.isNotEmpty ?
+                    SizedBox(
+                    height: widget.goalDetailModel.goals!.action!.length *
                         size.height *
                         0.06,
                     child: ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: adDreamsGoalsProvider.goalModelIdName.length,
+                      itemCount: widget.goalDetailModel.goals!.action!.length,
                       itemBuilder: (context, index) {
                         return Row(
                           children: [
-                            Checkbox(value: false, onChanged: (value) {}),
+                          //  Checkbox(value: false, onChanged: (value) {}),
                             GestureDetector(
                               onTap: () {
                                 // Navigator.of(context).push(
@@ -409,7 +422,7 @@ class _GoalAndDreamFullViewBottomSheetState
                               },
                               child: Container(
                                 height: size.height * 0.04,
-                                width: size.width * 0.7,
+                                width: size.width * 0.85,
                                 padding: const EdgeInsets.only(
                                   bottom: 5,
                                   top: 5,
@@ -428,28 +441,33 @@ class _GoalAndDreamFullViewBottomSheetState
                                 ),
                                 child: Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.center,
                                   children: [
+
                                     SizedBox(
-                                      width: size.width * 0.04,
-                                    ),
-                                    Text(
-                                      adDreamsGoalsProvider
-                                          .goalModelIdName[index].name,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        color: Colors.grey,
+                                      width: size.width * 0.6,
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                                        child: Text(
+                                          widget.goalDetailModel.goals!.action![index].actionTitle ?? "",
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.grey,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1, // Set the maximum number of lines to 3
+                                        ),
                                       ),
                                     ),
-                                    CircleAvatar(
-                                      radius: size.width * 0.04,
-                                      backgroundColor: Colors.blue,
-                                      child: Icon(
-                                        Icons.arrow_forward_ios_outlined,
-                                        color: Colors.white,
-                                        size: size.width * 0.03,
-                                      ),
-                                    ),
+                                    // CircleAvatar(
+                                    //   radius: size.width * 0.04,
+                                    //   backgroundColor: Colors.blue,
+                                    //   child: Icon(
+                                    //     Icons.arrow_forward_ios_outlined,
+                                    //     color: Colors.white,
+                                    //     size: size.width * 0.03,
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                               ),
@@ -468,7 +486,11 @@ class _GoalAndDreamFullViewBottomSheetState
                         // );
                       },
                     ),
-                  );
+                  ):
+                    Text(
+                      "NA",
+                      style: CustomTextStyles.bodyMediumGray700_1,
+                    );
                 },
               ),
               const SizedBox(height: 20),
@@ -701,9 +723,17 @@ class _GoalAndDreamFullViewBottomSheetState
               "Comments : ",
               style: CustomTextStyles.blackText16000000W600(),
             ),
-            Text(
-             comments,
-              style: CustomTextStyles.bodyLargeGray700,
+            SizedBox(
+              width: size.width * 0.6,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                child: Text(
+                 comments,
+                  style: CustomTextStyles.bodyLargeGray700,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1, // Set the maximum number of lines to 3
+                ),
+              ),
             ),
           ],
         ),

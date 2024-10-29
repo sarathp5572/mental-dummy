@@ -98,14 +98,15 @@ void main() async {
       String payloadData = jsonEncode(message.data);
       print("Got a message in foreground");
       if (message.notification != null) {
-        if (kIsWeb) {
+        // if (kIsWeb) {
+        //
+        // } else {
 
-        } else {
           PushNotifications.showSimpleNotification(
               title: message.notification!.title ?? "",
               body: message.notification!.body ?? "",
               payload: payloadData);
-        }
+       // }
       }
     });
     ///for handling in terminated state
@@ -190,6 +191,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     _checkPermissionStatus();
     _requestPermissions();
+    fetchAppRegister();
   }
 
   Future<void> _checkPermissionStatus() async {
@@ -199,6 +201,13 @@ class _MyAppState extends State<MyApp> {
       permissionStatus = status;
     });
   }
+  Future<void> fetchAppRegister() async {
+    //isLoading = true;
+    final signInProvider = Provider.of<SignInProvider>(context, listen: false);
+
+    await signInProvider.fetchAppRegister(context);
+
+  }
 
   Future<void> _requestPermissions() async {
     // Request location permission (Platform specific)
@@ -207,7 +216,7 @@ class _MyAppState extends State<MyApp> {
       // await Permission.notification.request();
       // await Permission.photos.request();
     } else if (Platform.isAndroid) {
-      await Permission.locationWhenInUse.request();
+      //await Permission.locationWhenInUse.request();
       await Permission.notification.request();
       await Permission.storage.request(); // For storage permissions
       await Permission.manageExternalStorage.request(); // For Android 11 and above
