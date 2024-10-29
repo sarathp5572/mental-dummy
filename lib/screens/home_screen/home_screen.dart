@@ -84,6 +84,14 @@ class _HomeScreenState extends State<HomeScreen> {
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     goalsDreamsProvider = Provider.of<GoalsDreamsProvider>(context, listen: false);
     scheduleMicrotask(() async {
+      if(Platform.isIOS){
+        final oneSignalId = await OneSignal.User.getOnesignalId();
+        if(oneSignalId!= null){
+          oneSignalIdOriginal = oneSignalId;
+          print("oneSignalId--${oneSignalId}");
+        }
+        print("oneSignalId--${oneSignalId}");
+      }
 
       if (!kIsWeb) {
         if(Platform.isAndroid){
