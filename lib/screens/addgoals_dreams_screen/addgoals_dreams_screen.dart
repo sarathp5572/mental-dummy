@@ -68,7 +68,7 @@ class _AddGoalsDreamsScreenState extends State<AddGoalsDreamsScreen> {
     mentalStrengthEditProvider.pickedImages.clear();
     mentalStrengthEditProvider.takedImages.clear();
     mentalStrengthEditProvider.selectedLocationName = "";
-
+    adDreamsGoalsProvider.mediaSelected = 0;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isTokenExpired();

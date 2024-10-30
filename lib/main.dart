@@ -103,30 +103,36 @@ void main() async {
     // Listen to background notifications
     FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
 
-    // on background notification tapped
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      if (message.notification != null) {
-        print("Background Notification Tapped");
-        // navigatorKey.currentState!.pushNamed("/message", arguments: message);
-      }
-    });
+    // // on background notification tapped
+    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    //   if (message.notification != null) {
+    //     print("Background Notification Tapped");
+    //     // navigatorKey.currentState!.pushNamed("/message", arguments: message);
+    //   }
+    // });
 
 // to handle foreground notifications
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       String payloadData = jsonEncode(message.data);
       print("Got a message in foreground");
-      if (message.notification != null) {
-        // if (kIsWeb) {
-        //
-        // } else {
 
-          PushNotifications.showSimpleNotification(
-              title: message.notification!.title ?? "",
-              body: message.notification!.body ?? "",
-              payload: payloadData);
-       // }
+      // Check and extract image URL from Android or iOS specific properties
+      String? imageUrl = message.notification?.android?.imageUrl ??
+          message.notification?.apple?.imageUrl ??
+          message.data['image'];
+
+      print("imageUrl--${imageUrl}");
+
+      if (message.notification != null) {
+        PushNotifications.showSimpleNotification(
+          title: message.notification!.title ?? "",
+          body: message.notification!.body ?? "",
+          payload: payloadData,
+          imageUrl: imageUrl,
+        );
       }
     });
+
     ///for handling in terminated state
     final RemoteMessage? message =
     await FirebaseMessaging.instance.getInitialMessage();

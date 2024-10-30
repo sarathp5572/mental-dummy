@@ -196,15 +196,15 @@ class _MentalStrengthAddEditFullViewScreenState extends State<MentalStrengthAddE
                                   : Text(
                                       capitalText(
                                         editProfileProvider
-                                                        .getProfileModel?.dob ==
+                                                        .getProfileModel?.createdAt ==
                                                     null ||
                                                 editProfileProvider
-                                                        .getProfileModel?.dob ==
+                                                        .getProfileModel?.createdAt ==
                                                     null
                                             ? ""
-                                            : dateTimeFormatterMain(
+                                            : dateTimeFormatter(
                                                 date: editProfileProvider
-                                                    .getProfileModel!.dob
+                                                    .getProfileModel!.createdAt
                                                     .toString(),
                                               ),
                                       ),

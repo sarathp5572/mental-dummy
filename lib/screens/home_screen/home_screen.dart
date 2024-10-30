@@ -388,11 +388,8 @@ class _HomeScreenState extends State<HomeScreen> {
       Size size,
       EditProfileProvider editProfileProvider,
       DashBoardProvider dashBoardProvider) {
-    return editProfileProvider.getProfileModel == null
-        ? const SizedBox(
-      height: 70,
-    )
-        : Padding(
+    return
+      Padding(
       padding: const EdgeInsets.only(
         left: 1,
       ),

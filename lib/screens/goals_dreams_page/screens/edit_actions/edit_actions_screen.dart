@@ -1772,6 +1772,7 @@ class _EditActionScreenState extends State<EditActionScreen> {
 
               addActionsProvider.clearFunction();
               Navigator.of(context).pop();
+              Navigator.of(context).pop();
              // Navigator.of(context).pop();
             } else {
               showCustomSnackBar(

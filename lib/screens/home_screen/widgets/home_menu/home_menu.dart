@@ -34,7 +34,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
     ),
     content: SizedBox(
       width: double.maxFinite,
-      child: Consumer<EditProfileProvider>(builder: (context, editProvider, _) {
+      child: Consumer2<EditProfileProvider,DashBoardProvider>(builder: (context, editProvider,dashBoardProvider, _) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -53,18 +53,27 @@ Widget buildPopupDialog(BuildContext context, Size size) {
             ),
             Row(
               children: [
-                CircleAvatar(
-                  backgroundColor: Colors.grey,
-                  radius: size.width * 0.075,
-                  child: CustomImageView(
-                    imagePath:
-                        editProvider.getProfileModel?.profileurl.toString(),
-                    height: 58,
-                    width: 58,
-                    radius: BorderRadius.circular(
-                      34,
+                GestureDetector(
+                  onTap: (){
+                    dashBoardProvider
+                        .changeCommentPage(
+                      index: 9,
+                    );
+                    Navigator.of(context).pop();
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: Colors.grey,
+                    radius: size.width * 0.075,
+                    child: CustomImageView(
+                      imagePath:
+                          editProvider.getProfileModel?.profileurl.toString(),
+                      height: 58,
+                      width: 58,
+                      radius: BorderRadius.circular(
+                        34,
+                      ),
+                      fit: BoxFit.cover,
                     ),
-                    fit: BoxFit.cover,
                   ),
                 ),
                 SizedBox(
@@ -415,6 +424,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                           await PushNotifications.subscribeToTopic("live_doLogin");
                           await PushNotifications.unsubscribeFromTopic("message");
                         }else{
+                          OneSignal.logout();
                           OneSignal.User.addTagWithKey("live_doLogin","1");
                           OneSignal.User.removeTag("message");
                         }
