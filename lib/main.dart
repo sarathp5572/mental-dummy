@@ -74,6 +74,7 @@ void main() async {
       OneSignal.initialize("efe6e3e8-86a4-4d67-851b-ce8151850bc1");
 
   final oneSignalId = await OneSignal.User.getOnesignalId();
+      print("oneSignalId--${oneSignalId}");
   if(oneSignalId!= null){
     oneSignalIdOriginal = oneSignalId;
     print("oneSignalId--${oneSignalId}");

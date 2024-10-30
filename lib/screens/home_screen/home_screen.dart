@@ -60,7 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     await homeProvider.fetchChartView(context);
     await homeProvider.fetchJournals(initial: true);
-    await editProfileProvider.fetchUserProfile();
     // await homeProvider.fetchRemindersDetails();
     tokenStatus = TokenManager.checkTokenExpiry();
 
@@ -77,6 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
     signInProvider = Provider.of<SignInProvider>(context, listen: false);
     homeProvider = Provider.of<HomeProvider>(context, listen: false);
     mentalStrengthEditProvider = Provider.of<MentalStrengthEditProvider>(context, listen: false);
@@ -84,10 +84,12 @@ class _HomeScreenState extends State<HomeScreen> {
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     goalsDreamsProvider = Provider.of<GoalsDreamsProvider>(context, listen: false);
     scheduleMicrotask(() async {
+      await editProfileProvider.fetchUserProfile();
       if(Platform.isIOS){
         final oneSignalId = await OneSignal.User.getOnesignalId();
         if(oneSignalId!= null){
           oneSignalIdOriginal = oneSignalId;
+          await OneSignal.login("individual_${editProfileProvider.getProfileModel?.userId}");
           print("oneSignalId--${oneSignalId}");
         }
         print("oneSignalId--${oneSignalId}");
@@ -127,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
       goalsDreamsProvider.goalsanddreams.clear();
       goalsDreamsProvider.goalsanddreams = [];
       mentalStrengthEditProvider.mediaSelected = -1;
-      _isTokenExpired();
+
 
     });
   }
