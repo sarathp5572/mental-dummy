@@ -72,6 +72,10 @@ void main() async {
       OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
 
       OneSignal.initialize("efe6e3e8-86a4-4d67-851b-ce8151850bc1");
+      // OneSignal.Notifications.addClickListener((event) {
+      //   print("object");
+      //   // Handle notification click
+      // });
 
   final oneSignalId = await OneSignal.User.getOnesignalId();
       print("oneSignalId--${oneSignalId}");
@@ -83,6 +87,8 @@ void main() async {
 
 // The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
       OneSignal.Notifications.requestPermission(true);
+
+
     }
     else if(Platform.isAndroid){
       await PushNotifications.init();
