@@ -11,6 +11,7 @@ import '../../goals_dreams_page/goals_dreams_page.dart';
 import '../../help_screen/help_screen.dart';
 import '../../home_screen/home_screen.dart';
 import '../../journal_list_screen/journal_list_page.dart';
+import '../../terms_of_services/terms_of_services_screen.dart';
 import '../../view_reminder_screen/screens/view_reminder_screen.dart';
 
 class DashBoardProvider extends ChangeNotifier {
@@ -83,7 +84,7 @@ class DashBoardProvider extends ChangeNotifier {
         case 10:
           return const ViewReminderScreen();
         case 11:
-          return const HelpScreen(
+          return const TermsOfServicesScreen(
             url: "https://mh.featureme.live/v1/terms",
           );
         case 12:

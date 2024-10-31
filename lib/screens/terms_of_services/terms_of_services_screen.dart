@@ -5,16 +5,16 @@ import '../../utils/core/image_constant.dart';
 import '../../utils/theme/theme_helper.dart';
 import '../../widgets/app_bar/appbar_leading_image.dart';
 
-class HelpScreen extends StatefulWidget {
+class TermsOfServicesScreen extends StatefulWidget {
   final String url;
 
-  const HelpScreen({Key? key, required this.url}) : super(key: key);
+  const TermsOfServicesScreen({Key? key, required this.url}) : super(key: key);
 
   @override
-  State<HelpScreen> createState() => _HelpScreenState();
+  State<TermsOfServicesScreen> createState() => _TermsOfServicesScreenState();
 }
 
-class _HelpScreenState extends State<HelpScreen> {
+class _TermsOfServicesScreenState extends State<TermsOfServicesScreen> {
   late WebViewController _controller;
 
   @override
@@ -65,7 +65,7 @@ class _HelpScreenState extends State<HelpScreen> {
                 buildAppBar(
                   context,
                   size,
-                  heading: "Help",
+                  heading: "Terms of Services",
                 ),
                 // Use Expanded to allow WebView to take remaining space in the Column
                 Expanded(

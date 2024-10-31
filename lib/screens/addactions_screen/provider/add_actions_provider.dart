@@ -927,8 +927,8 @@ var logger = Logger();
     final now = DateTime.now();
     final dateTime = DateTime(now.year, now.month, now.day, time.hour, time.minute);
 
-    // Format the time using intl package in 12-hour format with AM/PM
-    return DateFormat.jm().format(dateTime);
+    // Format the time in 12-hour format without spaces
+    return DateFormat('h:mma').format(dateTime);
   }
 
 
@@ -966,7 +966,8 @@ var logger = Logger();
           'is_reminder': isReminder ?? '',
           'reminder_startdate': convertToUnixTimestamp(reminderStartDate).toString(),  // Convert to string
           'reminder_enddate': convertToUnixTimestamp(reminderEndDate).toString(),      // Convert to string
-          'reminder_before': '${remindTime?.hour.toString().padLeft(2, '0')}:${remindTime?.minute.toString().padLeft(2, '0')}',
+          //'reminder_before': '${remindTime?.hour.toString().padLeft(2, '0')}:${remindTime?.minute.toString().padLeft(2, '0')}',
+          'reminder_before': '',
           'reminder_repeat': repeat.toString(),  // Ensure repeat is a string
           'from_time': convertTimeOfDayTo12Hour(reminderStartTime!).toString(),        // Convert to string
           'to_time': convertTimeOfDayTo12Hour(reminderEndTime!).toString(),            // Convert to string
@@ -1104,7 +1105,8 @@ var logger = Logger();
           'is_reminder': isReminder ?? '',
           'reminder_startdate': convertToUnixTimestamp(reminderStartDate).toString(),  // Convert to string
           'reminder_enddate': convertToUnixTimestamp(reminderEndDate).toString(),      // Convert to string
-          'reminder_before': '${remindTime?.hour.toString().padLeft(2, '0')}:${remindTime?.minute.toString().padLeft(2, '0')}',
+          //'reminder_before': '${remindTime?.hour.toString().padLeft(2, '0')}:${remindTime?.minute.toString().padLeft(2, '0')}',
+          'reminder_before': '',
           'reminder_repeat': repeat.toString(),  // Ensure repeat is a string
           'from_time': convertTimeOfDayTo12Hour(reminderStartTime!).toString(),        // Convert to string
           'to_time': convertTimeOfDayTo12Hour(reminderEndTime!).toString(),            // Convert to string

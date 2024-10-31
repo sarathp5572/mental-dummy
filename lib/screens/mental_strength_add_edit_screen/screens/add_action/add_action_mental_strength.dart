@@ -438,93 +438,93 @@ class AddActionMentalStrengthBottomSheet extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          "Remind before",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            addActionsProvider
-                                                .remindTimeFunction(
-                                              context,
-                                            );
-                                          },
-                                          child: Container(
-                                            margin: const EdgeInsets.only(
-                                              left: 2,
-                                            ),
-                                            padding: const EdgeInsets.only(
-                                              left: 5,
-                                              right: 8,
-                                              bottom: 6,
-                                              top: 6,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: theme.colorScheme
-                                                  .onSecondaryContainer
-                                                  .withOpacity(
-                                                1,
-                                              ),
-                                              border: Border.all(
-                                                color: appTheme.gray700,
-                                                width: 1,
-                                              ),
-                                              borderRadius: BorderRadiusStyle
-                                                  .roundedBorder4,
-                                            ),
-                                            child: SizedBox(
-                                              width: size.width * 0.32,
-                                              child: Row(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                      left: 3,
-                                                      top: 2,
-                                                      bottom: 1,
-                                                    ),
-                                                    child: Text(
-                                                      addActionsProvider
-                                                                  .remindTime !=
-                                                              null
-                                                          ?
-                                                          // formatTimeOfDay(
-                                                          //         addActionsProvider
-                                                          //             .reminderEndTime!)
-                                                          addActionsProvider
-                                                                      .remindTime!
-                                                                      .hour <=
-                                                                  0
-                                                              ? '${addActionsProvider.remindTime!.minute} Minute'
-                                                              : '${addActionsProvider.remindTime!.hour} Hour ${addActionsProvider.remindTime!.minute} Minut'
-                                                          : "Choose Time   ",
-                                                      style: CustomTextStyles
-                                                          .bodySmallGray700,
-                                                    ),
-                                                  ),
-                                                  const Spacer(),
-                                                  const Icon(
-                                                    Icons
-                                                        .keyboard_arrow_down_sharp,
-                                                    color: Colors.blue,
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                    // Column(
+                                    //   crossAxisAlignment:
+                                    //       CrossAxisAlignment.start,
+                                    //   children: [
+                                    //     const Text(
+                                    //       "Remind before",
+                                    //       style: TextStyle(
+                                    //         fontWeight: FontWeight.bold,
+                                    //         fontSize: 15,
+                                    //       ),
+                                    //     ),
+                                    //     const SizedBox(
+                                    //       height: 5,
+                                    //     ),
+                                    //     GestureDetector(
+                                    //       onTap: () {
+                                    //         addActionsProvider
+                                    //             .remindTimeFunction(
+                                    //           context,
+                                    //         );
+                                    //       },
+                                    //       child: Container(
+                                    //         margin: const EdgeInsets.only(
+                                    //           left: 2,
+                                    //         ),
+                                    //         padding: const EdgeInsets.only(
+                                    //           left: 5,
+                                    //           right: 8,
+                                    //           bottom: 6,
+                                    //           top: 6,
+                                    //         ),
+                                    //         decoration: BoxDecoration(
+                                    //           color: theme.colorScheme
+                                    //               .onSecondaryContainer
+                                    //               .withOpacity(
+                                    //             1,
+                                    //           ),
+                                    //           border: Border.all(
+                                    //             color: appTheme.gray700,
+                                    //             width: 1,
+                                    //           ),
+                                    //           borderRadius: BorderRadiusStyle
+                                    //               .roundedBorder4,
+                                    //         ),
+                                    //         child: SizedBox(
+                                    //           width: size.width * 0.32,
+                                    //           child: Row(
+                                    //             children: [
+                                    //               Padding(
+                                    //                 padding:
+                                    //                     const EdgeInsets.only(
+                                    //                   left: 3,
+                                    //                   top: 2,
+                                    //                   bottom: 1,
+                                    //                 ),
+                                    //                 child: Text(
+                                    //                   addActionsProvider
+                                    //                               .remindTime !=
+                                    //                           null
+                                    //                       ?
+                                    //                       // formatTimeOfDay(
+                                    //                       //         addActionsProvider
+                                    //                       //             .reminderEndTime!)
+                                    //                       addActionsProvider
+                                    //                                   .remindTime!
+                                    //                                   .hour <=
+                                    //                               0
+                                    //                           ? '${addActionsProvider.remindTime!.minute} Minute'
+                                    //                           : '${addActionsProvider.remindTime!.hour} Hour ${addActionsProvider.remindTime!.minute} Minut'
+                                    //                       : "Choose Time   ",
+                                    //                   style: CustomTextStyles
+                                    //                       .bodySmallGray700,
+                                    //                 ),
+                                    //               ),
+                                    //               const Spacer(),
+                                    //               const Icon(
+                                    //                 Icons
+                                    //                     .keyboard_arrow_down_sharp,
+                                    //                 color: Colors.blue,
+                                    //               )
+                                    //             ],
+                                    //           ),
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //   ],
+                                    // ),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -786,8 +786,7 @@ class AddActionMentalStrengthBottomSheet extends StatelessWidget {
               if (addActionsProvider.reminderStartDate.isNotEmpty &&
                   addActionsProvider.reminderEndDate.isNotEmpty &&
                   addActionsProvider.reminderStartTime != null &&
-                  addActionsProvider.reminderEndTime != null &&
-                  addActionsProvider.remindTime != null) {
+                  addActionsProvider.reminderEndTime != null) {
               await addActionsProvider.saveGemFunction(
                   context,
                   title: addActionsProvider.titleEditTextController.text,
