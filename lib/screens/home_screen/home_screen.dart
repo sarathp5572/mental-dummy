@@ -57,9 +57,10 @@ class _HomeScreenState extends State<HomeScreen> {
   var logger = Logger();
 
   Future<void> _isTokenExpired() async {
-
-    await homeProvider.fetchChartView(context);
+    await editProfileProvider.fetchUserProfile();
     await homeProvider.fetchJournals(initial: true);
+    await homeProvider.fetchChartView(context);
+
     // await homeProvider.fetchRemindersDetails();
     tokenStatus = TokenManager.checkTokenExpiry();
 
@@ -84,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     goalsDreamsProvider = Provider.of<GoalsDreamsProvider>(context, listen: false);
     scheduleMicrotask(() async {
-      await editProfileProvider.fetchUserProfile();
+      _isTokenExpired();
       if(Platform.isIOS){
         final oneSignalId = await OneSignal.User.getOnesignalId();
         if(oneSignalId!= null){
@@ -100,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
           await PushNotifications.subscribeToTopic("message");
           await PushNotifications.unsubscribeFromTopic("live_doLogin");
         }else{
-          OneSignal.User.addTagWithKey("message","1");
+          OneSignal.User.addTagWithKey("topic","message");
           OneSignal.User.removeTag("live_doLogin");
         }
 

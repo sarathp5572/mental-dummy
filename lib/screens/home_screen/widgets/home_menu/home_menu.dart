@@ -216,11 +216,8 @@ Widget buildPopupDialog(BuildContext context, Size size) {
               return GestureDetector(
                 onTap: () async {
                   await homeProvider.fetchRemindersDetails();
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ViewReminderScreen(),
-                    ),
-                  );
+                  dashBoardProvider.changeCommentPage(index: 10);
+                  Navigator.of(context).pop();
                 },
                 child: Align(
                   alignment: Alignment.topLeft,
@@ -240,44 +237,44 @@ Widget buildPopupDialog(BuildContext context, Size size) {
             SizedBox(
               height: size.height * 0.001,
             ),
-            Consumer2<SignInProvider,EditProfileProvider>(
-              builder: (context, signInProvider,editProfileProvider, _) {
-                // Check the conditions for showing the "Subscription" button
-                bool showSubscription = editProfileProvider.getProfileModel?.show_subscription == "1" ;
-
-
-                // If conditions are met, display the GestureDetector for "Subscription"
-                return showSubscription
-                    ? GestureDetector(
-                        onTap: () async {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => SubscriptionViewScreen(
-                                url: signInProvider
-                                        .settingsList[0].subscription_url ??
-                                    "",
-                              ),
-                            ),
-                          );
-                        },
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Subscription",
-                            maxLines: 13,
-                            overflow: TextOverflow.ellipsis,
-                            style: CustomTextStyles
-                                .titleMediumOnSecondaryContainerMedium
-                                .copyWith(
-                              height: 2.19,
-                            ),
-                          ),
-                        ),
-                      )
-                    : SizedBox
-                        .shrink(); // Hide the button if the conditions are not met
-              },
-            ),
+            // Consumer2<SignInProvider,EditProfileProvider>(
+            //   builder: (context, signInProvider,editProfileProvider, _) {
+            //     // Check the conditions for showing the "Subscription" button
+            //     bool showSubscription = editProfileProvider.getProfileModel?.show_subscription == "1" ;
+            //
+            //
+            //     // If conditions are met, display the GestureDetector for "Subscription"
+            //     return showSubscription
+            //         ? GestureDetector(
+            //             onTap: () async {
+            //               Navigator.of(context).push(
+            //                 MaterialPageRoute(
+            //                   builder: (context) => SubscriptionViewScreen(
+            //                     url: signInProvider
+            //                             .settingsList[0].subscription_url ??
+            //                         "",
+            //                   ),
+            //                 ),
+            //               );
+            //             },
+            //             child: Align(
+            //               alignment: Alignment.topLeft,
+            //               child: Text(
+            //                 "Subscription",
+            //                 maxLines: 13,
+            //                 overflow: TextOverflow.ellipsis,
+            //                 style: CustomTextStyles
+            //                     .titleMediumOnSecondaryContainerMedium
+            //                     .copyWith(
+            //                   height: 2.19,
+            //                 ),
+            //               ),
+            //             ),
+            //           )
+            //         : SizedBox
+            //             .shrink(); // Hide the button if the conditions are not met
+            //   },
+            // ),
 
             SizedBox(
               height: size.height * 0.03,
@@ -311,17 +308,15 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                 builder: (context, dashBoardProvider, _) {
               return GestureDetector(
                 onTap: () {
-                  // dashBoardProvider.changeCommenPage(
-                  //   index: 7,
+                  dashBoardProvider.changeCommentPage(index: 11);
+                  Navigator.of(context).pop();
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const HelpScreen(
+                  //       url: "https://mh.featureme.live/v1/terms",
+                  //     ),
+                  //   ),
                   // );
-                  // Navigator.of(context).pop();
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const HelpScreen(
-                        url: "https://mh.featureme.live/v1/terms",
-                      ),
-                    ),
-                  );
                 },
                 child: Align(
                   alignment: Alignment.topLeft,
@@ -343,13 +338,15 @@ Widget buildPopupDialog(BuildContext context, Size size) {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const HelpScreen(
-                      url: "https://mh.featureme.live/v1/help/",
-                    ),
-                  ),
-                );
+                dashBoardProvider.changeCommentPage(index: 12);
+                Navigator.of(context).pop();
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(
+                //     builder: (context) => const HelpScreen(
+                //       url: "https://mh.featureme.live/v1/help/",
+                //     ),
+                //   ),
+                // );
               },
               child: Align(
                 alignment: Alignment.topLeft,
@@ -391,11 +388,13 @@ Widget buildPopupDialog(BuildContext context, Size size) {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => FeedbackScreen(),
-                  ),
-                );
+                dashBoardProvider.changeCommentPage(index: 13);
+                Navigator.of(context).pop();
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(
+                //     builder: (context) => FeedbackScreen(),
+                //   ),
+                // );
               },
               child: Align(
                 alignment: Alignment.topLeft,
@@ -425,7 +424,7 @@ Widget buildPopupDialog(BuildContext context, Size size) {
                           await PushNotifications.unsubscribeFromTopic("message");
                         }else{
                           OneSignal.logout();
-                          OneSignal.User.addTagWithKey("live_doLogin","1");
+                          OneSignal.User.addTagWithKey("topic","live_doLogin");
                           OneSignal.User.removeTag("message");
                         }
                         addFCMTokenToSharePref(token: "");

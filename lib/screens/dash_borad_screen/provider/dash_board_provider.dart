@@ -6,9 +6,12 @@ import 'package:mentalhelth/screens/myprofile_screen/myprofile_screen.dart';
 import 'package:mentalhelth/screens/privacy_screen/privacy_screen.dart';
 import 'package:mentalhelth/screens/terms_service_screen/terms_serivce_screen.dart';
 
+import '../../feedback_screen/feedback_screen.dart';
 import '../../goals_dreams_page/goals_dreams_page.dart';
+import '../../help_screen/help_screen.dart';
 import '../../home_screen/home_screen.dart';
 import '../../journal_list_screen/journal_list_page.dart';
+import '../../view_reminder_screen/screens/view_reminder_screen.dart';
 
 class DashBoardProvider extends ChangeNotifier {
   int currentIndex = 0;
@@ -77,6 +80,18 @@ class DashBoardProvider extends ChangeNotifier {
           return const MyProfileScreen();
         case 9:
           return const EditAddProfileScreen();
+        case 10:
+          return const ViewReminderScreen();
+        case 11:
+          return const HelpScreen(
+            url: "https://mh.featureme.live/v1/terms",
+          );
+        case 12:
+          return const HelpScreen(
+            url: "https://mh.featureme.live/v1/help/",
+          );
+        case 13:
+          return FeedbackScreen();
         default:
           return const HomeScreen();
       }
