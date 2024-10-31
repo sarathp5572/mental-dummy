@@ -67,8 +67,6 @@
 	<string>This app requires access to speech recognition to enable voice commands and enhance user interaction. Your privacy is important, and we will only use this access to improve your experience within the app.</string>
 	<key>NSUserNotificationUsageDescription</key>
 	<string>This app needs access to notifications.</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>This app uses tracking for notifications.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

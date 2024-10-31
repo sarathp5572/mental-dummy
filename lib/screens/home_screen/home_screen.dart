@@ -57,7 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
   var logger = Logger();
 
   Future<void> _isTokenExpired() async {
-    await editProfileProvider.fetchUserProfile();
     await homeProvider.fetchJournals(initial: true);
     await homeProvider.fetchChartView(context);
 
@@ -85,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
     dashBoardProvider = Provider.of<DashBoardProvider>(context, listen: false);
     goalsDreamsProvider = Provider.of<GoalsDreamsProvider>(context, listen: false);
     scheduleMicrotask(() async {
-      _isTokenExpired();
+      await editProfileProvider.fetchUserProfile();
       if(Platform.isIOS){
         final oneSignalId = await OneSignal.User.getOnesignalId();
         if(oneSignalId!= null){
@@ -118,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
 
-
+      _isTokenExpired();
 
       // if(fcmToken != getFCMTokenFromSharePref()){
       //   sendPushNotificationByUser();
