@@ -216,8 +216,13 @@ Widget buildPopupDialog(BuildContext context, Size size) {
               return GestureDetector(
                 onTap: () async {
                   await homeProvider.fetchRemindersDetails();
-                  dashBoardProvider.changeCommentPage(index: 10);
-                  Navigator.of(context).pop();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ViewReminderScreen(),
+                    ),
+                  );
+                 //  dashBoardProvider.changeCommentPage(index: 10);
+                 // Navigator.of(context).pop();
                 },
                 child: Align(
                   alignment: Alignment.topLeft,
